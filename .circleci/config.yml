@@ -45,4 +45,22 @@ jobs:
           docker build -t axentro/axentro .
           docker push axentro/axentro
           docker build -t axentro/axen .
-          docker push axen
+          docker push axentro/axen
+
+workflows:
+  version: 2
+
+  axentro_workflow:
+
+    jobs:
+      - tests
+      - e2e-tests-all-public
+      - docker-build
+      - docker-deploy:
+          requires:
+            - tests
+            - e2e-tests-all-public
+            - docker-build
+          filters:
+            branches:
+              only: master
