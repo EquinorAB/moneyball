@@ -1,0 +1,48 @@
+version: 2
+jobs:
+
+  tests:
+    docker:
+      - image: crystallang/crystal:1.0.0
+    steps:
+      - checkout
+      - run: |
+          apt-get update
+          apt-get install curl libsqlite3-dev -y
+      - run: |
+          shards build --ignore-crystal-version --release --no-debug
+          crystal spec
+          bin/ameba
+      - store_artifacts:
+          path: spec/functional/reports
+
+  e2e-tests-all-public:
+    docker:
+      - image: crystallang/crystal:1.0.0
+    steps:
+      - checkout
+      - run: |
+          apt-get update
+          apt-get install curl libsqlite3-dev -y
+      - run: |
+          shards build --ignore-crystal-version --release --no-debug
+          bin/e2e --mode=all_public --num_tps=10 --num_nodes=3 --num_miners=3 --time=900
+
+  docker-build:
+    machine: true
+    steps:
+      - checkout
+      - run: |
+          docker build -t axentro/axentro .
+          docker build -f ./Dockerfile-axen -t axentro/axen .
+
+  docker-deploy:
+    machine: true
+    steps:
+      - checkout
+      - run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker build -t axentro/axentro .
+          docker push axentro/axentro
+          docker build -t axentro/axen .
+          docker push axen
