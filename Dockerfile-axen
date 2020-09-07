@@ -13,4 +13,13 @@ COPY . .
 RUN shards build --ignore-crystal-version
 
 RUN ln -s /usr/local/Axentro/bin/axen /usr/local/bin/axen
-RUN ln -s /usr/lo
+RUN ln -s /usr/local/Axentro/bin/axem /usr/local/bin/axem
+RUN ln -s /usr/local/Axentro/bin/axe  /usr/local/bin/axe
+
+RUN mkdir -p /usr/local/ax
+
+WORKDIR /usr/local/ax
+
+EXPOSE 3000
+
+CMD axen -w testnet-wallet-1.json --testnet -u http://testnet.axentro.io:3000 -d testnet.sqlite3 -h 209.216.230.35
