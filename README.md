@@ -36,4 +36,29 @@ Follow the [Getting Started](https://guide.axentro.io/) documentation to explore
 
 |                 Name  |  Axentro                    |
 | --------------------: | :-------------------------- |
-|          Coin tick
+|          Coin ticker  |  AXNT                       |
+|            Coin name  |  Axentro                    |
+|            Consensus  |  CDPoW                      |
+|     Max Block reward  |  12 AXNT (decreasing)       |
+|         Miner reward  |  Prorated on contribution   |
+|   Slow Block spacing  |  120 seconds                |
+|   Fast Block spacing  |  2 seconds                  |
+|   Block spacing algo  |  Dark Crystal Gravity Wave  |
+|       Developer fund  |  10,000,000 AXNT            |
+|       Total mineable  |  20,000,000 AXNT            |
+|   Total non-mineable  |  15,000,000 AXNT            |
+|         Total Supply  |  45,000,000 AXNT            |
+|             Maturity  |  7 Blocks                   |
+|      Minimum txn fee  |  0.0001 AXNT                |
+| PoW mining algorithm  |  Argon2id                   |
+|                 Port  |  80/443                     |
+
+
+## Community
+
+Questions or suggestions? Join our community here on [Telegram](https://t.me/axentrohq)
+
+## Active Team
+
+- [@kingsleyh](https://github.com/kingsleyh) Kingsley Hendrickse - founder & lead developer
+- [@aaronbronow](https://github.com/aaronbronow) Aaron Bronow - core te
