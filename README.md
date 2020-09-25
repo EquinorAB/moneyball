@@ -61,4 +61,16 @@ Questions or suggestions? Join our community here on [Telegram](https://t.me/axe
 ## Active Team
 
 - [@kingsleyh](https://github.com/kingsleyh) Kingsley Hendrickse - founder & lead developer
-- [@aaronbronow](https://github.com/aaronbronow) Aaron Bronow - core te
+- [@aaronbronow](https://github.com/aaronbronow) Aaron Bronow - core team
+- [@fenicks](https://github.com/fenicks) Christian Kakesa - core team
+- [@mathieulaporte](https://github.com/mathieulaporte) Mathieu Laporte - core team
+- [@m-o-e](https://github.com/m-o-e) Moe - core team
+- [@bararchy](https://github.com/bararchy) Bar Hofesh - Security advisor
+
+## Past Contributors
+
+- [@tbrand](https://github.com/tbrand) Taichiro Suzuki - original founder
+- [@jferas](https://github.com/jferas) John Feras
+- [@raymanoz](https://github.com/raymanoz) Raymond Barlow
+- [@watzon](https://github.com/watzon) Chris Watson
+- [@mamalisk](https://github.com/mamalisk) Kostas Mamalis
