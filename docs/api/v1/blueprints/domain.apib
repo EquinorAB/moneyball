@@ -4,4 +4,42 @@
 
 ## GET
 
-This
+This retrieves amounts of tokens for a domain as Json
+
++ Parameters
+    + domain (string) - The domain
+    
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": 
+                {
+                  "confirmation": 1,
+                  "pairs": 
+                    [
+                      {
+                        "token": "AXNT",
+                        "amount": "19.68043428"
+                      },
+                      {
+                        "token": "EAGLE",
+                        "amount": "0"
+                      }
+                    ]
+                }
+            }
+
+        
+## domain/transactions [GET /domain/{domain}/transactions{?page}{?per_page}{?direction}{?sort_field}{?actions}]
+
+This retrieves the transactions for a domain as Json
+
++ Parameters
+    + domain (string) - The domain
+    + page: 0 (number, optional) - The page
+    + per_page: 20 (number, optional) - The number of items per page
+    + direction: up (string, optional) - The direction (up = ascending, down = descending)
+    + sort_field: time (string, optional) - The sort field (id = transactionId, ti
