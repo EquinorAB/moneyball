@@ -42,4 +42,33 @@ This retrieves the transactions for a domain as Json
     + page: 0 (number, optional) - The page
     + per_page: 20 (number, optional) - The number of items per page
     + direction: up (string, optional) - The direction (up = ascending, down = descending)
-    + sort_field: time (string, optional) - The sort field (id = transactionId, ti
+    + sort_field: time (string, optional) - The sort field (id = transactionId, time = transaction timestamp)
+    + actions (string, optional) - actions to filter in a comma delimited list e.g `?send,head`
+    
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": {
+                "transactions": [
+                  "transaction":
+                    {
+                      "id": "09b05cb672911ba03a1e3372a58348e61a0b267efdc8ee89df59978037d19523",
+                      "action": "head",
+                      "senders": [],
+                      "recipients": 
+                        [
+                          {
+                            "address": "VDBjMjI1ZmE0MmQzYTAwYWJlZGNjMTFkNzQ5YjMxZGFkNGVhYjU2N2YwNzFmYjFk",
+                            "amount": 299904068
+                          },
+                          {
+                            "address": "VDA2NjU5N2JlNDA3ZDk5Nzg4MGY2NjY5YjhhOTUwZTE2M2VmNjM5OWM2M2EyMWQz",
+                            "amount": 899712202
+                          }
+                        ],
+                      "message": "0",
+                      "token": "AXNT",
+                      "prev_hash": "0",
