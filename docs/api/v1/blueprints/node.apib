@@ -94,4 +94,39 @@ Show information about the connecting nodes
                   "private_nodes": 
                     [
                       {
-                        "id": "faec239b8e
+                        "id": "faec239b8eebf72ff73783eaf72762bd",
+                        "host": "",
+                        "port": -1,
+                        "ssl": false,
+                        "type": "testnet",
+                        "is_private": true,
+                        "address": ""
+                      }
+                    ],
+                  "finger_table": []  
+                }
+            }
+
+## node/official_nodes [GET /node/official_nodes]
+
+Show information about the connecting nodes
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status":"success",
+              "result":{
+                "all":[
+                  "VDBiNGU3OGRjYzUzYTFjMjAwNmZiMzNmMTA0NTVhZmViZjY1MWI2ODQ0NWJjMDIy"
+                ],
+                "online":[
+                {
+                 "id":"5fecec2d9abeaabc24603f69f8debe80",
+                 "address":"VDBiNGU3OGRjYzUzYTFjMjAwNmZiMzNmMTA0NTVhZmViZjY1MWI2ODQ0NWJjMDIy",
+                 "url":"https://localhost:3002"
+                }
+                ]
+              }
+            }            
