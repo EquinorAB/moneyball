@@ -47,4 +47,51 @@ Show information about the specified node id
                   "ssl": false,
                   "type": "testnet",
                   "is_private": false,
-      
+                  "address": ""
+                }
+            }
+
+## node/address/{address} [GET /node/address/{address}]
+
+Find a node with the specified wallet address
+
++ Parameters
+
+    + address (string) - The wallet address of the node
+    
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": 
+                {
+                  "id": "0bd4b62baa97bf1ac608ae311d41c0b6",
+                  "host": "testnet.axentro.io",
+                  "port": 3000,
+                  "ssl": false,
+                  "type": "testnet",
+                  "is_private": false,
+                  "address": ""
+                }
+            }
+
+## nodes [GET /nodes]
+
+Show information about the connecting nodes
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": 
+                {
+                  "successor_list": [],
+                  "predecessor": null,
+                  "private_nodes": 
+                    [
+                      {
+                        "id": "faec239b8e
