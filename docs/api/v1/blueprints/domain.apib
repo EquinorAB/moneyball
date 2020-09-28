@@ -72,3 +72,47 @@ This retrieves the transactions for a domain as Json
                       "message": "0",
                       "token": "AXNT",
                       "prev_hash": "0",
+                      "timestamp": 1569910322451,
+                      "scaled": 1,
+                      "kind": "SLOW",
+                      "version": "V1"
+                    },
+                    "confirmations": 1,
+                    "block_id": 2
+                ],
+                "pagination": {
+                  "page": 0,
+                  "per_page": 20,
+                  "direction": 1,
+                  "sort_field": 0,
+                  "count": 1,
+                  "total_count": 1
+                }
+              }  
+            }
+
+## domain/amount/token [GET /domain/{domain}/token/{token}]
+
+This retrieves the amount for a specified token for a domain as Json
+
++ Parameters
+    + domain (string) - The domain
+    + token (string) - The token
+    
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": 
+                {
+                  "confirmation": 1,
+                  "pairs": 
+                    [
+                      {
+                        "token": "AXNT",
+                        "amount": "19.68043428"
+                      }
+                    ]
+ 
