@@ -1,0 +1,13 @@
+html:
+  sidebar:
+    groupOrder: "auto"
+  playground:
+    enabled: true
+    env: testnet
+    environments:
+      testnet:
+        url: https://testnet.axentro.io/api/v1/
+      mainnet: 
+        url: https://mainnet.axentro.io/api/v1
+      local:
+        url: http://localhost:3000/api/v1    
