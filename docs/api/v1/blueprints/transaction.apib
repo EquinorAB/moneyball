@@ -1,0 +1,492 @@
+
+## Group Transaction
+
+# /transaction/{id}
+
+## GET
+
+This retrieves the transaction specified by the transaction id as Json
+
++ Parameters
+
+    + id (number) - The transaction id
+    
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": 
+                {
+                  "status": "accepted",
+                  "transaction": 
+                    {
+                      "id": "f3aa3b5e04a4890e873e56d7ac35b3b90fe549afd783f7b5826055e0872bde6f",
+                      "action": "head",
+                      "senders": [],
+                      "recipients": 
+                        [
+                          {
+                            "address": "VDBjMTlkMWM0NTZhYmE3ZjdmYmVkMDgwMWFhZTMyMDRhMTUzNjFhYWUwYzk3ODQ5",
+                            "amount": 12615663
+                          },
+                          {
+                            "address": "VDBkYWQxZjZlZjllOTAzYzNiODQ0NmZkZTI4NDBhYmMzYjUxYThjM2E1ZjNkODlj",
+                            "amount": 37846987
+                          }
+                        ],
+                      "message": "0",
+                      "token": "AXNT",
+                      "prev_hash": "0",
+                      "timestamp": 1527522043,
+                      "scaled": 1,
+                      "kind": "SLOW",
+                      "version": "V1"
+                    }
+                }
+            }
+
+## transactions [GET /transactions{?page}{?per_page}{?direction}{?sort_field}]
+
+This retrieves all transactions for the blockchain
+
++ Parameters
+
+    + page: 0 (number, optional) - The page
+    + per_page: 20 (number, optional) - The number of items per page
+    + direction: up (string, optional) - The direction (up = ascending, down = descending)
+    + sort_field: time (string, optional) - The sort field (id = transactionId, time = transaction timestamp)
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": {
+                "transactions": [
+                  "transaction":
+                    {
+                      "id": "09b05cb672911ba03a1e3372a58348e61a0b267efdc8ee89df59978037d19523",
+                      "action": "head",
+                      "senders": [],
+                      "recipients": 
+                        [
+                          {
+                            "address": "VDBjMjI1ZmE0MmQzYTAwYWJlZGNjMTFkNzQ5YjMxZGFkNGVhYjU2N2YwNzFmYjFk",
+                            "amount": 299904068
+                          },
+                          {
+                            "address": "VDA2NjU5N2JlNDA3ZDk5Nzg4MGY2NjY5YjhhOTUwZTE2M2VmNjM5OWM2M2EyMWQz",
+                            "amount": 899712202
+                          }
+                        ],
+                      "message": "0",
+                      "token": "AXNT",
+                      "prev_hash": "0",
+                      "timestamp": 1569910322451,
+                      "scaled": 1,
+                      "kind": "SLOW",
+                      "version": "V1"
+                    },
+                    "confirmations": 1,
+                    "block_id": 2
+                ],
+                "pagination": {
+                  "page": 0,
+                  "per_page": 20,
+                  "direction": 1,
+                  "sort_field": 0,
+                  "count": 1,
+                  "total_count": 1
+                }
+              }  
+            }
+
+
+## transaction/block [GET /transaction/{id}/block]
+
+This retrieves the block containing the specified transaction id as Json
+
++ Parameters
+
+    + id (number) - The transaction id
+    
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": {
+                "block": {
+                  "index": 156,
+                  "transactions": 
+                    [
+                      {
+                        "id": "f3aa3b5e04a4890e873e56d7ac35b3b90fe549afd783f7b5826055e0872bde6f",
+                        "action": "head",
+                        "senders": [],
+                        "recipients": 
+                          [
+                            {
+                              "address": "VDBjMTlkMWM0NTZhYmE3ZjdmYmVkMDgwMWFhZTMyMDRhMTUzNjFhYWUwYzk3ODQ5",
+                              "amount": 12615663
+                            },
+                            {
+                              "address": "VDBkYWQxZjZlZjllOTAzYzNiODQ0NmZkZTI4NDBhYmMzYjUxYThjM2E1ZjNkODlj",
+                              "amount": 37846987
+                            }
+                          ],
+                        "message": "0",
+                        "token": "AXNT",
+                        "prev_hash": "0",
+                        "timestamp": 1527522043,
+                        "scaled": 1,
+                        "kind": "SLOW",
+                        "version": "V1"
+                      }
+                    ],
+                  "nonce": 6558232399239314000,
+                  "prev_hash": "9c6845c1e03bf3eb132b25835f8c4f2f90c09dd5221325134c50434fbe947346",
+                  "merkle_tree_root": "0531d7957b9863ab1597e787b446e633fe1df1eb",
+                  "timestamp": 1527522043,
+                  "difficulty": 4,
+                  "kind": "SLOW",
+                  "address": "VDBkYWQxZjZlZjllOTAzYzNiODQ0NmZkZTI4NDBhYmMzYjUxYThjM2E1ZjNkODlj"
+                },
+                "confirmations": 1
+              }
+            } 
+
+
+## transaction/block/header [GET /transaction/{id}/block/header]
+
+This retrieves the block header containing the specified transaction id as Json
+
++ Parameters
+
+    + id (number) - The transaction id
+    
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": 
+                {
+                  "index": 156,
+                  "nonce": 6558232399239314000,
+                  "prev_hash": "9c6845c1e03bf3eb132b25835f8c4f2f90c09dd5221325134c50434fbe947346",
+                  "merkle_tree_root": "0531d7957b9863ab1597e787b446e633fe1df1eb",
+                  "timestamp": 1527522043,
+                  "difficulty": 4
+                }
+            }
+
+
+## transaction/fees [GET /transaction/fees]
+
+This gets the current transaction fees as json
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": 
+                {
+                   "send": "0.0001",
+                   "hra_buy": "0.001",
+                   "hra_sell": "0.0001",
+                   "hra_cancel": "0.0001",
+                   "create_token": "10",
+                   "update_token": "0.0001",
+                   "lock_token": "0.0001",
+                   "burn_token": "0.0001"
+                }
+            }
+
+
+## transaction/unsigned [POST /transaction/unsigned]
+
+Creates an unsigned transaction with the supplied data (which can be used to make a signed transaction) - The transaction is returned in the response with a generated Id which can then be signed and used with the create (signed) transaction API call.
+See this page for help with signing [Signing & Sending Transactions](https://guide.axentro.io/using-the-api/signing-and-sending-transactions)
+
+### Post Body
+
+The post body is made up of the following mandatory fields:
+
+* action
+* senders
+* recipients
+* message
+* token
+* kind
+* version
+
+#### Action
+
+action is the type of action to perform - e.g send - is when you want to send some tokens to an address. Send is the most common but there are others like create_token etc as well as those used in human readable addresses. Also users can create their own actions as part of building dApps.
+
+```json
+{"action":"send" ...}
+```
+
+#### Senders
+
+This is information about where a payment or action originates - e.g. the address from which to send tokens from. It's made up of an address, amount, fee and public key. It's a list of senders but generally there is only one
+The amount in the senders should be the same amount as put into the recipients for sending tokens
+
+```json
+{
+  "senders": 
+  [  
+    {
+      "address": "the-address", 
+      "amount": "1000", 
+      "fee":"1",
+      "public_key":"the-public-key",
+      "signature":"0",
+    }
+  ] 
+  ...
+}
+```
+
+#### Recipients
+
+This is information about when a payment of action is going - e.g. the destination address when sending tokens. It's made up of an address and amount. It's a list of recipients but generally there is only one
+The amount in the recipients should be the same as the amount put into the senders for sending tokens
+
+```json
+{
+  "recipients": 
+    [
+      {
+        "address": "the-address",
+        "amount":"1000"
+      }
+    ] 
+    ...
+}
+```
+
+#### Message
+
+This is a place to but arbitrary data related to the transaction - for sending tokens it's generally empty - but it's useful when building dapps.
+
+```json
+{"message": "some message" ...}
+```
+
+#### Token
+
+This is the token to use - generally it's AXNT but it can be any other user created token
+
+```json
+{"token": "AXNT" ...}
+```
+
+#### Kind
+
+This is the transaction speed either FAST or SLOW 
+
+```json
+{"kind": "FAST" ...}
+```
+
+#### Version
+
+This is the version of the transaction - currently we only have V1
+
+```json
+{"version": "V1" ...}
+```
+
+#### A complete request body
+
+```json
+{
+  "action": "send",
+  "senders": 
+    [
+      {
+        "address": "VDBkYWQxZjZlZjllOTAzYzNiODQ0NmZkZTI4NDBhYmMzYjUxYThjM2E1ZjNkODlj",
+        "public_key": "48c45b7e45cd415187216452fa22523e002ca042c2bd7205484f29201c3d5806f90e7aeebad37e3fbe01286c25d4027d3f3fec7b5647eff33c07ebd287b57242",
+        "amount": "5000",
+        "fee": "1",
+        "signature":"0"
+      }
+    ],
+  "recipients": 
+    [
+      {
+        "address":"VDBlY2I4ZjA5MTUxOWE0MTIwNTRmZjlhYTM1YjYxMjcwNjM1YzcxYjlkMDZhZDUx",
+        "amount": "5000"
+      }
+    ],
+  "message": "",
+  "token": "SUPERCOOL",
+  "kind": "FAST",
+  "version": "V1"
+}
+```
+
++ Request - Create an unsigned transaction (text/plain)
+
+        {"action": "send","senders": [{"address": "VDBkYWQxZjZlZjllOTAzYzNiODQ0NmZkZTI4NDBhYmMzYjUxYThjM2E1ZjNkODlj","public_key": "48c45b7e45cd415187216452fa22523e002ca042c2bd7205484f29201c3d5806f90e7aeebad37e3fbe01286c25d4027d3f3fec7b5647eff33c07ebd287b57242","amount": "5000","fee": "1","signature":"0"}],"recipients": [{"address":"VDBlY2I4ZjA5MTUxOWE0MTIwNTRmZjlhYTM1YjYxMjcwNjM1YzcxYjlkMDZhZDUx","amount": "5000"}],"message": "","token": "SUPERCOOL", "kind": "FAST", "version": "V1"}
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "status": "success",
+              "result": 
+                {
+                  "id": "8069e6049f7175229f8e05e5cf4cd5dacbc82cad08bfbd251408b6e980d90b04",
+                  "action": "send",
+                  "senders": 
+                    [
+                      {
+                        "address": "VDBkYWQxZjZlZjllOTAzYzNiODQ0NmZkZTI4NDBhYmMzYjUxYThjM2E1ZjNkODlj",
+                        "public_key": "48c45b7e45cd415187216452fa22523e002ca042c2bd7205484f29201c3d5806f90e7aeebad37e3fbe01286c25d4027d3f3fec7b5647eff33c07ebd287b57242",
+                        "amount": 500000000000,
+                        "fee": 100000000,
+                        "signature": "0"
+                      }
+                    ],
+                  "recipients": 
+                    [
+                      {
+                        "address": "VDBlY2I4ZjA5MTUxOWE0MTIwNTRmZjlhYTM1YjYxMjcwNjM1YzcxYjlkMDZhZDUx",
+                        "amount": 500000000000
+                      }
+                    ],
+                  "message": "",
+                  "token": "SUPERCOOL",
+                  "prev_hash": "0",
+                  "timestamp": 1529781499,
+                  "scaled": 1,
+                  "kind": "FAST",
+                  "version": "V1"
+                }
+            }
+
+## transaction/signed [POST /transaction]
+
+Creates a signed transaction with the supplied data (use after creating an unsigned transaction). The first step is to create an unsigned transaction using the 
+unsigned transaction API. The response from the unsigned call is then used as the payload for this signed API call to send a transaction. The response from the unsigned call
+will return a transactionId as well as the timestamp and the scaled value.
+
+See this page for help with signing [Signing & Sending Transactions](https://guide.axentro.io/using-the-api/signing-and-sending-transactions)
+
+### Post Body
+
+The post body is made up of the following mandatory fields:
+
+* action
+* senders
+* recipients
+* message
+* token
+* kind
+* version
+* prev_hash (populated by the unsigned call)
+* timestamp (populated by the unsigned call)
+* scaled    (populated by the unsigned call)
+
+
+#### Action
+
+action is the type of action to perform - e.g send - is when you want to send some tokens to an address. Send is the most common but there are others like create_token etc as well as those used in human readable addresses. Also users can create their own actions as part of building dApps.
+
+```json
+{"action":"send" ...}
+```
+
+#### Senders
+
+This is information about where a payment or action originates - e.g. the address from which to send tokens from. It's made up of an address, amount, fee and public key. It's a list of senders but generally there is only one
+
+```json
+{
+  "senders": 
+  [  
+    {
+      "address": "the-address", 
+      "amount": "1000", 
+      "fee":"1",
+      "public_key":"the-public-key",
+      "signature":"0"
+    }
+  ] 
+  ...
+}
+```
+
+#### Recipients
+
+This is information about when a payment of action is going - e.g. the destination address when sending tokens. It's made up of an address and amount. It's a list of recipients but generally there is only one
+
+```json
+{
+  "recipients": 
+    [
+      {
+        "address": "the-address",
+        "amount":"1000"
+      }
+    ] 
+    ...
+}
+```
+
+#### Message
+
+This is a place to but arbitrary data related to the transaction - for sending tokens it's generally empty - but it's useful when building dapps.
+
+```json
+{"message": "some message" ...}
+```
+
+#### Token
+
+This is the token to use - generally it's AXNT but it can be any other user created token
+
+```json
+{"token": "AXNT" ...}
+```
+
+#### Kind
+
+This is the transaction speed either FAST or SLOW 
+
+```json
+{"kind": "FAST" ...}
+```
+
+#### Version
+
+This is the version of the transaction - currently we only have V1
+
+```json
+{"version": "V1" ...}
+```
+
+#### Prev Hash
+
+The response from the unsigned call will contain the prev hash field which is the hash of the previous transaction. It is required to prove the authenticity of the transaction. 
+When the transaction is successful then the prev_hash value will be populated while adding it to the block.
+
+```json
+{"prev_hash": "0" ...}
+```
+
+#### Timestamp
+
+The timestamp of the transaction (should be returned by the create unsigned transaction api call)
