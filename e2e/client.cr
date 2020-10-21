@@ -95,4 +95,47 @@ module ::E2E
 
     @pct_fast_txns : Int32 = 1
 
-    def create_transaction(doing_fast_tra
+    def create_transaction(doing_fast_transaction : Bool)
+      sender = Random.rand(@num_miners)
+      recipient = Random.rand(@num_miners)
+
+      if transaction_id = create(@node_ports.sample, sender, recipient, doing_fast_transaction)
+        @launch_time ||= Time.utc
+        @transaction_ids << transaction_id
+      end
+    end
+
+    def launch
+      if @@no_transactions
+        @launch_time ||= Time.utc
+        nil
+      else
+        spawn do
+          transaction_counter = 0_i64
+          while @alive
+            begin
+              transaction_hundred_count = transaction_counter % 100_i64
+              doing_fast_transactions = false
+              if @pct_fast_txns > 0
+                doing_fast_transactions = transaction_hundred_count < @pct_fast_txns
+              end
+              create_transaction(doing_fast_transactions)
+              if @num_tps > 0
+                sleepy_time = 1000 / @num_tps
+                sleep sleepy_time.milliseconds
+              end
+              transaction_counter += 1_i64
+            rescue e : Exception
+              STDERR.puts red(e.message.not_nil!)
+            end
+          end
+        end
+      end
+    end
+
+    def kill
+      @kill_time = Time.utc
+      @alive = false
+    end
+
+    def num_transactions :
