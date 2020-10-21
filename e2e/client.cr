@@ -138,4 +138,15 @@ module ::E2E
       @alive = false
     end
 
-    def num_transactions :
+    def num_transactions : Int32
+      @transaction_ids.size
+    end
+
+    def duration : Float64
+      raise "@launch_time or @kill_time is nil!" if @launch_time.nil? || @kill_time.nil?
+      (@kill_time.not_nil! - @launch_time.not_nil!).total_seconds
+    end
+
+    include Utils
+  end
+end
