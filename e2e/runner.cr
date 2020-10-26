@@ -59,4 +59,42 @@ module ::E2E
       create_official_nodes(wallet_addresses)
     end
 
-    def create_official_nodes(wallet_addresses : Arr
+    def create_official_nodes(wallet_addresses : Array(String))
+      fastnodes = [wallet_addresses.first]
+      slownodes = wallet_addresses
+
+      official_nodes_string = {
+        "fastnodes" => fastnodes,
+        "slownodes" => slownodes,
+      }.to_yaml
+
+      File.open(official_nodes_file, "w") { |f| f.puts official_nodes_string }
+    end
+
+    def launch_node(node_port, is_private, connecting_port, idx, db)
+      node(node_port, is_private, connecting_port, idx, db)
+      @node_ports_public.push(node_port) unless is_private
+    end
+
+    def launch_first_node
+      launch_node(@node_ports[0], false, nil, 0, "0_node_" + @db_name)
+    end
+
+    def launch_nodes
+      step launch_first_node, 5, "launch first node"
+
+      @node_ports[1..-1].each_with_index do |node_port, idx|
+        is_private = case @mode
+                     when E2E::ALL_PUBLIC
+                       false
+                     when E2E::ALL_PRIVATE
+                       true
+                     when E2E::ONE_PRIVATE
+                       idx == 0
+                     else
+                       false
+                     end
+
+        connecting_port = @node_ports_public.sample
+
+        step launch_node(node_p
