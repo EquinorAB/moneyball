@@ -97,4 +97,51 @@ module ::E2E
 
         connecting_port = @node_ports_public.sample
 
-        step launch_node(node_p
+        step launch_node(node_port, is_private, connecting_port, idx + 1, (idx + 1).to_s + "_node_" + @db_name), 5,
+          "launch node on port #{node_port} connect to #{connecting_port} #{is_private ? "(private)" : "(public)"}"
+      end
+    end
+
+    def kill_nodes
+      `pkill -f axen`
+    end
+
+    def launch_miners
+      if @num_miners != @node_ports.size
+        @num_miners.times do |_|
+          port = @node_ports.sample
+          step mining(port, Random.rand(@num_miners)), 1, "launch miner for #{port}"
+        end
+      else
+        @num_miners.times do |t|
+          port = @node_ports[t]
+          step mining(port, t), 1, "launch miner for #{port}"
+        end
+      end
+    end
+
+    def kill_miners
+      `pkill -f axem`
+    end
+
+    def launch_client
+      Client.launch
+    end
+
+    def kill_client
+      Client.finish
+
+      if response = Client.receive
+        result = Client::Result.from_json(response)
+
+        @num_transactions = result.num_transactions
+        @duration = result.duration
+      end
+    end
+
+    def block_sizes : Array(NamedTuple(port: Int32, size: Int32))
+      @node_ports.map { |port| {port: port, size: blockchain_size(port)} }
+    end
+
+    def latest_block_index : Int32
+  
