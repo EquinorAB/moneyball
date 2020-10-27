@@ -180,4 +180,46 @@ module ::E2E
         _block_json = block(node_port, _latest_confirmed_block_index)
         raise "difference block #{block_json} vs #{_block_json}" if block_json != _block_json
         STDERR.print "."
-     
+      end
+
+      STDERR.puts
+      STDERR.puts light_green("-> PASSED!")
+    end
+
+    def verify_blockchain_sizes_are_almost_same
+      STDERR.puts
+      STDERR.puts "verifying: #{green("latest blockchain sizes")}..."
+
+      min_size = blockchain_size(@node_ports[0])
+
+      @node_ports[1..-1].each do |node_port|
+        size = blockchain_size(node_port)
+
+        raise "blockchain size is completely different. (#{min_size} vs #{size})" if (size - min_size).abs > 2
+        STDERR.print "."
+
+        min_size = size if size < min_size
+      end
+
+      STDERR.puts
+      STDERR.puts light_green("-> PASSED!")
+    end
+
+    def verify_all_addresses_have_non_negative_amount
+      STDERR.puts
+      STDERR.puts "verifying: #{green("all addresses have non-negative amount")}"
+
+      @node_ports.each do |node_port|
+        @num_miners.times do |num|
+          a = amount(node_port, num)
+          raise "amount of #{num} is #{a} on #{node_port}" if a < 0
+          STDERR.print "."
+
+          a = amount(node_port, num)
+          raise "amount of #{num} is #{a} on #{node_port}" if a < 0
+          STDERR.print "."
+        end
+      end
+
+      STDERR.puts
+      STDE
