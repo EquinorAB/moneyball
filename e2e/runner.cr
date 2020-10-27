@@ -144,4 +144,40 @@ module ::E2E
     end
 
     def latest_block_index : Int32
-  
+      block_sizes.min_by(&.[:size])[:size] - 1
+    end
+
+    def latest_confirmed_block_index : Int32
+      if latest_block_index < CONFIRMATION - 1
+        return 1 if latest_block_index > 1
+        return 0
+      end
+      latest_block_index - (CONFIRMATION - 1)
+    end
+
+    def verify_at_least_mining_one_block
+      STDERR.puts
+      STDERR.puts "verifying: #{green("at least mining one block")}"
+
+      block_sizes.each do |port_size|
+        raise "node #{port_size[:port]} has no mined block" if port_size[:size] < 3
+        STDERR.print "."
+      end
+
+      STDERR.puts
+      STDERR.puts light_green("-> PASSED!")
+    end
+
+    def verify_latest_confirmed_block
+      _latest_confirmed_block_index = latest_confirmed_block_index
+
+      STDERR.puts
+      STDERR.puts "verifying: #{green("latest confirmed block")} #{green(_latest_confirmed_block_index)}..."
+
+      block_json = block(@node_ports[0], _latest_confirmed_block_index)
+
+      @node_ports[1..-1].each do |node_port|
+        _block_json = block(node_port, _latest_confirmed_block_index)
+        raise "difference block #{block_json} vs #{_block_json}" if block_json != _block_json
+        STDERR.print "."
+     
