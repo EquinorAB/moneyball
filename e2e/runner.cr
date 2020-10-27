@@ -222,4 +222,37 @@ module ::E2E
       end
 
       STDERR.puts
-      STDE
+      STDERR.puts light_green("-> PASSED!")
+    end
+
+    def verify_blockchain_can_be_restored_from_database
+      STDERR.puts
+      STDERR.puts "verifying: #{green("blockchain can be restored from database")}"
+
+      size0 = blockchain_size(4001)
+
+      step create_wallet(100), 0, ""
+      step launch_node(5000, true, nil, 100, "0_node_" + @db_name), 10, ""
+
+      size1 = blockchain_size(5000)
+
+      raise "restoring blockchain failed (size : #{size0}, db: #{size1})" unless size0 == size1
+
+      STDERR.print "."
+      STDERR.puts
+      STDERR.puts light_green("-> PASSED!")
+    end
+
+    def benchmark_result
+      STDERR.puts
+      STDERR.puts "**************** #{light_yellow("benchmark")} ****************"
+      STDERR.puts "- transactions  : #{@num_transactions}"
+      STDERR.puts "- duration      : #{@duration} [sec]"
+      STDERR.puts "- result        : #{light_green(@num_transactions/@duration)} [transactions/sec]"
+      STDERR.puts "- # of nodes    : #{@num_nodes}"
+      STDERR.puts "- # of miners   : #{@num_miners}"
+      STDERR.puts "**************** #{light_yellow("status")} ****************"
+
+      @node_ports.each do |port|
+        size = blockchain_size(port)
+      
