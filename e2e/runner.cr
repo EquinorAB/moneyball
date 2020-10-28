@@ -335,4 +335,23 @@ module ::E2E
       step running, @time % 300, "running..."
 
       step kill_client, 10, "kill client"
-      
+      step kill_miners, 10, "kill miners"
+      step assertion!, 0, "start assertion"
+    rescue e : Exception
+      STDERR.puts "-> FAILED!"
+      safe_error_message = e.message
+      if safe_error_message
+        STDERR.puts "   the reason: #{safe_error_message[0, 200]}"
+      end
+
+      @exit_code = -1
+    ensure
+      step benchmark_result, 0, "show benchmark result"
+      step kill_nodes, 0, "kill nodes"
+      (step Runner.clean_db, 2, "clean database") unless @keep_logs
+      (step Runner.clean_wallets, 2, "clean wallets") unless @keep_logs
+    end
+
+    include Utils
+  end
+end
