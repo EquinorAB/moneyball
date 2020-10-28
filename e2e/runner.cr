@@ -298,4 +298,41 @@ module ::E2E
       STDERR.puts "__ step __ (sleep: #{{{interval.id}}}) " + {{desc}} if {{desc}}.size > 0
 
       {{func.id}}
-      sleep {{interval.i
+      sleep {{interval.id}}
+    end
+
+    def run!
+      mode_str = case @mode
+                 when E2E::ALL_PUBLIC
+                   "ALL_PUBLIC"
+                 when E2E::ALL_PRIVATE
+                   "ALL_RPIVATE"
+                 when E2E::ONE_PRIVATE
+                   "ONE_PRIVATE"
+                 else
+                   "UNKNOWN"
+                 end
+
+      STDERR.puts "start E2E tests with #{light_green(mode_str)} mode"
+
+      puts "keep logs: #{@keep_logs}"
+      puts "no transactions: #{@no_transactions}"
+      step kill_nodes, 0, "kill existing nodes"
+      step kill_miners, 0, "kill existing miners"
+      step Runner.clean_logs, 0, "clean logs"
+      step Runner.clean_db, 0, "clean database"
+      step Runner.clean_wallets, 0, "clean wallets"
+      step create_wallets_and_funds, 0, "create wallets and funds"
+      step launch_nodes, 1, "launch nodes"
+      step launch_miners, 1, "launch miners"
+      step launch_client, 1, "launch client"
+
+      running_steps = @time/300
+      running_steps.to_i.times do |_|
+        step running, 300, "running..."
+      end
+
+      step running, @time % 300, "running..."
+
+      step kill_client, 10, "kill client"
+      
