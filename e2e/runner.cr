@@ -255,4 +255,47 @@ module ::E2E
 
       @node_ports.each do |port|
         size = blockchain_size(port)
-      
+        STDERR.puts "> blocks on port #{port} (size: #{size})"
+
+        (0..size * 2).each do |i|
+          unless block = block(port, i)
+            next
+          end
+          STDERR.puts "%2d (%s) --- merkle tree root: %s" % [block["index"].as_i64, block["kind"].as_s, block["merkle_tree_root"].as_s]
+        end
+      end
+    end
+
+    def assertion!
+      verify_at_least_mining_one_block
+      verify_latest_confirmed_block
+      verify_blockchain_sizes_are_almost_same
+      verify_all_addresses_have_non_negative_amount
+      verify_blockchain_can_be_restored_from_database
+    end
+
+    def self.clean_db
+      Dir.glob(File.expand_path("../db/*.db", __FILE__)) do |db|
+        FileUtils.rm_rf db
+      end
+    end
+
+    def self.clean_wallets
+      Dir.glob(File.expand_path("../wallets/*.json", __FILE__)) do |wallet|
+        FileUtils.rm_rf wallet
+      end
+    end
+
+    def self.clean_logs
+      Dir.glob(File.expand_path("../logs/*.log", __FILE__)) do |log|
+        FileUtils.rm_rf log
+      end
+    end
+
+    def running; end
+
+    macro step(func, interval, desc)
+      STDERR.puts "__ step __ (sleep: #{{{interval.id}}}) " + {{desc}} if {{desc}}.size > 0
+
+      {{func.id}}
+      sleep {{interval.i
