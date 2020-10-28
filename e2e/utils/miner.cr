@@ -10,9 +10,22 @@
 #
 # Removal or modification of this copyright notice is prohibited.
 
-module ::E2E::Utils::Log
-  def log_path(num : Int32, suffix : String) : String
-    log_name = "#{num}_#{suffix}.log"
-    File.expand_path("../../logs/#{log_name}", __FILE__)
+module ::E2E::Utils::Miner
+  def axem(args) : String
+    _args = args
+      .join(" ", &.to_s)
+
+    bin = File.expand_path("../../../bin/axem", __FILE__)
+
+    "#{bin} #{_args}"
   end
-end
+
+  def mining(port : Int32, num : Int32)
+    args = ["-w", "wallets/testnet-#{num}.json", "-n", "http://127.0.0.1:#{port}", "--testnet"]
+
+    bin = axem(args)
+
+    spawn do
+      system("rm -rf #{log_path(num, "miner")} && #{Envs.setup_env} && #{bin} &> #{log_path(num, "miner")}")
+    end
+ 
