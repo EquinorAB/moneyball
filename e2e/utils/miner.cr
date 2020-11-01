@@ -28,4 +28,5 @@ module ::E2E::Utils::Miner
     spawn do
       system("rm -rf #{log_path(num, "miner")} && #{Envs.setup_env} && #{bin} &> #{log_path(num, "miner")}")
     end
- 
+  end
+end
