@@ -34,4 +34,8 @@ module ::E2E::Utils::Wallet
   end
 
   def official_nodes_file
-    File.expand_path("
+    File.expand_path("#{wallets_path}/official_nodes.yml", __FILE__)
+  end
+
+  include ::E2E::Utils::API
+end
