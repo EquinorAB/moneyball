@@ -38,4 +38,32 @@ class X
         wif = Axentro::Core::Keys::Wif.new(wif_string)
         private_key = wif.private_key.as_hex
 
-        unsigned_transaction = %Q({"id":"#{id}","action":"send","senders":[{"address":"#{from_address}","public_key":"#{public_key}","amount":100000000,"fee":10000,"signature":"0"}],"recipients":[{"address":"#{to_address}
+        unsigned_transaction = %Q({"id":"#{id}","action":"send","senders":[{"address":"#{from_address}","public_key":"#{public_key}","amount":100000000,"fee":10000,"signature":"0"}],"recipients":[{"address":"#{to_address}","amount":100000000}],"message":"0","token":"AXNT","prev_hash":"0","timestamp":#{Time.local.to_unix_ms},"scaled":1,"kind":"FAST"})
+        transaction_hash = sha256(unsigned_transaction)
+
+        signed_transaction = Axentro::Core::Keys::KeyUtils.sign(private_key, transaction_hash)
+
+        txn = unsigned_transaction.gsub(%Q{"signature":"0"}, %Q{"signature":"#{signed_transaction}"})
+
+        body = %Q({"transaction": #{txn}})
+        encoded_body = Base64.encode(body).gsub("\n", "")
+
+        f.puts %Q({"method":"POST","url":"http://localhost:3000/api/v1/transaction","body":"#{encoded_body}"})
+      end
+    }
+  end
+end
+
+iters = 1000
+X.transaction("../perf-test.json", "VDBjMjZkNzgwOWE2NWEzMzZmNjA2MmI0Njc2YzZkMWZjNWY3ODQwYjVmYWM3NmUx", iters)
+
+# crystal perf/x.cr && vegeta attack -targets="txns.txt" -format=json -rate=1000 | vegeta encode
+# crystal perf/x.cr && vegeta attack -targets="txns.txt" -format=json -rate=10 -duration=1m | vegeta encode | \
+# jaggr @count=rps \
+# hist\[100,200,300,400,500\]:code \
+# p25,p50,p95:latency \
+# sum:bytes_in \
+# sum:bytes_out | \
+# jplot rps+code.hist.100+code.hist.200+code.hist.300+code.hist.400+code.hist.500 \
+# latency.p95+latency.p50+latency.p25 \
+# bytes_in.sum+by
