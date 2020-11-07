@@ -66,4 +66,8 @@ X.transaction("../perf-test.json", "VDBjMjZkNzgwOWE2NWEzMzZmNjA2MmI0Njc2YzZkMWZj
 # sum:bytes_out | \
 # jplot rps+code.hist.100+code.hist.200+code.hist.300+code.hist.400+code.hist.500 \
 # latency.p95+latency.p50+latency.p25 \
-# bytes_in.sum+by
+# bytes_in.sum+bytes_out.sum
+
+# vegeta attack -targets="txns.txt" -format=json -rate=100 | vegeta encode
+
+# https://github.com/tsenart/vegeta
