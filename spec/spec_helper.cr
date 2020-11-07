@@ -1,3 +1,4 @@
+
 # Copyright © 2017-2020 The Axentro Core developers
 #
 # See the LICENSE file at the top-level directory of this distribution
@@ -10,10 +11,20 @@
 #
 # Removal or modification of this copyright notice is prohibited.
 
-require "./../spec_helper"
+ENV["AXE_TESTING"] = "true"
 
-ENV["SPINACH_LOCATION"] = "/spec/functional"
+require "spec"
+require "yaml"
+require "../src/common"
+require "../src/core"
+require "./utils/*"
 
-require "./transactions"
+module ::Units::Utils
+  include TransactionHelper
+  include WalletHelper
+  include NodeHelper
+  include ChainGenerator
+  include FunctionalHelper
+end
 
-describe "runner" do; end
+TOKEN_DEFAULT = Axentro::Core::DApps::BuildIn::UTXO::DEFAULT
