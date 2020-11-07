@@ -1,0 +1,25 @@
+name: Axentro
+version: 0.1.0
+
+authors:
+  - kingsleyh <kingsley@axentro.io>
+
+scripts:
+  postinstall: cd ext && make
+
+targets:
+  axe:
+    main: src/cli/axe.cr
+  axen:
+    main: src/cli/axen.cr
+  axem:
+    main: src/cli/axem.cr
+  e2e:
+    main: e2e/e2e.cr
+
+dependencies:
+  router:
+    github: tbrand/router.cr
+    version: ~> 0.2.7
+  tokoroten:
+    g

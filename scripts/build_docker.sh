@@ -30,4 +30,16 @@ adduser --disabled-password --shell /bin/bash --gecos \"User\" $USER
 set -x ;
 export PATH=/mnt/crystal-${CRYSTAL_VER}/bin:\$PATH ;
 apt update -qq ;
-DEBIAN_FRONTEND=\"noninteractive\" TZ=\"Europe/London\" apt install -y curl libsqlite3-dev libevent-dev libpcre3-dev libssl-dev libxml2-dev lib
+DEBIAN_FRONTEND=\"noninteractive\" TZ=\"Europe/London\" apt install -y curl libsqlite3-dev libevent-dev libpcre3-dev libssl-dev libxml2-dev libyaml-dev libgmp-dev libz-dev git build-essential ;
+cd /mnt/Axentro ;
+su $USER -c 'PATH=/mnt/crystal-${CRYSTAL_VER}/bin:\$PATH shards install --production' ;
+su $USER -c 'PATH=/mnt/crystal-${CRYSTAL_VER}/bin:\$PATH shards build --no-debug --static --release --production' ;
+"
+
+cp Axentro/bin/axe* $BIN_DIR/
+test -d axentro-linux-x86_64 || mkdir axentro-linux-x86_64
+cp Axentro/bin/axe* axentro-linux-x86_64 && tar -cJf axentro-linux-x86_64.tar.xz axentro-linux-x86_64
+
+rm -rf Axentro axentro-linux-x86_64 crystal-${CRYSTAL_VER} crystal-${CRYSTAL_VER}-linux-x86_64.tar.gz
+
+cd "$OLDPWD"
