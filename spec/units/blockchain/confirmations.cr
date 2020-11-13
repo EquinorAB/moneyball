@@ -89,4 +89,45 @@ describe Blockchain do
 
         case rt.confirmations.to_i
         when 0
-          res[:bloc
+          res[:block].index.should eq(9)
+        when 1
+          res[:block].index.should eq(7)
+        when 2
+          res[:block].index.should eq(5)
+        when 3
+          res[:block].index.should eq(3)
+        when 4
+          res[:block].index.should eq(1)
+        when 5
+          res[:block].index.should eq(2)
+        when 6
+          res[:block].index.should eq(0)
+        end
+
+        case res[:confirmations]
+        when 0
+          res[:block].index.should eq(9)
+        when 1
+          res[:block].index.should eq(7)
+        when 2
+          res[:block].index.should eq(5)
+        when 3
+          res[:block].index.should eq(3)
+        when 4
+          res[:block].index.should eq(1)
+        when 5
+          res[:block].index.should eq(2)
+        when 6
+          res[:block].index.should eq(0)
+        end
+      end
+    end
+  end
+
+  it "it should get the number of confirmations for a transaction with mixture of slow and fast blocks" do
+    with_factory do |block_factory, transaction_factory|
+      block_factory.add_slow_blocks(1)
+      block_factory.add_fast_block([transaction_factory.make_fast_send(1)])
+      sleep 0.001
+      block_factory.add_slow_blocks(1)
+      block_factory.
