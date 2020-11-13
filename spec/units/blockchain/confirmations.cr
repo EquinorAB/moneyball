@@ -26,4 +26,40 @@ describe Blockchain do
       sleep 0.001
       block_factory.add_slow_blocks(1)
       sleep 0.001
-      block_factory.add_slow_block([tra
+      block_factory.add_slow_block([transaction_factory.make_send(1)])
+      sleep 0.001
+      block_factory.add_slow_blocks(1)
+      sleep 0.001
+      block_factory.add_slow_blocks(1)
+
+      block_factory.blockchain.wallet_info.wallet_info_impl(block_factory.node_wallet.address).recent_transactions.each do |rt|
+        block_info = block_factory.blockchain.blockchain_info.block_transaction_impl(false, rt.transaction_id)
+        res = block_info.as(NamedTuple(block: Axentro::Core::Block, confirmations: Int32))
+
+        case rt.confirmations.to_i
+        when 0
+          res[:block].index.should eq(10)
+        when 1
+          res[:block].index.should eq(8)
+        when 2
+          res[:block].index.should eq(6)
+        when 3
+          res[:block].index.should eq(4)
+        when 4
+          res[:block].index.should eq(2)
+        when 5
+          res[:block].index.should eq(0)
+        end
+
+        case res[:confirmations]
+        when 0
+          res[:block].index.should eq(10)
+        when 1
+          res[:block].index.should eq(8)
+        when 2
+          res[:block].index.should eq(6)
+        when 3
+          res[:block].index.should eq(4)
+        when 4
+          res[:block].index.should eq(2)
+        when 5
