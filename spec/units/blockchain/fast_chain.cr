@@ -43,3 +43,26 @@ describe Blockchain do
   end
 
   describe "mint_fast_block" do
+    it "should mint a fast block" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_fast_send(200000000_i64)
+        transaction2 = transaction_factory.make_fast_send(200000000_i64)
+        blockchain = block_factory.blockchain
+        coinbase_transaction = blockchain.create_coinbase_fast_transaction(4000000000_i64)
+        valid_transactions = {latest_index: 1_i64, transactions: [coinbase_transaction, transaction1, transaction2]}
+        block = blockchain.mint_fast_block(valid_transactions)
+        block.index.should eq(1)
+      end
+    end
+  end
+
+  describe "align_fast_transactions" do
+    it "should align the fast transactions" do
+      with_factory do |block_factory, transaction_factory|
+        blockchain = block_factory.blockchain
+        block_factory.add_slow_blocks(4)
+
+        blockchain.add_transaction(transaction_factory.make_fast_send(200000000_i64), false)
+        blockchain.add_transaction(transaction_factory.make_fast_send(200000000_i64), false)
+        blockchain.add_transaction(transaction_factory.make_fast_send(200000000_i64), false)
+        coinbase_transaction = blockchain.creat
