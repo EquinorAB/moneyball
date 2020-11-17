@@ -93,4 +93,31 @@ describe Blockchain do
     end
   end
 
-  describe "coinbase_fast_amount" d
+  describe "coinbase_fast_amount" do
+    it "should calculate the reward based on fees" do
+      with_factory do |block_factory, transaction_factory|
+        blockchain = block_factory.blockchain
+        amount = 200000000_i64
+        block_factory.add_slow_blocks(4)
+          .add_fast_blocks(4)
+          .add_slow_block([transaction_factory.make_fast_send(amount), transaction_factory.make_fast_send(amount)])
+        transactions = blockchain.embedded_fast_transactions
+        blockchain.coinbase_fast_amount(1, transactions).should eq(20000)
+      end
+    end
+  end
+
+  describe "replace_fast_transactions" do
+    it "should validate and add new transactions that have arrived" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_fast_send(200000000_i64)
+        transaction2 = transaction_factory.make_fast_send(300000000_i64)
+        blockchain = block_factory.blockchain
+        blockchain.pending_fast_transactions.size.should eq(0)
+        blockchain.replace_fast_transactions([transaction1, transaction2])
+        blockchain.pending_fast_transactions.size.should eq(2)
+      end
+    end
+
+    it "should reject any invalid transactions" do
+      wi
