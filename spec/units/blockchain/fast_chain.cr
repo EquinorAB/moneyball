@@ -65,4 +65,32 @@ describe Blockchain do
         blockchain.add_transaction(transaction_factory.make_fast_send(200000000_i64), false)
         blockchain.add_transaction(transaction_factory.make_fast_send(200000000_i64), false)
         blockchain.add_transaction(transaction_factory.make_fast_send(200000000_i64), false)
-        coinbase_transaction = blockchain.creat
+        coinbase_transaction = blockchain.create_coinbase_fast_transaction(30000_i64)
+
+        aligned = blockchain.align_fast_transactions(coinbase_transaction, 1, block_factory.blockchain.embedded_fast_transactions)
+        aligned.size.should eq(4)
+
+        aligned[0].prev_hash.should eq("0")
+        aligned[1].prev_hash.should eq(aligned[0].to_hash)
+        aligned[2].prev_hash.should eq(aligned[1].to_hash)
+        aligned[3].prev_hash.should eq(aligned[2].to_hash)
+      end
+    end
+  end
+
+  describe "create_coinbase_fast_transaction" do
+    it "should create a fast coinbase transaction" do
+      with_factory do |block_factory, transaction_factory|
+        blockchain = block_factory.blockchain
+        block_factory.add_slow_blocks(2).add_fast_blocks(4).add_fast_block([transaction_factory.make_fast_send(200000000_i64)])
+        amount = 200000000_i64
+        transaction = blockchain.create_coinbase_fast_transaction(amount)
+        transaction.action.should eq("head")
+        recipient = transaction.recipients.first
+        recipient.address.should eq(block_factory.node_wallet.address)
+        recipient.amount.should eq(amount)
+      end
+    end
+  end
+
+  describe "coinbase_fast_amount" d
