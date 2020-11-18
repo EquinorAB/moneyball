@@ -120,4 +120,20 @@ describe Blockchain do
     end
 
     it "should reject any invalid transactions" do
-      wi
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_fast_send(400000000_i64)
+        transaction2 = transaction_factory.make_fast_send(-500000000_i64)
+        blockchain = block_factory.blockchain
+
+        blockchain.pending_fast_transactions.size.should eq(0)
+        blockchain.replace_fast_transactions([transaction1, transaction2])
+        blockchain.pending_fast_transactions.size.should eq(1)
+        if reject = blockchain.rejects.find(transaction2.id)
+          reject.reason.should eq("the amount is out of range")
+        else
+          fail "no rejects found"
+        end
+      end
+    end
+  end
+end
