@@ -15,14 +15,15 @@ require "./../../spec_helper"
 include Units::Utils
 include Axentro::Core
 include Axentro::Core::TransactionModels
-include ::Axentro::Common::Denomination
 include Hashes
 
-describe Blockchain do
-  pending "should calculate the total supply" do
-    with_factory do |block_factory, _|
-      total_supply = (0_i64..8000000_i64).select(&.even?).reduce(0_i64) { |acc, i| block_factory.blockchain.coinbase_slow_amount(i, [] of Transaction) + acc }
-      scale_decimal(total_supply).should eq("20146527.97498925")
-    end
-  end
-end
+describe TransactionDecimal do
+  it "should create a new unsigned decimal transaction" do
+    sender_wallet = Wallet.from_json(Wallet.create(true).to_json)
+    recipient_wallet = Wallet.from_json(Wallet.create(true).to_json)
+
+    transaction_id = Transaction.create_id
+    transaction = TransactionDecimal.new(
+      transaction_id,
+      "send", # action
+ 
