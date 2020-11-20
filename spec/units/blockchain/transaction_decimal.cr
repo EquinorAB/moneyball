@@ -60,4 +60,39 @@ describe TransactionDecimal do
   end
 
   it "should raise scaled error on create if unscaled" do
-    sender_wallet = Wallet.from_json(Wallet.create(t
+    sender_wallet = Wallet.from_json(Wallet.create(true).to_json)
+    recipient_wallet = Wallet.from_json(Wallet.create(true).to_json)
+
+    transaction_id = Transaction.create_id
+    expect_raises(Exception, "invalid decimal transaction (expected scaled: 0 but received 1)") do
+      TransactionDecimal.new(
+        transaction_id,
+        "send", # action
+        [a_decimal_sender(sender_wallet, "1000000")],
+        [a_decimal_recipient(recipient_wallet, "1000000")],
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "",            # linked
+        "0",           # message
+        TOKEN_DEFAULT, # token
+        "0",           # prev_hash
+        0_i64,         # timestamp
+        1,             # scaled
+        TransactionKind::SLOW,
+        TransactionVersion::V1
+      )
+    end
+  end
+
+  it "should convert to a non decimal transaction" do
+    transaction_id = Transaction.create_id
+    sender_wallet = Wallet.from_json(Wallet.create(true).to_json)
+    recipient_wallet = Wallet.from_json(Wallet.create(true).to_json)
+
+    transaction = TransactionDecimal.new(
+      transaction_id,
+      "send", # action
+      [a_decimal_sender(sender_wallet, "1000000")],
+      [a_decimal_recipi
