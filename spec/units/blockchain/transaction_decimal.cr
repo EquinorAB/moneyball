@@ -95,4 +95,21 @@ describe TransactionDecimal do
       transaction_id,
       "send", # action
       [a_decimal_sender(sender_wallet, "1000000")],
-      [a_decimal_recipi
+      [a_decimal_recipient(recipient_wallet, "1000000")],
+      [] of Transaction::Asset,
+      [] of Transaction::Module,
+      [] of Transaction::Input,
+      [] of Transaction::Output,
+      "",            # linked
+      "0",           # message
+      TOKEN_DEFAULT, # token
+      "0",           # prev_hash
+      0_i64,         # timestamp
+      0,             # scaled
+      TransactionKind::SLOW,
+      TransactionVersion::V1
+    )
+    non_decimal = transaction.to_transaction
+    typeof(non_decimal).should eq(Axentro::Core::Transaction)
+  end
+end
