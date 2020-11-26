@@ -26,4 +26,31 @@ describe AssetComponent do
   end
 
   it "should perform #transaction_actions" do
-    with
+    with_factory do |block_factory, _|
+      component = AssetComponent.new(block_factory.add_slow_block.blockchain)
+      component.transaction_actions.should eq(["create_asset", "update_asset", "send_asset"])
+    end
+  end
+
+  describe "#transaction_related?" do
+    it "should return true when action is related" do
+      DApps::ASSET_ACTIONS.each do |action|
+        with_factory do |block_factory, _|
+          component = AssetComponent.new(block_factory.add_slow_block.blockchain)
+          component.transaction_related?(action).should be_true
+        end
+      end
+    end
+    it "should return false when action is not related" do
+      with_factory do |block_factory, _|
+        component = AssetComponent.new(block_factory.add_slow_block.blockchain)
+        component.transaction_related?("unrelated").should be_false
+      end
+    end
+  end
+
+  describe "#valid_transaction?" do
+    describe "common to all asset actions" do
+      it "transaction -> senders must be 1" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = 
