@@ -53,4 +53,32 @@ describe AssetComponent do
     describe "common to all asset actions" do
       it "transaction -> senders must be 1" do
         with_factory do |block_factory, transaction_factory|
-          sender_wallet = 
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id_1 = Transaction::Asset.create_id
+          transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [] of Transaction::Sender,
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_1, "name", "description", "media_location", "", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          component = AssetComponent.new(block_factory.blockchain)
+
+          result = component.valid_transactions?([transaction])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("senders can only be 1 for asset action")
+        end
+      end
+
+      it "transaction -> recipients must be 1" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id_1 = Transaction::Asset.create_id
+          transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [] of Transaction::Recipient,
+    
