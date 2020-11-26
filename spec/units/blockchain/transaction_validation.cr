@@ -459,3 +459,137 @@ describe TransactionValidator do
 
         transaction = transaction_factory.make_send(2000_i64)
         transaction.token = ("exceeds"*100)
+
+        transactions = [transaction]
+        result = TransactionValidator.validate_common(transactions, "testnet")
+        result.passed.should be_empty
+        result.failed.size.should eq(1)
+        result.failed.first.reason.should eq("token size exceeds: 700 for 16")
+      end
+    end
+
+    it "should raise unscaled error if transaction is unscaled" do
+      with_factory do |block_factory, transaction_factory|
+        block_factory.add_slow_block
+
+        transaction = transaction_factory.make_send(2000_i64)
+        transaction.scaled = 0
+
+        transactions = [transaction]
+        result = TransactionValidator.validate_common(transactions, "testnet")
+        result.passed.should be_empty
+        result.failed.size.should eq(1)
+        result.failed.first.reason.should eq("unscaled transaction")
+      end
+    end
+
+    it "should raise invalid signing for sender if sender not signed" do
+      with_factory do |block_factory, transaction_factory|
+        block_factory.add_slow_block
+
+        transaction = transaction_factory.make_send(2000_i64)
+        transaction = transaction.as_unsigned
+
+        transactions = [transaction]
+        result = TransactionValidator.validate_common(transactions, "testnet")
+        result.passed.should be_empty
+        result.failed.size.should eq(1)
+        result.failed.first.reason.should match(/string size should be 128, not 1/)
+      end
+    end
+
+    it "should raise error if sender address is for wrong network" do
+      with_factory do |_, transaction_factory|
+        mainnet_sender_wallet = Wallet.from_json(Wallet.create(false).to_json)
+        transaction = transaction_factory.make_send(1000_i64, "AXNT", mainnet_sender_wallet)
+        transactions = [transaction]
+
+        result = TransactionValidator.validate_common(transactions, "testnet")
+        result.passed.should be_empty
+        result.failed.size.should eq(1)
+        result.failed.first.reason.should eq("sender address: #{mainnet_sender_wallet.address} has wrong network type: mainnet, this node is running as: testnet")
+      end
+    end
+
+    it "should raise error if recipient address is for wrong network" do
+      with_factory do |block_factory, transaction_factory|
+        mainnet_recipient_wallet = Wallet.from_json(Wallet.create(false).to_json)
+        transaction = transaction_factory.make_send(1000_i64, "AXNT", block_factory.node_wallet, mainnet_recipient_wallet)
+        transactions = [transaction]
+
+        result = TransactionValidator.validate_common(transactions, "testnet")
+        result.passed.should be_empty
+        result.failed.size.should eq(1)
+        result.failed.first.reason.should eq("recipient address: #{mainnet_recipient_wallet.address} has wrong network type: mainnet, this node is running as: testnet")
+      end
+    end
+
+    it "should raise checksum error if sender address checksum is invalid" do
+      with_factory do |block_factory, transaction_factory|
+        block_factory.add_slow_block
+
+        invalid_sender = Sender.new(Base64.strict_encode("T0invalid-wallet-address"), transaction_factory.sender_wallet.public_key, 1000_i64,
+          1_i64, "0")
+
+        transaction = Transaction.new(
+          Transaction.create_id,
+          "send", # action
+          [invalid_sender],
+          [] of Transaction::Recipient,
+          [] of Transaction::Asset,
+          [] of Transaction::Module,
+          [] of Transaction::Input,
+          [] of Transaction::Output,
+          "",            # linked
+          "0",           # message
+          TOKEN_DEFAULT, # token
+          "0",           # prev_hash
+          0_i64,         # timestamp
+          1,             # scaled
+          TransactionKind::SLOW,
+          TransactionVersion::V1
+        )
+
+        transactions = [transaction]
+        result = TransactionValidator.validate_common(transactions, "testnet")
+        result.passed.should be_empty
+        result.failed.size.should eq(1)
+        result.failed.first.reason.should eq("invalid sender address checksum for: VDBpbnZhbGlkLXdhbGxldC1hZGRyZXNz")
+      end
+    end
+
+    it "should raise checksum error if recipient address checksum is invalid" do
+      with_factory do |block_factory, transaction_factory|
+        block_factory.add_slow_block
+
+        invalid_recipient = Recipient.new(Base64.strict_encode("T0invalid-wallet-address"), 1000_i64)
+
+        unsigned_transaction = Transaction.new(
+          Transaction.create_id,
+          "send", # action
+          [a_sender(transaction_factory.sender_wallet, 1000_i64)],
+          [invalid_recipient],
+          [] of Transaction::Asset,
+          [] of Transaction::Module,
+          [] of Transaction::Input,
+          [] of Transaction::Output,
+          "",            # linked
+          "0",           # message
+          TOKEN_DEFAULT, # token
+          "0",           # prev_hash
+          0_i64,         # timestamp
+          1,             # scaled
+          TransactionKind::SLOW,
+          TransactionVersion::V1
+        )
+        transaction = unsigned_transaction.as_signed([transaction_factory.sender_wallet])
+
+        transactions = [transaction]
+        result = TransactionValidator.validate_common(transactions, "testnet")
+        result.passed.should be_empty
+        result.failed.size.should eq(1)
+        result.failed.first.reason.should eq("invalid recipient address checksum for: VDBpbnZhbGlkLXdhbGxldC1hZGRyZXNz")
+      end
+    end
+  end
+end
