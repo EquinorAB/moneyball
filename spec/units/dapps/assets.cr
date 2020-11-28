@@ -161,4 +161,32 @@ describe AssetComponent do
       it "transaction -> fee must be 0" do
         with_factory do |block_factory, transaction_factory|
           sender_wallet = transaction_factory.sender_wallet
-          asset_id_1 = Transaction:
+          asset_id_1 = Transaction::Asset.create_id
+          transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 100_i64, 200_i64)],
+            [a_recipient(sender_wallet, 100_i64)],
+            [Transaction::Asset.new(asset_id_1, "name", "description", "media_location", "", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          component = AssetComponent.new(block_factory.blockchain)
+
+          result = component.valid_transactions?([transaction])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("amount must be 0 for action: create_asset")
+        end
+      end
+    end
+
+    describe "create_asset" do
+      it "should pass when valid transaction" do
+        with_factory do |block_factory, transaction_factory|
+          asset_id = Asset.create_id
+          transaction = transaction_factory.make_create_asset(a_quick_asset(asset_id))
+          block_factory.add_slow_blocks(10)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          result = component.valid_transactions?([transaction])
+          re
