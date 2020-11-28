@@ -132,4 +132,33 @@ describe AssetComponent do
           result = component.valid_transactions?([transaction])
           result.passed.size.should eq(0)
           result.failed.size.should eq(1)
-          result.failed.first.reason.s
+          result.failed.first.reason.should eq("token must not be empty")
+        end
+      end
+
+      it "transaction -> amount must be 0" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+
+          asset_id_1 = Transaction::Asset.create_id
+          transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 100_i64, 0_i64)],
+            [a_recipient(sender_wallet, 100_i64)],
+            [Transaction::Asset.new(asset_id_1, "name", "description", "media_location", "", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          component = AssetComponent.new(block_factory.blockchain)
+
+          result = component.valid_transactions?([transaction])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("amount must be 0 for action: create_asset")
+        end
+      end
+
+      it "transaction -> fee must be 0" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id_1 = Transaction:
