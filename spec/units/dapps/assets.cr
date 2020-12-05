@@ -371,4 +371,26 @@ describe AssetComponent do
             "create_asset",
             [a_sender(sender_wallet, 0_i64, 0_i64)],
             [a_recipient(sender_wallet, 0_i64)],
-            [Transaction::Asset.new(asset_id_1, "name", "descri
+            [Transaction::Asset.new(asset_id_1, "name", "description", "media_location1", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+          transaction2 = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_2, "name", "description", "media_location2", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+          block_factory.add_slow_blocks(2).add_slow_block([transaction1]).add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          result = component.valid_transactions?([transaction2])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("asset media_hash must not already exist (asset_id: #{asset_id_2}, media_hash: media_hash) 'create_asset'")
+        end
+      end
+
+      it "asset -> asset media_location can be empty" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id_1 =
