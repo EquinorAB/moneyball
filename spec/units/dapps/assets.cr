@@ -393,4 +393,33 @@ describe AssetComponent do
       it "asset -> asset media_location can be empty" do
         with_factory do |block_factory, transaction_factory|
           sender_wallet = transaction_factory.sender_wallet
-          asset_id_1 =
+          asset_id_1 = Transaction::Asset.create_id
+          transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_1, "name", "description", "", "media_hash1", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          component = AssetComponent.new(block_factory.blockchain)
+
+          result = component.valid_transactions?([transaction])
+          result.passed.size.should eq(1)
+          result.failed.size.should eq(0)
+        end
+      end
+
+      it "asset -> asset_hash can be empty" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id_1 = Transaction::Asset.create_id
+          transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_1, "name", "description", "media_location", "", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+ 
