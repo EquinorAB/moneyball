@@ -449,4 +449,33 @@ describe AssetComponent do
             result = component.valid_transactions?([transaction])
             result.passed.size.should eq(0)
             result.failed.size.should eq(1)
-            result.failed.first.reason.should eq("a transaction must have exactly 1 asset for '#{
+            result.failed.first.reason.should eq("a transaction must have exactly 1 asset for '#{action}'")
+          end
+        end
+      end
+
+      it "asset -> asset_id must be correct length" do
+        ["create_asset", "update_asset"].each do |action|
+          with_factory do |block_factory, transaction_factory|
+            sender_wallet = transaction_factory.sender_wallet
+            transaction = transaction_factory.make_asset(
+              "AXNT",
+              action,
+              [a_sender(sender_wallet, 0_i64, 0_i64)],
+              [a_recipient(sender_wallet, 0_i64)],
+              [Transaction::Asset.new("123", "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+            )
+            block_factory.add_slow_blocks(10)
+            component = AssetComponent.new(block_factory.blockchain)
+
+            result = component.valid_transactions?([transaction])
+            result.passed.size.should eq(0)
+            result.failed.size.should eq(1)
+            result.failed.first.reason.should eq("asset_id must be length of 64 for '#{action}'")
+          end
+        end
+      end
+
+      it "asset -> quantity must be 1 or more" do
+        ["create_asset", "update_asset"].each do |action|
+     
