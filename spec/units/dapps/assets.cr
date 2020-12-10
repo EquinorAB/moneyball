@@ -526,4 +526,33 @@ describe AssetComponent do
 
           result = component.valid_transactions?([update_transaction])
           result.passed.size.should eq(1)
-          result.failed.size.should eq
+          result.failed.size.should eq(0)
+        end
+      end
+
+      it "asset must already exist" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id = Transaction::Asset.create_id
+
+          component = AssetComponent.new(block_factory.blockchain)
+
+          update_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "updated_name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 2, __timestamp)]
+          )
+
+          result = component.valid_transactions?([update_transaction])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("cannot update asset with asset_id: #{asset_id} as asset with this id is not found")
+        end
+      end
+
+      it "only asset owner can update_asset" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          non_owner_wal
