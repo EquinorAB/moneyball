@@ -555,4 +555,29 @@ describe AssetComponent do
       it "only asset owner can update_asset" do
         with_factory do |block_factory, transaction_factory|
           sender_wallet = transaction_factory.sender_wallet
-          non_owner_wal
+          non_owner_wallet = Wallet.from_json(Wallet.create(true).to_json)
+
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name1", "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          update_transaction_2 = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "updated_name2", "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 2, __timestamp)]
+          )
+
+          update_transaction_3 = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "updated_name3", "updated_description", "media_location", "media_hash", 1, "term
