@@ -626,4 +626,26 @@ describe AssetComponent do
 
           result = component.valid_transactions?([update_transaction])
           result.passed.size.should eq(0)
-          result.f
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("expected asset version 2 not 3 as next in sequence for 'update_asset'")
+        end
+      end
+
+      it "media_location should not exist unless it's for the asset that is being updated (in transaction batch)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id_1 = Transaction::Asset.create_id
+          asset_id_2 = Transaction::Asset.create_id
+          transaction1 = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_1, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+          transaction2 = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_1, "name", "description", "media_location", "media_hash", 1, "terms", Asse
