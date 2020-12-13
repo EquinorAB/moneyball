@@ -691,4 +691,26 @@ describe AssetComponent do
             "create_asset",
             [a_sender(sender_wallet, 0_i64, 0_i64)],
             [a_recipient(sender_wallet, 0_i64)],
-            [Transaction::Asset.new(asset_id_2, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNL
+            [Transaction::Asset.new(asset_id_2, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+          block_factory.add_slow_blocks(2).add_slow_block([transaction1, transaction2]).add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          result = component.valid_transactions?([transaction3])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("asset media_location must not already exist (asset_id: #{asset_id_2}, media_location: media_location) 'create_asset'")
+        end
+      end
+
+      it "media_hash should not exist unless it's for the asset that is being updated (in transaction batch)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id_1 = Transaction::Asset.create_id
+          asset_id_2 = Transaction::Asset.create_id
+          transaction1 = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_1, "name", "description", "media_location
