@@ -778,4 +778,30 @@ describe AssetComponent do
       it "cannot send fields with size greater than max size for name, description, media_location, media_hash, terms" do
         with_factory do |block_factory, transaction_factory|
           sender_wallet = transaction_factory.sender_wallet
-          asset
+          asset_id_1 = Transaction::Asset.create_id
+          asset_id_2 = Transaction::Asset.create_id
+          asset_id_3 = Transaction::Asset.create_id
+          asset_id_4 = Transaction::Asset.create_id
+
+          long_value = "exceeds"*500
+
+          # Create asset
+          create_name_exceeds = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_1, long_value, "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          create_description_exceeds = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_2, "name", long_value, "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          create_media_location_exceeds = transaction_factory.make_asset(
+            "AXNT",
+            "creat
