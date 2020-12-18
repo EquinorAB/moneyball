@@ -804,4 +804,29 @@ describe AssetComponent do
 
           create_media_location_exceeds = transaction_factory.make_asset(
             "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_3, "name", "description", long_value, "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          create_media_hash_exceeds = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_4, "name", "description", "media_location", long_value, 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          create_terms_exceeds = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_4, "name", "description", "media_location", "media_hash", 1, long_value, AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          # Update asset
+          create_asset = transaction_factory.make_asset(
+            "AXNT",
             "creat
