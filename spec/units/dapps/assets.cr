@@ -900,4 +900,27 @@ describe AssetComponent do
           result.failed[4].reason.should eq("asset media_hash must not exceed 512 bytes, you have: 3500")
 
           result.failed[5].reason.should eq("asset name must not exceed 256 bytes, you have: 3500")
-          result.failed[6].reason.should eq("asset descrip
+          result.failed[6].reason.should eq("asset description must not exceed 2048 bytes, you have: 3500")
+          result.failed[7].reason.should eq("asset terms must not exceed 2048 bytes, you have: 3500")
+          result.failed[8].reason.should eq("asset media_location must not exceed 2048 bytes, you have: 3500")
+          result.failed[9].reason.should eq("asset media_hash must not exceed 512 bytes, you have: 3500")
+        end
+      end
+
+      it "cannot update asset if locked (in transaction batch)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          lock_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
