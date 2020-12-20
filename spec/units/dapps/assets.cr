@@ -878,4 +878,26 @@ describe AssetComponent do
           component = AssetComponent.new(block_factory.blockchain)
 
           result = component.valid_transactions?([
-   
+            create_name_exceeds,
+            create_description_exceeds,
+            create_terms_exceeds,
+            create_media_location_exceeds,
+            create_media_hash_exceeds,
+            create_asset,
+            update_name_exceeds,
+            update_description_exceeds,
+            update_terms_exceeds,
+            update_media_location_exceeds,
+            update_media_hash_exceeds,
+          ])
+
+          result.passed.size.should eq(1)
+          result.failed.size.should eq(10)
+          result.failed.first.reason.should eq("asset name must not exceed 256 bytes, you have: 3500")
+          result.failed[1].reason.should eq("asset description must not exceed 2048 bytes, you have: 3500")
+          result.failed[2].reason.should eq("asset terms must not exceed 2048 bytes, you have: 3500")
+          result.failed[3].reason.should eq("asset media_location must not exceed 2048 bytes, you have: 3500")
+          result.failed[4].reason.should eq("asset media_hash must not exceed 512 bytes, you have: 3500")
+
+          result.failed[5].reason.should eq("asset name must not exceed 256 bytes, you have: 3500")
+          result.failed[6].reason.should eq("asset descrip
