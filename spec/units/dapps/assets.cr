@@ -924,3 +924,27 @@ describe AssetComponent do
             "AXNT",
             "update_asset",
             [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "updated_name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 2, __timestamp)]
+          )
+
+          block_factory.add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          update_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "attempt_to_update", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 3, __timestamp)]
+          )
+
+          result = component.valid_transactions?([create_transaction, lock_transaction, update_transaction])
+          result.passed.size.should eq(2)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("asset is locked so no updates are possible for 'update_asset'")
+        end
+      end
+
+      it "cannot update asset if locked (in db)" do
+        with_factory do |bl
