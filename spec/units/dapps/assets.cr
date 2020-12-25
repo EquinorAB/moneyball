@@ -972,4 +972,29 @@ describe AssetComponent do
 
           update_transaction = transaction_factory.make_asset(
             "AXNT",
-            "update_
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "attempt_to_update", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 3, __timestamp)]
+          )
+
+          result = component.valid_transactions?([update_transaction])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("asset is locked so no updates are possible for 'update_asset'")
+        end
+      end
+    end
+
+    describe "lock_asset" do
+      it "should pass when valid update_asset lock transaction (in transaction batch)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+     
