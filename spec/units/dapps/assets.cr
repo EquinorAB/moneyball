@@ -1045,4 +1045,27 @@ describe AssetComponent do
       end
     end
 
-    # asset must be locked before sending (if quantity was more than 1 - and many wallets hold the asset - if not locked there would be c
+    # asset must be locked before sending (if quantity was more than 1 - and many wallets hold the asset - if not locked there would be contention over trying to update the asset)
+    # this will mean changing how we find the current asset owner for update asset but send asset will need it as
+    describe "send_asset" do
+      it "should pass when valid send_asset transaction (in transaction batch)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          recipient_wallet = transaction_factory.recipient_wallet
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 1, __timestamp)]
+          )
+          block_factory.add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          send_asset_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id)],
+        
