@@ -1068,4 +1068,32 @@ describe AssetComponent do
             "AXNT",
             "send_asset",
             [an_asset_sender(sender_wallet, asset_id)],
-        
+            [an_asset_recipient(recipient_wallet, asset_id)],
+            [] of Transaction::Asset
+          )
+
+          result = component.valid_transactions?([create_transaction, send_asset_transaction])
+          result.passed.size.should eq(2)
+          result.failed.size.should eq(0)
+        end
+      end
+
+      it "should pass when valid send_asset transaction (in db)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          recipient_wallet = transaction_factory.recipient_wallet
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 1, __timestamp)]
+          )
+          block_factory.add_slow_block([create_transaction]).add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          send_asset_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "se
