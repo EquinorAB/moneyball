@@ -1458,4 +1458,30 @@ describe AssetComponent do
           )
 
           result = component.valid_transactions?([create_transaction, send_asset_transaction])
-          result.passed.size
+          result.passed.size.should eq(1)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("you have 0 quantity of asset: #{asset_id} so you cannot send 2")
+        end
+      end
+
+      it "cannot send an asset that you do not own (in db)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          recipient_wallet = transaction_factory.recipient_wallet
+          non_owner_wallet = Wallet.from_json(Wallet.create(true).to_json)
+
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 1, __timestamp)]
+          )
+
+          block_factory.add_slow_block([create_transaction]).add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          send_asset_transaction = transaction_factory.make_asset(
+ 
