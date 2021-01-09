@@ -1540,4 +1540,28 @@ describe AssetComponent do
           create_transaction = transaction_factory.make_asset(
             "AXNT",
             "create_asset",
-            [a_sender(sender_wallet, 0_i64, 0
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 1, __timestamp)]
+          )
+
+          block_factory.add_slow_block([create_transaction]).add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          send_asset_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id, 2)],
+            [an_asset_recipient(recipient_wallet, asset_id, 2)],
+            [] of Transaction::Asset
+          )
+
+          result = component.valid_transactions?([send_asset_transaction])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("you have 1 quantity of asset: #{asset_id} so you cannot send 2")
+        end
+      end
+
+      it "cannot send an asset quantity if you don't have enough after sending once already (in transaction batch)" do
+        with_factory d
