@@ -1647,4 +1647,35 @@ describe AssetComponent do
       # specs about sending to self
       it "send to self when you have a quantity available (in transaction batch)" do
         with_factory do |block_factory, transaction_factory|
-          sender_wallet = trans
+          sender_wallet = transaction_factory.sender_wallet
+          recipient_wallet = transaction_factory.recipient_wallet
+
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 1, __timestamp)]
+          )
+
+          component = AssetComponent.new(block_factory.blockchain)
+
+          send_asset_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id, 1)],
+            [an_asset_recipient(sender_wallet, asset_id, 1)],
+            [] of Transaction::Asset
+          )
+
+          send_asset_transaction_2 = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id, 2)],
+            [an_asset_recipient(recipient_wallet, asset_id, 2)],
+            [] of Transaction::Asset
+          )
+
+          result = comp
