@@ -1787,4 +1787,31 @@ describe AssetComponent do
           result = component.valid_transactions?([send_asset_transaction])
           result.passed.size.should eq(0)
           result.failed.size.should eq(1)
-          result.failed.first.reason.should eq(
+          result.failed.first.reason.should eq("you have 0 quantity of asset: #{asset_id} so you cannot send 1")
+        end
+      end
+
+      # specs where quantity is updated before lock and send (in case getting more than 1 version of asset)
+      it "send to recipient after quantity is updated (in transaction batch)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          recipient_wallet = transaction_factory.recipient_wallet
+
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          component = AssetComponent.new(block_factory.blockchain)
+
+          update_quantity_transaction_1 = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Trans
