@@ -1760,4 +1760,31 @@ describe AssetComponent do
 
       it "send to self when you have no quantity available (in db)" do
         with_factory do |block_factory, transaction_factory|
-          sender_wallet = transaction_factory.sende
+          sender_wallet = transaction_factory.sender_wallet
+          non_owner_wallet = Wallet.from_json(Wallet.create(true).to_json)
+
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 1, __timestamp)]
+          )
+
+          block_factory.add_slow_block([create_transaction]).add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          send_asset_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(non_owner_wallet, asset_id, 1)],
+            [an_asset_recipient(non_owner_wallet, asset_id, 1)],
+            [] of Transaction::Asset
+          )
+
+          result = component.valid_transactions?([send_asset_transaction])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq(
