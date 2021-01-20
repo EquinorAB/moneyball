@@ -1814,4 +1814,31 @@ describe AssetComponent do
             "update_asset",
             [a_sender(sender_wallet, 0_i64, 0_i64)],
             [a_recipient(sender_wallet, 0_i64)],
-            [Trans
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 2, "terms", AssetAccess::UNLOCKED, 2, __timestamp)]
+          )
+
+          update_quantity_transaction_2 = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 3, "terms", AssetAccess::LOCKED, 3, __timestamp)]
+          )
+
+          send_asset_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id, 1)],
+            [an_asset_recipient(sender_wallet, asset_id, 1)],
+            [] of Transaction::Asset
+          )
+
+          send_asset_transaction_2 = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id, 4)],
+            [an_asset_recipient(recipient_wallet, asset_id, 4)],
+            [] of Transaction::Asset
+          )
+
+          result = component.valid_transactions?([create_transaction, update_quantity_transaction_1, 
