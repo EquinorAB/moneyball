@@ -1867,4 +1867,27 @@ describe AssetComponent do
             "AXNT",
             "update_asset",
             [a_sender(sender_wallet, 0_i64, 0_i64)],
-            [a_recipient(s
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 2, "terms", AssetAccess::UNLOCKED, 2, __timestamp)]
+          )
+
+          update_quantity_transaction_2 = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 3, "terms", AssetAccess::LOCKED, 3, __timestamp)]
+          )
+
+          send_asset_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id, 1)],
+            [an_asset_recipient(sender_wallet, asset_id, 1)],
+            [] of Transaction::Asset
+          )
+
+          block_factory.add_slow_block([create_transaction, update_quantity_transaction_1, update_quantity_transaction_2, send_asset_transaction]).add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          send_asset_transaction_2 = transaction_factory.make_ass
