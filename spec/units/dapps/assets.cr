@@ -1890,4 +1890,33 @@ describe AssetComponent do
           block_factory.add_slow_block([create_transaction, update_quantity_transaction_1, update_quantity_transaction_2, send_asset_transaction]).add_slow_blocks(2)
           component = AssetComponent.new(block_factory.blockchain)
 
-          send_asset_transaction_2 = transaction_factory.make_ass
+          send_asset_transaction_2 = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id, 4)],
+            [an_asset_recipient(recipient_wallet, asset_id, 4)],
+            [] of Transaction::Asset
+          )
+
+          result = component.valid_transactions?([send_asset_transaction_2])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("you have 3 quantity of asset: #{asset_id} so you cannot send 4")
+        end
+      end
+
+      it "can send one of many assets to another recipient (in transaction batch)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          recipient_wallet = transaction_factory.recipient_wallet
+
+          asset_id_1 = Transaction::Asset.create_id
+          asset_id_2 = Transaction::Asset.create_id
+          asset_id_3 = Transaction::Asset.create_id
+
+          create_transaction_1 = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+          
