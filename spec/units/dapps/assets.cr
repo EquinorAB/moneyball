@@ -1969,4 +1969,29 @@ describe AssetComponent do
             "send_asset",
             [an_asset_sender(sender_wallet, asset_id_2, 1)],
             [an_asset_recipient(recipient_wallet, asset_id_2, 1)],
-            [] of Transa
+            [] of Transaction::Asset
+          )
+
+          send_asset_3_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id_3, 4)],
+            [an_asset_recipient(recipient_wallet, asset_id_3, 4)],
+            [] of Transaction::Asset
+          )
+
+          result = component.valid_transactions?([create_transaction_1, create_transaction_2, create_transaction_3, update_quantity_asset_2, update_quantity_asset_3, send_asset_1_transaction, send_asset_2_transaction, send_asset_3_transaction])
+          result.passed.size.should eq(7)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("you have 3 quantity of asset: #{asset_id_3} so you cannot send 4")
+        end
+      end
+
+      it "can send one of many assets to another recipient (in db)" do
+        with_factory do |block_factory, transaction_factory|
+          sender_wallet = transaction_factory.sender_wallet
+          recipient_wallet = transaction_factory.recipient_wallet
+
+          asset_id_1 = Transaction::Asset.create_id
+          asset_id_2 = Transaction::Asset.create_id
+          asset_id_3 
