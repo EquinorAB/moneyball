@@ -1994,4 +1994,30 @@ describe AssetComponent do
 
           asset_id_1 = Transaction::Asset.create_id
           asset_id_2 = Transaction::Asset.create_id
-          asset_id_3 
+          asset_id_3 = Transaction::Asset.create_id
+
+          create_transaction_1 = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_1, "name1", "description", "media_location1", "media_hash1", 1, "terms", AssetAccess::LOCKED, 1, __timestamp)]
+          )
+
+          create_transaction_2 = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_2, "name2", "description", "media_location2", "media_hash2", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+          create_transaction_3 = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_3, "name3", "description", "media_location3", "media_hash3", 1, "terms", AssetAccess::UNLOCKED, 1, __timestamp)]
+          )
+
+    
