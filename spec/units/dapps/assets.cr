@@ -1943,4 +1943,30 @@ describe AssetComponent do
           update_quantity_asset_2 = transaction_factory.make_asset(
             "AXNT",
             "update_asset",
-  
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_2, "name2", "description", "media_location2", "media_hash2", 2, "terms", AssetAccess::LOCKED, 2, __timestamp)]
+          )
+
+          update_quantity_asset_3 = transaction_factory.make_asset(
+            "AXNT",
+            "update_asset",
+            [a_sender(sender_wallet, 0_i64, 0_i64)],
+            [a_recipient(sender_wallet, 0_i64)],
+            [Transaction::Asset.new(asset_id_3, "name3", "description", "media_location3", "media_hash3", 3, "terms", AssetAccess::LOCKED, 2, __timestamp)]
+          )
+
+          send_asset_1_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id_1, 1)],
+            [an_asset_recipient(sender_wallet, asset_id_1, 1)],
+            [] of Transaction::Asset
+          )
+
+          send_asset_2_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id_2, 1)],
+            [an_asset_recipient(recipient_wallet, asset_id_2, 1)],
+            [] of Transa
