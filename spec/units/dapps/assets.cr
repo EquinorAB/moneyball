@@ -2044,4 +2044,30 @@ describe AssetComponent do
             [] of Transaction::Asset
           )
 
-          send_asset_2_transaction = transaction_factory.make_asset
+          send_asset_2_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id_2, 1)],
+            [an_asset_recipient(recipient_wallet, asset_id_2, 1)],
+            [] of Transaction::Asset
+          )
+
+          block_factory.add_slow_block([create_transaction_1, create_transaction_2, create_transaction_3, update_quantity_asset_2, update_quantity_asset_3, send_asset_1_transaction, send_asset_2_transaction]).add_slow_blocks(2)
+          component = AssetComponent.new(block_factory.blockchain)
+
+          send_asset_3_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(sender_wallet, asset_id_3, 4)],
+            [an_asset_recipient(recipient_wallet, asset_id_3, 4)],
+            [] of Transaction::Asset
+          )
+
+          result = component.valid_transactions?([send_asset_3_transaction])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.first.reason.should eq("you have 3 quantity of asset: #{asset_id_3} so you cannot send 4")
+        end
+      end
+
+      it "chain of multiple send assets works correctly (a user can't recei
