@@ -2096,4 +2096,36 @@ describe AssetComponent do
           )
 
           # User 1 create the asset and send to user 2
-          block_factory.add_slow_block([create_transaction, send_asset_transaction_1]).add
+          block_factory.add_slow_block([create_transaction, send_asset_transaction_1]).add_slow_blocks(2)
+          block_factory.database.total_rejects.should eq(0)
+
+          send_asset_transaction_2 = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(user_2, asset_id, 1)],
+            [an_asset_recipient(user_3, asset_id, 1)],
+            [] of Transaction::Asset,
+            user_2
+          )
+
+          send_asset_transaction_3 = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(user_3, asset_id, 1)],
+            [an_asset_recipient(user_4, asset_id, 1)],
+            [] of Transaction::Asset,
+            user_3
+          )
+
+          # Send asset from user 2 to user 3
+          block_factory.add_slow_block([send_asset_transaction_2]).add_slow_blocks(2)
+          block_factory.database.total_rejects.should eq(0)
+
+          # Send asset from user 3 to user 4
+          block_factory.add_slow_block([send_asset_transaction_3]).add_slow_blocks(2)
+          block_factory.database.total_rejects.should eq(0)
+
+          component = AssetComponent.new(block_factory.blockchain)
+
+          send_asset_transaction_4 = transaction_factory.make_asset(
+  
