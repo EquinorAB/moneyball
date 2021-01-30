@@ -2128,4 +2128,38 @@ describe AssetComponent do
           component = AssetComponent.new(block_factory.blockchain)
 
           send_asset_transaction_4 = transaction_factory.make_asset(
-  
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(user_1, asset_id, 1)],
+            [an_asset_recipient(user_2, asset_id, 1)],
+            [] of Transaction::Asset
+          )
+
+          send_asset_transaction_5 = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(user_2, asset_id, 1)],
+            [an_asset_recipient(user_3, asset_id, 1)],
+            [] of Transaction::Asset
+          )
+
+          send_asset_transaction_6 = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(user_3, asset_id, 1)],
+            [an_asset_recipient(user_4, asset_id, 1)],
+            [] of Transaction::Asset
+          )
+
+          send_asset_transaction_7 = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(user_4, asset_id, 2)],
+            [an_asset_recipient(user_1, asset_id, 2)],
+            [] of Transaction::Asset
+          )
+
+          # user 1,2,3 cannot send as has 0
+          # user 4 cannot send 2 as only has 1
+          result = component.valid_transactions?([
+            send_asset_transact
