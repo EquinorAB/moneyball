@@ -2070,4 +2070,30 @@ describe AssetComponent do
         end
       end
 
-      it "chain of multiple send assets works correctly (a user can't recei
+      it "chain of multiple send assets works correctly (a user can't receive and send the same asset in the same transaction)" do
+        with_factory do |block_factory, transaction_factory|
+          user_1 = transaction_factory.sender_wallet
+          user_2 = transaction_factory.recipient_wallet
+          user_3 = Wallet.from_json(Wallet.create(true).to_json)
+          user_4 = Wallet.from_json(Wallet.create(true).to_json)
+
+          asset_id = Transaction::Asset.create_id
+
+          create_transaction = transaction_factory.make_asset(
+            "AXNT",
+            "create_asset",
+            [a_sender(user_1, 0_i64, 0_i64)],
+            [a_recipient(user_1, 0_i64)],
+            [Transaction::Asset.new(asset_id, "name", "description", "media_location", "media_hash", 1, "terms", AssetAccess::LOCKED, 1, __timestamp)]
+          )
+
+          send_asset_transaction_1 = transaction_factory.make_asset(
+            "AXNT",
+            "send_asset",
+            [an_asset_sender(user_1, asset_id, 1)],
+            [an_asset_recipient(user_2, asset_id, 1)],
+            [] of Transaction::Asset
+          )
+
+          # User 1 create the asset and send to user 2
+          block_factory.add_slow_block([create_transaction, send_asset_transaction_1]).add
