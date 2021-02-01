@@ -2162,4 +2162,16 @@ describe AssetComponent do
           # user 1,2,3 cannot send as has 0
           # user 4 cannot send 2 as only has 1
           result = component.valid_transactions?([
-            send_asset_transact
+            send_asset_transaction_4, send_asset_transaction_5, send_asset_transaction_6, send_asset_transaction_7,
+          ])
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(4)
+          result.failed.first.reason.should eq("you have 0 quantity of asset: #{asset_id} so you cannot send 1")
+          result.failed[1].reason.should eq("you have 0 quantity of asset: #{asset_id} so you cannot send 1")
+          result.failed[2].reason.should eq("you have 0 quantity of asset: #{asset_id} so you cannot send 1")
+          result.failed[3].reason.should eq("you have 1 quantity of asset: #{asset_id} so you cannot send 2")
+        end
+      end
+    end
+  end
+end
