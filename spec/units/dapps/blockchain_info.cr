@@ -40,4 +40,32 @@ describe BlockchainInfo do
     it "should perform #valid_transaction?" do
       with_factory do |block_factory, _|
         chain = block_factory.add_slow_blocks(2).chain
-        transaction_creator = BlockchainInfo.new(block_factory.
+        transaction_creator = BlockchainInfo.new(block_factory.blockchain)
+        result = transaction_creator.valid_transactions?(chain.last.transactions)
+        result.failed.size.should eq(0)
+        result.passed.size.should eq(1)
+      end
+    end
+    it "should perform #record" do
+      with_factory do |block_factory, _|
+        chain = block_factory.add_slow_blocks(2).chain
+        transaction_creator = BlockchainInfo.new(block_factory.blockchain)
+        transaction_creator.record(chain).should be_nil
+      end
+    end
+    it "should perform #clear" do
+      with_factory do |block_factory, _|
+        transaction_creator = BlockchainInfo.new(block_factory.add_slow_blocks(2).blockchain)
+        transaction_creator.clear.should be_nil
+      end
+    end
+  end
+
+  describe "transactions_address_impl" do
+    it "should paginate" do
+      with_factory do |block_factory, transaction_factory|
+        sender_wallet = transaction_factory.sender_wallet
+        recipient_wallet = Wallet.from_json(Wallet.create(true).to_json)
+
+        block_factory.add_slow_blocks(10).add_fast_block([transaction_factory.make_fast_send(1, "AXNT", sender_wallet, recipient_wallet)])
+          .add_fast_block([transaction_factory.make_fast
