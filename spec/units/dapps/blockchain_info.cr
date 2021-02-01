@@ -10,4 +10,34 @@
 #
 # Removal or modification of this copyright notice is prohibited.
 
-require "./../../s
+require "./../../spec_helper"
+
+include Axentro::Core
+include Units::Utils
+include Axentro::Core::DApps::BuildIn
+include Axentro::Core::Controllers
+
+describe BlockchainInfo do
+  describe "default non implemented methods" do
+    it "should perform #setup" do
+      with_factory do |block_factory, _|
+        transaction_creator = BlockchainInfo.new(block_factory.add_slow_block.blockchain)
+        transaction_creator.setup.should be_nil
+      end
+    end
+    it "should perform #transaction_actions" do
+      with_factory do |block_factory, _|
+        transaction_creator = BlockchainInfo.new(block_factory.add_slow_block.blockchain)
+        transaction_creator.transaction_actions.size.should eq(0)
+      end
+    end
+    it "should perform #transaction_related?" do
+      with_factory do |block_factory, _|
+        transaction_creator = BlockchainInfo.new(block_factory.add_slow_block.blockchain)
+        transaction_creator.transaction_related?("action").should be_false
+      end
+    end
+    it "should perform #valid_transaction?" do
+      with_factory do |block_factory, _|
+        chain = block_factory.add_slow_blocks(2).chain
+        transaction_creator = BlockchainInfo.new(block_factory.
