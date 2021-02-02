@@ -68,4 +68,37 @@ describe BlockchainInfo do
         recipient_wallet = Wallet.from_json(Wallet.create(true).to_json)
 
         block_factory.add_slow_blocks(10).add_fast_block([transaction_factory.make_fast_send(1, "AXNT", sender_wallet, recipient_wallet)])
-          .add_fast_block([transaction_factory.make_fast
+          .add_fast_block([transaction_factory.make_fast_send(2, "AXNT", sender_wallet, recipient_wallet)])
+          .add_fast_block([transaction_factory.make_fast_send(2, "AXNT", sender_wallet, recipient_wallet)])
+
+        blockchain_info = block_factory.blockchain.blockchain_info
+
+        address = recipient_wallet.address
+        page_number = 1
+        per_page = 50
+        direction = 1
+        sort_field = 0
+
+        result = blockchain_info.transactions_address_impl(address, page_number, per_page, direction, sort_field)
+        result[:transactions].size.should eq(3)
+      end
+    end
+  end
+
+  describe "#define_rpc?" do
+    describe "#blockchain_size" do
+      it "should return the blockchain size for the current node" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          payload = {call: "blockchain_size"}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            result.should eq(%{{"totals":{"total_size":11,"total_fast":0,"total_slow":11,"total_txns_fast":0,"total_txns_slow":13,"difficulty":0},"block_height":{"slow":20,"fast":0}}})
+          end
+        end
+      end
+    end
+
+    describe "#blockchain" do
+ 
