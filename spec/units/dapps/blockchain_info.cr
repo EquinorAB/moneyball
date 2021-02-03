@@ -101,4 +101,32 @@ describe BlockchainInfo do
     end
 
     describe "#blockchain" do
- 
+      it "should return the full blockchain including headers" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          payload = {call: "blockchain", header: false}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            expected_blocks = block_factory.database.get_paginated_blocks(0, 50, "desc", "timestamp").to_json
+            JSON.parse(result)["data"].to_json.should eq(expected_blocks)
+          end
+        end
+      end
+
+      it "should return the blockchain headers only" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          payload = {call: "blockchain", header: true}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            expected_headers = block_factory.database.get_paginated_blocks(0, 50, "desc", "timestamp").map(&.to_header)
+            JSON.parse(result)["data"].to_json.should eq(expected_headers.to_json)
+          end
+        end
+      end
+    end
+
+    describe "#transactions" do
+      it "should return transactio
