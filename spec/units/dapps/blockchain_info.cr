@@ -153,4 +153,35 @@ describe BlockchainInfo do
           json = JSON.parse(payload)
 
           with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
-            txns = block_
+            txns = block_factory.database.get_paginated_transactions_for_address(address, 0, 10, "desc", "timestamp", [] of String)
+            actual = JSON.parse(result)["transactions"]
+
+            expected = txns.to_json
+            result = actual.as_a.map(&.["transaction"]).to_json
+            result.should eq(expected)
+          end
+        end
+      end
+    end
+
+    describe "#block" do
+      it "should return the block specified by the supplied block index" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          payload = {call: "block", index: 2, header: false}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            target_index = 2
+            unless expected_block = block_factory.chain.find(&.index.==(target_index))
+              fail "could not find block: #{target_index} in chain"
+            end
+
+            json_result = JSON.parse(result)
+            json_result["block"].to_json.should eq(expected_block.to_json)
+            json_result["confirmations"].as_i.should eq(9)
+          end
+        end
+      end
+
+      it "should return the block hea
