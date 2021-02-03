@@ -129,4 +129,28 @@ describe BlockchainInfo do
     end
 
     describe "#transactions" do
-      it "should return transactio
+      it "should return transactions for the specified block index" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          payload = {call: "transactions", index: 2}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            json_result = JSON.parse(result)
+            json_result["transactions"].to_json.should eq(block_factory.blockchain.chain[1].transactions.to_json)
+            json_result["confirmations"].as_i.should eq(9)
+          end
+        end
+      end
+
+      it "should return transactions for the specified address" do
+        # skip official nodes here to make the test easier as the official nodes are in the same block
+        # and it makes it difficult to make the expected confirmations
+        with_factory(nil, true) do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          address = block_factory.chain.last.transactions.last.recipients.last.address
+          payload = {call: "transactions", address: address}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            txns = block_
