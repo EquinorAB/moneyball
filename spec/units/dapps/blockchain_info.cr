@@ -184,4 +184,30 @@ describe BlockchainInfo do
         end
       end
 
-      it "should return the block hea
+      it "should return the block header specified by the supplied block index" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          payload = {call: "block", index: 2, header: true}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            index = 2_i64
+            unless expected_header = block_factory.database.get_block(index)
+              fail "no block found for block index #{index}"
+            end
+            result.should eq(expected_header.to_header.to_json)
+          end
+        end
+      end
+
+      it "should return the block specified by the supplied transaction id" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          transaction_id = block_factory.chain.last.transactions.last.id
+          payload = {call: "block", transaction_id: transaction_id, header: false}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            expected_block = block_factory.chain.find { |blk| blk.transactions.map(&.id).includes?(transaction_id) }.to_json
+
+        
