@@ -210,4 +210,31 @@ describe BlockchainInfo do
           with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
             expected_block = block_factory.chain.find { |blk| blk.transactions.map(&.id).includes?(transaction_id) }.to_json
 
-        
+            json_result = JSON.parse(result)
+            json_result["block"].to_json.should eq(expected_block)
+            json_result["confirmations"].as_i.should eq(0)
+          end
+        end
+      end
+
+      it "should return the block header specified by the supplied transaction id" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          transaction_id = block_factory.chain.last.transactions.last.id
+          payload = {call: "block", transaction_id: transaction_id, header: true}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            unless expected_block_header = block_factory.database.get_block_for_transaction(transaction_id)
+              fail "no block found for transaction id #{transaction_id}"
+            end
+            result.should eq(expected_block_header.to_header.to_json)
+          end
+        end
+      end
+
+      it "should raise a error: invalid index" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(10)
+          payload = {call: "block", index: 99, header: false}.to_json
+          json = JSON.parse
