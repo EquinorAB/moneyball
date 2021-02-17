@@ -237,4 +237,24 @@ describe BlockchainInfo do
         with_factory do |block_factory, _|
           block_factory.add_slow_blocks(10)
           payload = {call: "block", index: 99, header: false}.to_json
-          json = JSON.parse
+          json = JSON.parse(payload)
+
+          expect_raises(Exception, "failed to find a block for the index: 99") do
+            block_factory.rpc.exec_internal_post(json, MockContext.new.unsafe_as(HTTP::Server::Context), {} of String => String)
+          end
+        end
+      end
+
+      it "should raise an error: failed to find a block for the transaction" do
+        with_factory do |block_factory, _|
+          payload = {call: "block", transaction_id: "invalid-transaction-id", header: false}.to_json
+          json = JSON.parse(payload)
+
+          expect_raises(Exception, "failed to find a block for the transaction invalid-transaction-id") do
+            block_factory.rpc.exec_internal_post(json, MockContext.new.unsafe_as(HTTP::Server::Context), {} of String => String)
+          end
+        end
+      end
+    end
+  end
+end
