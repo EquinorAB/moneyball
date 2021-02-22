@@ -40,4 +40,34 @@ describe Fees do
     it "should perform #valid_transaction?" do
       with_factory do |block_factory, _|
         chain = block_factory.add_slow_blocks(2).chain
-    
+        fees = Fees.new(block_factory.blockchain)
+        result = fees.valid_transactions?(chain.last.transactions)
+        result.failed.size.should eq(0)
+        result.passed.size.should eq(1)
+      end
+    end
+    it "should perform #record" do
+      with_factory do |block_factory, _|
+        chain = block_factory.add_slow_blocks(2).chain
+        fees = Fees.new(block_factory.blockchain)
+        fees.record(chain).should be_nil
+      end
+    end
+    it "should perform #clear" do
+      with_factory do |block_factory, _|
+        fees = Fees.new(block_factory.add_slow_blocks(2).blockchain)
+        fees.clear.should be_nil
+      end
+    end
+  end
+
+  describe "#define_rpc?" do
+    describe "#fees" do
+      it "should return the fees" do
+        with_factory do |block_factory, _|
+          payload = {call: "fees"}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            result.should eq("{\"send\":\"0.0001\",\"hra_buy\":\"0.001\",\"hra_sell\":\"0.0001\",\"hra_cancel\":\"0.0001\",\"create_token\":\"10\",\"update_token\":\"0.0001\",\"lock_token\":\"0.0001\",\"burn_token\":\"0.0001\"}")
+   
