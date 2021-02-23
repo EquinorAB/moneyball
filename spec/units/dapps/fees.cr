@@ -70,4 +70,9 @@ describe Fees do
 
           with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
             result.should eq("{\"send\":\"0.0001\",\"hra_buy\":\"0.001\",\"hra_sell\":\"0.0001\",\"hra_cancel\":\"0.0001\",\"create_token\":\"10\",\"update_token\":\"0.0001\",\"lock_token\":\"0.0001\",\"burn_token\":\"0.0001\"}")
-   
+          end
+        end
+      end
+    end
+  end
+end
