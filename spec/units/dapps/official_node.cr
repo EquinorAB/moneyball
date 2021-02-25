@@ -60,3 +60,29 @@ describe OfficialNode do
       with_factory do |block_factory, _|
         transaction_creator = OfficialNode.new(block_factory.add_slow_blocks(2).blockchain)
         transaction_creator.clear.should be_nil
+      end
+    end
+  end
+
+  describe "official nodes impl" do
+    slownodes = ["VDAyNThiOWFiN2Q5YWM3ZjUyYTNhYzQwZTY1NDBmYWJkMjczZmVmZThlOTgzMWM4", "VDA4M2YwYTkzZTQxZTQ0NzdjOGRjMDU4ZTkwZTI4OWY1NDNkMDZjYmU3ODQyM2Rk"]
+    fastnodes = ["VDAwZDRiYTg0MWVlZjE4M2U3OWY2N2E0YmZkZDJjN2JmMWE0ZTViMjE3ZDNmZTU1"]
+    official_nodes = OfficialNodes.new({"slownodes" => slownodes, "fastnodes" => fastnodes})
+
+    it "should return all nodes for" do
+      with_factory(nil, false, official_nodes) do |block_factory, _|
+        transaction_creator = OfficialNode.new(block_factory.blockchain)
+        transaction_creator.all_impl.should eq(slownodes + fastnodes)
+      end
+    end
+    it "should return all slow nodes for" do
+      with_factory(nil, false, official_nodes) do |block_factory, _|
+        transaction_creator = OfficialNode.new(block_factory.blockchain)
+        transaction_creator.all_slow_impl.should eq(slownodes)
+      end
+    end
+
+    it "should return all fast nodes for" do
+      with_factory(nil, false, official_nodes) do |block_factory, _|
+        transaction_creator = OfficialNode.new(block_factory.blockchain)
+        transaction_creator.all_fast_impl
