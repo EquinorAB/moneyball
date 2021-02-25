@@ -85,4 +85,8 @@ describe OfficialNode do
     it "should return all fast nodes for" do
       with_factory(nil, false, official_nodes) do |block_factory, _|
         transaction_creator = OfficialNode.new(block_factory.blockchain)
-        transaction_creator.all_fast_impl
+        transaction_creator.all_fast_impl.should eq(fastnodes)
+      end
+    end
+  end
+end
