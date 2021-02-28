@@ -27,4 +27,33 @@ describe Token do
   it "should perform #transaction_actions" do
     with_factory do |block_factory, _|
       token = Token.new(block_factory.add_slow_block.blockchain)
-      token.transaction_actions.should eq(["create_token", "update_toke
+      token.transaction_actions.should eq(["create_token", "update_token", "lock_token", "burn_token"])
+    end
+  end
+  describe "#transaction_related?" do
+    it "should return true when action is related" do
+      with_factory do |block_factory, _|
+        token = Token.new(block_factory.add_slow_block.blockchain)
+        token.transaction_related?("create_token").should be_true
+      end
+    end
+    it "should return false when action is not related" do
+      with_factory do |block_factory, _|
+        token = Token.new(block_factory.add_slow_block.blockchain)
+        token.transaction_related?("unrelated").should be_false
+      end
+    end
+  end
+
+  describe "#valid_transaction?" do
+    it "should pass when valid transaction" do
+      with_factory do |block_factory, transaction_factory|
+        transaction = transaction_factory.make_create_token("KINGS", 10_i64)
+        chain = block_factory.add_slow_blocks(10).chain
+        token = Token.new(block_factory.blockchain)
+        transactions = chain.last.transactions + [transaction]
+
+        result = token.valid_transactions?(transactions)
+        result.passed.size.should eq(1)
+        result.failed.size.should eq(0)
+        result.passed.should eq([transaction])
