@@ -80,4 +80,30 @@ describe Token do
       with_factory do |block_factory, transaction_factory|
         transaction = transaction_factory.make_create_token("AXNT", 10_i64)
         chain = block_factory.add_slow_blocks(10).chain
-        token = Token.new(block_factory
+        token = Token.new(block_factory.blockchain)
+        transactions = chain.last.transactions + [transaction]
+
+        result = token.valid_transactions?(transactions)
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(0)
+        result.failed.first.reason.should eq("must not be the default token: AXNT")
+      end
+    end
+
+    it "should raise an error when trying to update a token with the default AXNT name" do
+      with_factory do |block_factory, transaction_factory|
+        transaction = transaction_factory.make_update_token("AXNT", 10_i64)
+        chain = block_factory.add_slow_blocks(10).chain
+        token = Token.new(block_factory.blockchain)
+        transactions = chain.last.transactions + [transaction]
+
+        result = token.valid_transactions?(transactions)
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(0)
+        result.failed.first.reason.should eq("must not be the default token: AXNT")
+      end
+    end
+
+    it "should raise an error when trying to lock a token with the default AXNT name" do
+      with_factory do |block_factory, transaction_factory|
+        transaction = transaction_fact
