@@ -128,4 +128,27 @@ describe Token do
         transactions = chain.last.transactions + [transaction]
 
         result = token.valid_transactions?(transactions)
-        result.f
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(0)
+        result.failed.first.reason.should eq("address mismatch for 'create_token'. sender: #{transaction_factory.sender_wallet.address}, recipient: #{transaction_factory.recipient_wallet.address}")
+      end
+    end
+
+    it "should raise amount mismatch when sender amount is different to recipient amount" do
+      with_factory do |block_factory, transaction_factory|
+        senders = [a_sender(transaction_factory.sender_wallet, 10_i64, 1000_i64)]
+        recipients = [a_recipient(transaction_factory.sender_wallet, 20_i64)]
+        transaction = transaction_factory.make_create_token("KINGS", senders, recipients, transaction_factory.sender_wallet)
+        chain = block_factory.add_slow_blocks(10).chain
+        token = Token.new(block_factory.blockchain)
+        transactions = chain.last.transactions + [transaction]
+
+        result = token.valid_transactions?(transactions)
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(0)
+        result.failed.first.reason.should eq("amount mismatch for 'create_token'. sender: 10, recipient: 20")
+      end
+    end
+
+    describe "invalid token name" do
+      it "should raise an 
