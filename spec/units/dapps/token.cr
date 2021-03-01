@@ -106,4 +106,26 @@ describe Token do
 
     it "should raise an error when trying to lock a token with the default AXNT name" do
       with_factory do |block_factory, transaction_factory|
-        transaction = transaction_fact
+        transaction = transaction_factory.make_lock_token("AXNT")
+        chain = block_factory.add_slow_blocks(10).chain
+        token = Token.new(block_factory.blockchain)
+        transactions = chain.last.transactions + [transaction]
+
+        result = token.valid_transactions?(transactions)
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(0)
+        result.failed.first.reason.should eq("must not be the default token: AXNT")
+      end
+    end
+
+    it "should raise address mismatch when sender address is different to recipient address" do
+      with_factory do |block_factory, transaction_factory|
+        senders = [a_sender(transaction_factory.sender_wallet, 10_i64, 1000_i64)]
+        recipients = [a_recipient(transaction_factory.recipient_wallet, 10_i64)]
+        transaction = transaction_factory.make_create_token("KINGS", senders, recipients, transaction_factory.sender_wallet)
+        chain = block_factory.add_slow_blocks(10).chain
+        token = Token.new(block_factory.blockchain)
+        transactions = chain.last.transactions + [transaction]
+
+        result = token.valid_transactions?(transactions)
+        result.f
