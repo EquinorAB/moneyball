@@ -177,4 +177,31 @@ describe Token do
     it "should raise an error if the token already exists in previous transactions" do
       with_factory do |block_factory, transaction_factory|
         transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
-        transaction2 = transaction_factory.make_create_t
+        transaction2 = transaction_factory.make_create_token("KINGS", 10_i64)
+        token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+        transactions = [transaction1, transaction2]
+
+        result = token.valid_transactions?(transactions)
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(1)
+        result.failed.first.reason.should eq("the token KINGS is already created")
+      end
+    end
+
+    it "should raise an error if the token already exists" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+        transaction2 = transaction_factory.make_create_token("KINGS", 10_i64)
+        chain = block_factory.add_slow_block([transaction1]).add_slow_blocks(10).chain
+        token = Token.new(block_factory.blockchain)
+        token.record(chain)
+        transactions = [transaction2]
+
+        result = token.valid_transactions?(transactions)
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(0)
+        result.failed.first.reason.should eq("the token KINGS is already created")
+      end
+    end
+
+    it "create tok
