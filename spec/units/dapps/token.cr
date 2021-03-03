@@ -249,4 +249,25 @@ describe Token do
 
       it "update token quantity should fail if quantity is not a positive number greater than 0" do
         with_factory do |block_factory, transaction_factory|
-          transaction1 = transaction_factory.make_creat
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+
+          transaction2 = transaction_factory.make_update_token("KINGS", 0_i64)
+          transaction3 = transaction_factory.make_update_token("KINGS", -1_i64)
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2, transaction3]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(2)
+          result.passed.size.should eq(1)
+          result.passed.first.should eq(transaction1)
+          result.failed.map(&.reason).should eq(["invalid quantity: 0, must be a positive number greater than 0", "invalid quantity: -1, must be a positive number greater than 0"])
+        end
+      end
+
+      it "update token quantity should fail when done by not the creator when create is in the same block" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+
+          # try update using a different wallet than the one that created the token
+          transaction2 = transaction_factory.make_update_token("KINGS", 20_i64, transaction_factory.recipient_wallet)
+     
