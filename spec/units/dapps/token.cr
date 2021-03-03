@@ -223,4 +223,30 @@ describe Token do
         with_factory do |block_factory, transaction_factory|
           transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
           transaction2 = transaction_factory.make_update_token("KINGS", 20_i64)
-          token = Tok
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(0)
+          result.passed.size.should eq(2)
+          result.passed.should eq(transactions)
+        end
+      end
+
+      it "update token quantity should pass when done by the token creator when create is already in the db" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_update_token("KINGS", 20_i64)
+          token = Token.new(block_factory.add_slow_blocks(10).add_slow_block([transaction1]).blockchain)
+          transactions = [transaction2]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(0)
+          result.passed.size.should eq(1)
+          result.passed.should eq(transactions)
+        end
+      end
+
+      it "update token quantity should fail if quantity is not a positive number greater than 0" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_creat
