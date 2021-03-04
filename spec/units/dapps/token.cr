@@ -292,4 +292,26 @@ describe Token do
 
           result = token.valid_transactions?(transactions)
           result.failed.size.should eq(1)
-          res
+          result.passed.size.should eq(0)
+          result.failed.map(&.reason).should eq(["only the token creator can perform update token on existing token: KINGS"])
+        end
+      end
+
+      it "update token quantity should fail if no token exists" do
+        with_factory do |block_factory, transaction_factory|
+          transaction = transaction_factory.make_update_token("KINGS", 20_i64)
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(0)
+          result.failed.map(&.reason).should eq(["the token KINGS does not exist, you must create it before attempting to perform update token"])
+        end
+      end
+    end
+
+    describe "The token creator may choose to lock the token meaning they cannot create any more of that token" do
+      it "lock token should pass when done by the token creator when create is same block" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64
