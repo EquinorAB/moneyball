@@ -270,4 +270,26 @@ describe Token do
 
           # try update using a different wallet than the one that created the token
           transaction2 = transaction_factory.make_update_token("KINGS", 20_i64, transaction_factory.recipient_wallet)
-     
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(1)
+          result.passed.first.should eq(transaction1)
+          result.failed.map(&.reason).should eq(["only the token creator can perform update token on existing token: KINGS"])
+        end
+      end
+
+      it "update token quantity should fail when done by not the creator when create is already in the db" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+
+          # try update using a different wallet than the one that created the token
+          transaction2 = transaction_factory.make_update_token("KINGS", 20_i64, transaction_factory.recipient_wallet)
+          token = Token.new(block_factory.add_slow_blocks(10).add_slow_block([transaction1]).blockchain)
+          transactions = [transaction2]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          res
