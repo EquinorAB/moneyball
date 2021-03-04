@@ -314,4 +314,31 @@ describe Token do
     describe "The token creator may choose to lock the token meaning they cannot create any more of that token" do
       it "lock token should pass when done by the token creator when create is same block" do
         with_factory do |block_factory, transaction_factory|
-          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_lock_token("KINGS")
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(0)
+          result.passed.size.should eq(2)
+          result.passed.should eq(transactions)
+        end
+      end
+
+      it "lock token should pass when done by the token creator when create is already in the db" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_lock_token("KINGS")
+          token = Token.new(block_factory.add_slow_blocks(10).add_slow_block([transaction1]).blockchain)
+          transactions = [transaction2]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(0)
+          result.passed.size.should eq(1)
+          result.passed.should eq(transactions)
+        end
+      end
+
+      it "lock token should fail if amount if not 0" do
+       
