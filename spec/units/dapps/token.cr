@@ -341,4 +341,23 @@ describe Token do
       end
 
       it "lock token should fail if amount if not 0" do
-       
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_lock_token("KINGS", 20_i64)
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(1)
+          result.failed.map(&.reason).should eq(["the sender amount must be 0 when locking the token: KINGS"])
+        end
+      end
+
+      it "lock token should fail if token already locked in the same block" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_lock_token("KINGS")
+          transaction3 = transaction_factory.make_lock_token("KINGS")
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transact
