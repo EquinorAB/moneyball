@@ -360,4 +360,29 @@ describe Token do
           transaction2 = transaction_factory.make_lock_token("KINGS")
           transaction3 = transaction_factory.make_lock_token("KINGS")
           token = Token.new(block_factory.add_slow_blocks(10).blockchain)
-          transactions = [transaction1, transact
+          transactions = [transaction1, transaction2, transaction3]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(2)
+          result.failed.map(&.reason).should eq(["the token: KINGS is already locked"])
+        end
+      end
+
+      it "lock token should fail if token already locked in the db" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_lock_token("KINGS")
+          transaction3 = transaction_factory.make_lock_token("KINGS")
+          token = Token.new(block_factory.add_slow_blocks(10).add_slow_block([transaction1, transaction2]).blockchain)
+          transactions = [transaction3]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(0)
+          result.failed.map(&.reason).should eq(["the token: KINGS is already locked"])
+        end
+      end
+
+      it "lock token should fail when done by not the creator when create is in the same block" do
+        with_factory do |block_factory, tran
