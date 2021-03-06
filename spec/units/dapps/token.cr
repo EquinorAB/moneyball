@@ -385,4 +385,25 @@ describe Token do
       end
 
       it "lock token should fail when done by not the creator when create is in the same block" do
-        with_factory do |block_factory, tran
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+
+          # try update using a different wallet than the one that created the token
+          transaction2 = transaction_factory.make_lock_token("KINGS", 0_i64, transaction_factory.recipient_wallet)
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(1)
+          result.passed.first.should eq(transaction1)
+          result.failed.map(&.reason).should eq(["only the token creator can perform lock token on existing token: KINGS"])
+        end
+      end
+
+      it "lock token should fail when done by not the creator when create is already in the db" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+
+          # try update using a different wallet than the one that created the token
+          transaction2 = transaction_factory.make_lock_token("KINGS", 0_i64, transaction_factory.re
