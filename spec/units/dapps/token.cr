@@ -430,4 +430,27 @@ describe Token do
         end
       end
 
-      it "update token quantity should fail if token 
+      it "update token quantity should fail if token is locked in the db" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_lock_token("KINGS")
+          transaction3 = transaction_factory.make_update_token("KINGS", 20_i64)
+
+          token = Token.new(block_factory.add_slow_blocks(10).add_slow_block([transaction1, transaction2]).blockchain)
+          transactions = [transaction3]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(0)
+          result.failed.map(&.reason).should eq(["the token: KINGS is locked and may no longer be updated"])
+        end
+      end
+
+      it "update token quantity should fail if token is locked in the current transactions" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_lock_token("KINGS")
+          transaction3 = transaction_factory.make_update_token("KINGS", 20_i64)
+
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transac
