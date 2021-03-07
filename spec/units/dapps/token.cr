@@ -478,4 +478,25 @@ describe Token do
       end
     end
 
-    it "burn token should reduce the amount of token held by the user" d
+    it "burn token should reduce the amount of token held by the user" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+        transaction2 = transaction_factory.make_update_token("KINGS", 10_i64)
+        transaction3 = transaction_factory.make_burn_token("KINGS", 5_i64)
+        block_factory.add_slow_blocks(10).add_slow_block([transaction1])
+
+        before = block_factory.database.get_address_amount(block_factory.node_wallet.address)
+        before.select(&.token.==("KINGS")).sum(&.amount).should eq(10_i64)
+
+        block_factory.add_slow_block([transaction2, transaction3])
+
+        after = block_factory.database.get_address_amount(block_factory.node_wallet.address)
+        after.select(&.token.==("KINGS")).sum(&.amount).should eq(15_i64)
+      end
+    end
+
+    it "burn token should pass when done by the token holder when create is already in the db" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+        transaction2 = transaction_factory.make_burn_token("KINGS", 5_i64)
+        token = Token.new(block_facto
