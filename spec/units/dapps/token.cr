@@ -406,4 +406,28 @@ describe Token do
           transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
 
           # try update using a different wallet than the one that created the token
-          transaction2 = transaction_factory.make_lock_token("KINGS", 0_i64, transaction_factory.re
+          transaction2 = transaction_factory.make_lock_token("KINGS", 0_i64, transaction_factory.recipient_wallet)
+          token = Token.new(block_factory.add_slow_blocks(10).add_slow_block([transaction1]).blockchain)
+          transactions = [transaction2]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(0)
+          result.failed.map(&.reason).should eq(["only the token creator can perform lock token on existing token: KINGS"])
+        end
+      end
+
+      it "lock token quantity should fail if no token exists" do
+        with_factory do |block_factory, transaction_factory|
+          transaction = transaction_factory.make_lock_token("KINGS")
+          token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(0)
+          result.failed.map(&.reason).should eq(["the token KINGS does not exist, you must create it before attempting to perform lock token"])
+        end
+      end
+
+      it "update token quantity should fail if token 
