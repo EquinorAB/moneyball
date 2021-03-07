@@ -453,4 +453,29 @@ describe Token do
           transaction3 = transaction_factory.make_update_token("KINGS", 20_i64)
 
           token = Token.new(block_factory.add_slow_blocks(10).blockchain)
-          transac
+          transactions = [transaction1, transaction2, transaction3]
+
+          result = token.valid_transactions?(transactions)
+          result.failed.size.should eq(1)
+          result.passed.size.should eq(2)
+          result.failed.map(&.reason).should eq(["the token: KINGS is locked and may no longer be updated"])
+        end
+      end
+    end
+
+    # describe "At any time any user holding the token can choose to burn some or all of it that they hold" do
+    it "burn token should pass when done by the token holder when create is same block" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+        transaction2 = transaction_factory.make_burn_token("KINGS", 5_i64)
+        token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+        transactions = [transaction1, transaction2]
+
+        result = token.valid_transactions?(transactions)
+        result.failed.size.should eq(0)
+        result.passed.size.should eq(2)
+        result.passed.should eq(transactions)
+      end
+    end
+
+    it "burn token should reduce the amount of token held by the user" d
