@@ -522,4 +522,30 @@ describe Token do
         result.failed.size.should eq(2)
         result.passed.size.should eq(1)
         result.passed.first.should eq(transaction1)
-        result.failed.map(&.reason).should eq(["invalid quantity: 0, must be a positive number greater than 0", "invalid quantity: -1, must be a positiv
+        result.failed.map(&.reason).should eq(["invalid quantity: 0, must be a positive number greater than 0", "invalid quantity: -1, must be a positive number greater than 0"])
+      end
+    end
+
+    it "burn token quantity should fail if token they are trying to burn does not exist in the same block" do
+      with_factory do |block_factory, transaction_factory|
+        transaction = transaction_factory.make_burn_token("KINGS", 20_i64)
+        token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+        transactions = [transaction]
+
+        result = token.valid_transactions?(transactions)
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(0)
+        result.failed.map(&.reason).should eq(["the token KINGS does not exist, you must create it before attempting to perform burn token"])
+      end
+    end
+
+    it "burn token quantity should fail if token they are trying to burn does not exist in the db" do
+      with_factory do |block_factory, transaction_factory|
+        transaction = transaction_factory.make_burn_token("KINGS", 20_i64)
+        token = Token.new(block_factory.add_slow_blocks(10).blockchain)
+        transactions = [transaction]
+
+        result = token.valid_transactions?(transactions)
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(0)
+        resul
