@@ -548,4 +548,38 @@ describe Token do
         result = token.valid_transactions?(transactions)
         result.failed.size.should eq(1)
         result.passed.size.should eq(0)
-        resul
+        result.failed.map(&.reason).should eq(["the token KINGS does not exist, you must create it before attempting to perform burn token"])
+      end
+    end
+  end
+
+  describe "#valid_token_name?" do
+    it "should return true when token name is valid" do
+      with_factory do |block_factory, _|
+        token = Token.new(block_factory.blockchain)
+        token.valid_token_name?("KINGS").should be_true
+      end
+    end
+
+    it "should raise an error with a message when " do
+      with_factory do |block_factory, _|
+        token_name = "kings"
+        message = <<-RULE
+        You token '#{token_name}' is not valid
+
+        1. token name can only contain uppercase letters or numbers
+        2. token name length must be between 1 and 20 characters
+        RULE
+
+        token = Token.new(block_factory.blockchain)
+        expect_raises(Exception, message) do
+          token.valid_token_name?(token_name)
+        end
+      end
+    end
+
+    it "should raise an error when domain name is longer than 20 characters" do
+      with_factory do |block_factory, _|
+        token = Token.new(block_factory.blockchain)
+        expect_raises(Exception) do
+          token.valid_token_name?("1
