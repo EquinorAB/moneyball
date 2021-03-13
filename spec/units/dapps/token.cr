@@ -582,4 +582,41 @@ describe Token do
       with_factory do |block_factory, _|
         token = Token.new(block_factory.blockchain)
         expect_raises(Exception) do
-          token.valid_token_name?("1
+          token.valid_token_name?("123456789012345678901.ax")
+        end
+      end
+    end
+
+    it "should raise an error when domain name contains empty spaces" do
+      with_factory do |block_factory, _|
+        token = Token.new(block_factory.blockchain)
+        expect_raises(Exception) do
+          token.valid_token_name?("K I N G S")
+        end
+      end
+    end
+
+    it "should work when using Self.valid_domain?" do
+      Token.valid_token_name?("KINGS").should be_true
+    end
+  end
+
+  it "#record create any new tokens" do
+    with_factory do |block_factory, transaction_factory|
+      token_name = "NEW"
+      transaction = transaction_factory.make_create_token(token_name, 10_i64)
+      chain = block_factory.add_slow_blocks(10).add_slow_block([transaction]).chain
+      token = Token.new(block_factory.blockchain)
+      token.record(chain)
+      block_factory.database.token_exists?(token_name).should be_true
+    end
+  end
+
+  describe "#define_rpc?" do
+    describe "#token_list" do
+      it "should list the tokens" do
+        with_factory do |block_factory, _|
+          payload = {call: "token_list"}.to_json
+          json = JSON.parse(payload)
+
+ 
