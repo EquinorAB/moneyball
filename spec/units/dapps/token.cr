@@ -619,4 +619,31 @@ describe Token do
           payload = {call: "token_list"}.to_json
           json = JSON.parse(payload)
 
- 
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            result.should eq("[\"AXNT\"]")
+          end
+        end
+      end
+    end
+  end
+end
+
+def is_valid_token_name(token_name)
+  with_factory do |block_factory, transaction_factory|
+    transaction = transaction_factory.make_create_token(token_name, 10_i64)
+    chain = block_factory.add_slow_blocks(10).chain
+    token = Token.new(block_factory.blockchain)
+    message = <<-RULE
+    You token '#{token_name}' is not valid
+
+    1. token name can only contain uppercase letters or numbers
+    2. token name length must be between 1 and 20 characters
+    RULE
+    transactions = chain.last.transactions + [transaction]
+
+    result = token.valid_transactions?(transactions)
+    result.failed.size.should eq(1)
+    result.passed.size.should eq(0)
+    result.failed.first.reason.should eq(message)
+  end
+end
