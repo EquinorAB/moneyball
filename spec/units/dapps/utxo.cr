@@ -135,3 +135,228 @@ describe UTXO do
         with_factory do |block_factory, _|
           chain = [] of Block
           utxo = UTXO.new(block_factory.blockchain)
+          utxo.record(chain)
+          historic_per_address = {} of String => Array(TokenQuantity)
+
+          transactions = [] of Transaction
+          utxo.get_pending_batch("address-does-not-exist", transactions, TOKEN_DEFAULT, historic_per_address).should eq(0)
+        end
+      end
+    end
+  end
+
+  describe "#transaction_actions" do
+    it "should return actions" do
+      with_factory do |block_factory, _|
+        utxo = UTXO.new(block_factory.blockchain)
+        utxo.transaction_actions.should eq(["send"])
+      end
+    end
+  end
+
+  describe "#transaction_related?" do
+    it "should only return true for all internal actions" do
+      with_factory do |block_factory, _|
+        utxo = UTXO.new(block_factory.blockchain)
+        utxo.transaction_related?("whatever").should be_false
+        DApps::UTXO_ACTIONS.each do |action|
+          utxo.transaction_related?(action).should be_true
+        end
+      end
+    end
+  end
+
+  describe "#valid_transactions?" do
+    it "should return true if valid transaction" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_send(100_i64)
+        transaction2 = transaction_factory.make_send(200_i64)
+        chain = block_factory.add_slow_blocks(10).chain
+        utxo = UTXO.new(block_factory.blockchain)
+        utxo.record(chain)
+        transactions = [transaction1, transaction2]
+        result = utxo.valid_transactions?(transactions)
+
+        result.passed.size.should eq(2)
+        result.failed.size.should eq(0)
+        transactions.map(&.id).each do |tid|
+          result.passed.map(&.id).includes?(tid).should eq(true)
+        end
+      end
+    end
+
+    it "should raise an error if has a recipient" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_send(100_i64)
+        transaction2 = transaction_factory.make_send(200_i64)
+        chain = block_factory.add_slow_block.chain
+        utxo = UTXO.new(block_factory.blockchain)
+        transaction2.recipients = [a_recipient(transaction_factory.recipient_wallet, 10_i64), a_recipient(transaction_factory.recipient_wallet, 10_i64)]
+        utxo.record(chain)
+
+        result = utxo.valid_transactions?([transaction1, transaction2])
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(1)
+        result.failed.first.reason.should eq("there must be 1 or less recipients")
+      end
+    end
+
+    it "should raise an error if has no senders" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_send(100_i64)
+        transaction2 = transaction_factory.make_send(200_i64)
+        chain = block_factory.add_slow_block.chain
+        utxo = UTXO.new(block_factory.blockchain)
+        transaction2.senders = [] of Transaction::Sender
+        utxo.record(chain)
+
+        result = utxo.valid_transactions?([transaction1, transaction2])
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(1)
+        result.failed.first.reason.should eq("there must be 1 sender")
+      end
+    end
+
+    it "should raise an error if sender does not have enough tokens to afford the transaction" do
+      with_factory do |block_factory, transaction_factory|
+        transaction1 = transaction_factory.make_send(100000000_i64)
+        transaction2 = transaction_factory.make_send(2000000000_i64)
+        chain = block_factory.add_slow_blocks(1).chain
+        utxo = UTXO.new(block_factory.blockchain)
+        utxo.record(chain)
+
+        result = utxo.valid_transactions?([transaction1, transaction2])
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(1)
+        result.failed.first.reason.should eq("Unable to send 20 AXNT to recipient because you do not have enough AXNT. You currently have: 10.99989373 AXNT and you are receiving: 0 AXNT from senders,  giving a total of: 10.99989373 AXNT")
+      end
+    end
+
+    it "should raise an error if sender does not have enough custom tokens to afford the transaction" do
+      with_factory do |block_factory, transaction_factory|
+        transaction = transaction_factory.make_send(200000000_i64, "KINGS")
+        chain = block_factory.add_slow_block.chain
+        utxo = UTXO.new(block_factory.blockchain)
+        utxo.record(chain)
+
+        result = utxo.valid_transactions?([transaction])
+        result.failed.size.should eq(1)
+        result.passed.size.should eq(0)
+        result.failed.first.reason.should eq("Unable to send 2 KINGS to recipient because you do not have enough KINGS. You currently have: 0 KINGS and you are receiving: 0 KINGS from senders,  giving a total of: 0 KINGS")
+      end
+    end
+
+    describe "burn_token" do
+      it "burn token quantity should fail if user does not have enough token to burn in same block" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_burn_token("KINGS", 20_i64)
+
+          utxo = UTXO.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2]
+
+          result = utxo.valid_transactions?(transactions)
+          result.passed.size.should eq(1)
+          result.passed.should eq([transaction1])
+          result.failed.size.should eq(1)
+          result.failed.map(&.reason).should eq(["Unable to burn 0.0000002 KINGS because you do not have enough KINGS. You currently have: 0.0000001 KINGS"])
+        end
+      end
+
+      it "burn token quantity should fail if user does not have enough token to burn in the db" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_burn_token("KINGS", 20_i64)
+
+          utxo = UTXO.new(block_factory.add_slow_blocks(10).add_slow_block([transaction1]).blockchain)
+          transactions = [transaction2]
+
+          result = utxo.valid_transactions?(transactions)
+          result.passed.size.should eq(0)
+          result.failed.size.should eq(1)
+          result.failed.map(&.reason).should eq(["Unable to burn 0.0000002 KINGS because you do not have enough KINGS. You currently have: 0.0000001 KINGS"])
+        end
+      end
+    end
+
+    describe "make send with other internal dApps in the same pending block" do
+      it "failure: create token then send" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_send(50_i64, "KINGS")
+
+          utxo = UTXO.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2]
+
+          result = utxo.valid_transactions?(transactions)
+          result.passed.size.should eq(1)
+          result.failed.size.should eq(1)
+          result.failed.map(&.reason).should eq(["Unable to send 0.0000005 KINGS to recipient because you do not have enough KINGS. You currently have: 0.0000001 KINGS and you are receiving: 0 KINGS from senders,  giving a total of: 0.0000001 KINGS"])
+        end
+      end
+      it "success: create token then send" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_send(5_i64, "KINGS")
+
+          utxo = UTXO.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2]
+
+          result = utxo.valid_transactions?(transactions)
+          result.passed.size.should eq(2)
+          result.failed.size.should eq(0)
+        end
+      end
+      it "failure: create, update token then send" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_update_token("KINGS", 10_i64)
+          transaction3 = transaction_factory.make_send(50_i64, "KINGS")
+
+          utxo = UTXO.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2, transaction3]
+
+          result = utxo.valid_transactions?(transactions)
+          result.passed.size.should eq(2)
+          result.failed.size.should eq(1)
+          result.failed.map(&.reason).should eq(["Unable to send 0.0000005 KINGS to recipient because you do not have enough KINGS. You currently have: 0.0000002 KINGS and you are receiving: 0 KINGS from senders,  giving a total of: 0.0000002 KINGS"])
+        end
+      end
+      it "success: create, update token then send" do
+        with_factory do |block_factory, transaction_factory|
+          transaction1 = transaction_factory.make_create_token("KINGS", 10_i64)
+          transaction2 = transaction_factory.make_update_token("KINGS", 10_i64)
+          transaction3 = transaction_factory.make_send(11_i64, "KINGS")
+
+          utxo = UTXO.new(block_factory.add_slow_blocks(10).blockchain)
+          transactions = [transaction1, transaction2, transaction3]
+
+          result = utxo.valid_transactions?(transactions)
+          result.passed.size.should eq(3)
+          result.failed.size.should eq(0)
+        end
+      end
+    end
+  end
+
+  describe "#define_rpc?" do
+    describe "#amount" do
+      it "should return the amount" do
+        with_factory do |block_factory, _|
+          block_factory.add_slow_blocks(6)
+          recipient_address = block_factory.chain.last.transactions.first.recipients.first.address
+          payload = {call: "amount", address: recipient_address, confirmation: 1, token: TOKEN_DEFAULT}.to_json
+          json = JSON.parse(payload)
+
+          with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+            result.should eq("{\"confirmation\":0,\"pairs\":[{\"token\":\"AXNT\",\"amount\":\"71.99986848\"}]}")
+          end
+        end
+      end
+    end
+  end
+
+  it "should return fee when calling #Self.fee" do
+    UTXO.fee("send").should eq(10000_i64)
+  end
+end
