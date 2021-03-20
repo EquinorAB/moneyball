@@ -42,3 +42,21 @@ describe Address do
       address_hex = "TTBkYzI1OGY3MWY5YTNjZTU5Zjg4ZGJlNjI1ODUxNmU3OTY3MDg4NGE1MDU2YzE0"
       address = Address.from(address_hex)
       address.network.should eq(MAINNET)
+      address.as_hex.should eq(address_hex)
+    end
+
+    it "should raise an error if network is invalid" do
+      address_hex = Base64.strict_encode("UO-invalid-address")
+      expect_raises(Exception, "invalid network: UO for address: VU8taW52YWxpZC1hZGRyZXNz") do
+        Address.from(address_hex)
+      end
+    end
+
+    it "should raise an error using supplied name" do
+      address_hex = Base64.strict_encode("T0-invalid-address")
+      expect_raises(Exception, "invalid supplied name address checksum for: VDAtaW52YWxpZC1hZGRyZXNz") do
+        Address.from(address_hex, "supplied name")
+      end
+    end
+  end
+end
