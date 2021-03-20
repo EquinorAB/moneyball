@@ -52,4 +52,32 @@ describe WalletInfo do
         transaction_creator = WalletInfo.new(block_factory.blockchain)
         transaction_creator.record(chain).should be_nil
       end
-    
+    end
+    it "should perform #clear" do
+      with_factory do |block_factory, _|
+        transaction_creator = WalletInfo.new(block_factory.add_slow_blocks(2).blockchain)
+        transaction_creator.clear.should be_nil
+      end
+    end
+  end
+
+  describe "#wallet_info" do
+    it "should return the wallet info for the specified address" do
+      with_factory do |block_factory, transaction_factory|
+        block_factory.add_slow_blocks(2).add_slow_block(
+          [transaction_factory.make_buy_domain_from_platform("domain1.ax", 0_i64),
+           transaction_factory.make_send(99900000000),
+          ]).add_slow_blocks(2)
+
+        payload = {call: "wallet_info", address: transaction_factory.sender_wallet.address}.to_json
+        json = JSON.parse(payload)
+
+        with_rpc_exec_internal_post(block_factory.rpc, json) do |result|
+          wi = WalletInfoResponse.from_json(result)
+          wi.address.should eq(transaction_factory.sender_wallet.address)
+          wi.readable.should eq(["domain1.ax"])
+        end
+      end
+    end
+  end
+end
