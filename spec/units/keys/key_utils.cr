@@ -28,4 +28,9 @@ describe KeyUtils do
 
   it "should verify signature made in javascript (elliptic eddsa)" do
     hex_public_key = "fd94245aeddf19464ffa1b667dea401ed0952ec5a9b4dbf9d652e81c67336c4f"
-    signature_hex = "442F42E88B483
+    signature_hex = "442F42E88B483EBD8E3F2897918A013A3B6370906F67311FBEF6B120DAD835CDF4064CDC8EE15E87E86998BF0CBADD653CADBBC6D1F0A5856FF0230A3D437008".downcase
+    message = sha256("axentro")
+
+    KeyUtils.verify_signature(message, signature_hex, hex_public_key).should be_true
+  end
+end
