@@ -52,4 +52,40 @@ describe PublicKey do
       public_key.as_bytes.should eq(hexbytes)
       public_key.as_hex.should eq(hex_public_key)
     end
-    it "should raise an error if the public key byte array is not a valid public
+    it "should raise an error if the public key byte array is not a valid public key" do
+    end
+  end
+
+  it "should convert a public key from hex to bytes with #as_bytes" do
+    key_pair = KeyUtils.create_new_keypair
+    hex_public_key = key_pair[:hex_public_key]
+    hexbytes = hex_public_key.hexbytes
+
+    public_key = PublicKey.from(hex_public_key)
+    public_key.as_bytes.should eq(hexbytes)
+  end
+
+  it "should convert a public key from bytes to hex with #as_hex" do
+    key_pair = KeyUtils.create_new_keypair
+    hex_public_key = key_pair[:hex_public_key]
+    hexbytes = hex_public_key.hexbytes
+
+    public_key = PublicKey.from(hexbytes)
+    public_key.as_hex.should eq(hex_public_key)
+  end
+
+  describe "#network" do
+    it "should return the mainnet by default" do
+      KeyRing.generate.public_key.network.should eq(MAINNET)
+    end
+    it "should return the supplied network" do
+      KeyRing.generate(TESTNET).public_key.network.should eq(TESTNET)
+    end
+  end
+
+  describe "#address" do
+    it "should return the address" do
+      hex_public_key = "bf668c4c446d540452f47b4c10ff85235f5aedb088a90eba8af59cf982489373"
+
+      public_key = PublicKey.from(hex_public_key)
+      public_key.address.as_hex.should eq("TTA5OGFmMWM5MzEzOTg4OWVjNGMyNjVm
