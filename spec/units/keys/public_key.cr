@@ -88,4 +88,25 @@ describe PublicKey do
       hex_public_key = "bf668c4c446d540452f47b4c10ff85235f5aedb088a90eba8af59cf982489373"
 
       public_key = PublicKey.from(hex_public_key)
-      public_key.address.as_hex.should eq("TTA5OGFmMWM5MzEzOTg4OWVjNGMyNjVm
+      public_key.address.as_hex.should eq("TTA5OGFmMWM5MzEzOTg4OWVjNGMyNjVmNmY1ZWMwMzhlN2M3ZWMwZGFkZjdhYWU0")
+    end
+
+    it "should return a mainnet address" do
+      keys = KeyRing.generate
+      decoded_address = Base64.decode_string(keys.public_key.address.as_hex)
+      decoded_address[0..1].should eq("M0")
+    end
+
+    it "should return a testnet address" do
+      keys = KeyRing.generate(TESTNET)
+      decoded_address = Base64.decode_string(keys.public_key.address.as_hex)
+      decoded_address[0..1].should eq("T0")
+    end
+  end
+
+  describe "#is_valid?" do
+    it "should return true if the public key is valid" do
+      KeyRing.generate.public_key.is_valid?.should be_true
+    end
+  end
+end
