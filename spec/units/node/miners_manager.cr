@@ -53,4 +53,7 @@ end
 
 def join_and_remove(miner_mortality, now, spacing)
   mortalities = miner_mortality.get("1") || [] of MinerMortality
-  mortalities << M
+  mortalities << MinerMortality.new("joined", now)
+  mortalities << MinerMortality.new("remove", now + spacing)
+  miner_mortality.set("1", mortalities, Time.utc + 10.minutes)
+end
