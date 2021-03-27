@@ -31,4 +31,40 @@ describe SlowSync do
         latest_slow = get_latest_slow(database)
         incoming_block = make_incoming_next_in_sequence(latest_slow, blockchain)
 
-        has_block = database.get_block(incoming_block.ind
+        has_block = database.get_block(incoming_block.index)
+
+        slow_sync = SlowSync.new(incoming_block, mining_block, (has_block.nil? ? nil : has_block.not_nil!.as(Block)), latest_slow)
+        slow_sync.process.should eq(SlowSyncState::CREATE)
+      end
+    end
+  end
+end
+
+private def create_coinbase_transaction(blockchain, index, transactions) : Transaction
+  coinbase_amount = blockchain.coinbase_slow_amount(index, transactions)
+  blockchain.calculate_coinbase_slow_transaction(coinbase_amount, index, transactions)
+end
+
+private def get_latest_slow(database : Database) : Block
+  database.get_highest_block_for_kind!(BlockKind::SLOW)
+end
+
+private def make_incoming_next_in_sequence(latest_slow : Block, blockchain) : Block
+  index = latest_slow.index + 2
+  transactions = [create_coinbase_transaction(blockchain, index, [] of Transaction)]
+  hash = latest_slow.to_hash
+  timestamp = __timestamp
+  difficulty = 0
+  address = latest_slow.address
+  make_incoming_block(index, transactions, hash, timestamp, difficulty, address)
+end
+
+private def make_incoming_block(index, transactions, hash, timestamp, difficulty, address)
+  Block.new(
+    index,
+    transactions,
+    "0",
+    hash,
+    timestamp,
+    difficulty,
+ 
