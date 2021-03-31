@@ -67,4 +67,27 @@ private def make_incoming_block(index, transactions, hash, timestamp, difficulty
     hash,
     timestamp,
     difficulty,
- 
+    address,
+    BlockVersion::V2,
+    HashVersion::V2,
+    "",
+    MiningVersion::V1
+  )
+end
+
+# private def add_valid_slow_block(with_refresh : Bool)
+#   enable_difficulty("0")
+#   @blockchain.refresh_mining_block(0) if with_refresh
+#   block = @blockchain.mining_block
+#   block.nonce = "11719215035155661212"
+#   block.difficulty = 0 # difficulty will be set to 0 for most unit tests
+#   # skip validating transactions here so that we can add blocks and still test the transactions in the specs
+#   # valid block is tested separately
+#   valid_block = @blockchain.valid_block?(block, true)
+#   case valid_block
+#   when Block
+#     @blockchain.push_slow_block(valid_block)
+#   else
+#     raise "error could not push slow block onto blockchain - block was not valid"
+#   end
+# end
