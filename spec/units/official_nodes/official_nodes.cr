@@ -62,4 +62,19 @@ describe OfficialNodes do
     df = DeveloperFund.validate("#{__DIR__}/../../utils/data/developer_fund.yml")
     fund_transactions = DeveloperFund.transactions(df.not_nil!.get_config)
 
-    on = OfficialN
+    on = OfficialNodes.new("#{__DIR__}/../../utils/data/official_nodes.yml")
+    transactions = OfficialNodes.transactions(on.get_config, fund_transactions)
+
+    coinbase = transactions.select(&.is_coinbase?)
+    coinbase.size.should eq(0)
+
+    official_node_slow = transactions.select(&.action.==("create_official_node_slow"))
+    official_node_slow.size.should eq(1)
+
+    official_node_fast = transactions.select(&.action.==("create_official_node_fast"))
+    official_node_fast.size.should eq(1)
+
+    transactions[0].prev_hash.should eq(fund_transactions[-1].to_hash)
+    transactions[1].prev_hash.should eq(transactions[0].to_hash)
+  end
+end
