@@ -517,3 +517,173 @@ module ::Units::Utils::ChainGenerator
 
     def make_create_token(token : String, senders : Array(Transaction::Sender), recipients : Array(Transaction::Recipient), sender_wallet : Wallet, transaction_kind : TransactionKind = TransactionKind::SLOW) : Transaction
       transaction_id = Transaction.create_id
+      unsigned_transaction = Transaction.new(
+        transaction_id,
+        "create_token", # action
+        senders,
+        recipients,
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "",    # linked
+        "0",   # message
+        token, # token
+        "0",   # prev_hash
+        0_i64, # timestamp
+        1,     # scaled
+        transaction_kind,
+        TransactionVersion::V1
+      )
+      unsigned_transaction.as_signed([sender_wallet])
+    end
+
+    def make_update_token(token : String, sender_amount : Int64, sender_wallet : Wallet = @sender_wallet, recipient_wallet : Wallet = @recipient_wallet) : Transaction
+      transaction_id = Transaction.create_id
+      unsigned_transaction = Transaction.new(
+        transaction_id,
+        "update_token", # action
+        [a_sender(sender_wallet, sender_amount, 1000000000_i64)],
+        [a_recipient(sender_wallet, sender_amount)],
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "",    # linked
+        "0",   # message
+        token, # token
+        "0",   # prev_hash
+        0_i64, # timestamp
+        1,     # scaled
+        TransactionKind::SLOW,
+        TransactionVersion::V1
+      )
+      unsigned_transaction.as_signed([sender_wallet])
+    end
+
+    def make_lock_token(token : String, sender_amount : Int64 = 0_i64, sender_wallet : Wallet = @sender_wallet, recipient_wallet : Wallet = @recipient_wallet) : Transaction
+      transaction_id = Transaction.create_id
+      unsigned_transaction = Transaction.new(
+        transaction_id,
+        "lock_token", # action
+        [a_sender(sender_wallet, sender_amount, 1000000000_i64)],
+        [a_recipient(sender_wallet, sender_amount)],
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "",    # linked
+        "0",   # message
+        token, # token
+        "0",   # prev_hash
+        0_i64, # timestamp
+        1,     # scaled
+        TransactionKind::SLOW,
+        TransactionVersion::V1
+      )
+      unsigned_transaction.as_signed([sender_wallet])
+    end
+
+    def make_burn_token(token : String, sender_amount : Int64, sender_wallet : Wallet = @sender_wallet, recipient_wallet : Wallet = @recipient_wallet) : Transaction
+      transaction_id = Transaction.create_id
+      unsigned_transaction = Transaction.new(
+        transaction_id,
+        "burn_token", # action
+        [a_sender(sender_wallet, sender_amount, 1000000000_i64)],
+        [a_recipient(sender_wallet, sender_amount)],
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "",    # linked
+        "0",   # message
+        token, # token
+        "0",   # prev_hash
+        0_i64, # timestamp
+        1,     # scaled
+        TransactionKind::SLOW,
+        TransactionVersion::V1
+      )
+      unsigned_transaction.as_signed([sender_wallet])
+    end
+
+    def make_create_asset(asset : Asset, sender_wallet : Wallet = @sender_wallet)
+      make_asset(
+        "AXNT",
+        "create_assset",
+        [a_sender(sender_wallet, 0_i64, 0_i64)],
+        [a_recipient(sender_wallet, 0_i64)],
+        [asset]
+      )
+    end
+
+    def make_asset(token : String, action : String, senders : Array(Transaction::Sender), recipients : Array(Transaction::Recipient), assets : Array(Transaction::Asset), signing_wallet : Wallet = @sender_wallet, message : String = "0") : Transaction
+      transaction_id = Transaction.create_id
+      unsigned_transaction = Transaction.new(
+        transaction_id,
+        action, # action
+        senders,
+        recipients,
+        assets,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "",      # linked
+        message, # message
+        token,   # token
+        "0",     # prev_hash
+        0_i64,   # timestamp
+        1,       # scaled
+        TransactionKind::SLOW,
+        TransactionVersion::V1
+      )
+      unsigned_transaction.as_signed([signing_wallet])
+    end
+
+    def make_create_offical_slownode(token : String = TOKEN_DEFAULT, sender_wallet : Wallet = @sender_wallet, recipient_wallet : Wallet = @recipient_wallet) : Transaction
+      transaction_id = Transaction.create_id
+      unsigned_transaction = Transaction.new(
+        transaction_id,
+        "create_official_node_slow", # action
+        [a_sender(sender_wallet, 0_i64)],
+        [a_recipient(recipient_wallet, 0_i64)],
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "",    # linked
+        "0",   # message
+        token, # token
+        "0",   # prev_hash
+        0_i64, # timestamp
+        1,     # scaled
+        TransactionKind::SLOW,
+        TransactionVersion::V1
+      )
+      unsigned_transaction.as_signed([sender_wallet])
+    end
+
+    def make_create_offical_fastnode(token : String = TOKEN_DEFAULT, sender_wallet : Wallet = @sender_wallet, recipient_wallet : Wallet = @recipient_wallet) : Transaction
+      transaction_id = Transaction.create_id
+      unsigned_transaction = Transaction.new(
+        transaction_id,
+        "create_official_node_fast", # action
+        [a_sender(sender_wallet, 0_i64)],
+        [a_recipient(recipient_wallet, 0_i64)],
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "",    # linked
+        "0",   # message
+        token, # token
+        "0",   # prev_hash
+        0_i64, # timestamp
+        1,     # scaled
+        TransactionKind::SLOW,
+        TransactionVersion::V1
+      )
+      unsigned_transaction.as_signed([sender_wallet])
+    end
+  end
+end

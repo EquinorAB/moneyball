@@ -1,0 +1,8 @@
+
+addresses:
+  - address: VDAwZTdkZGNjYjg1NDA1ZjdhYzk1M2ExMDAzNmY5MjUyYjI0MmMwNGJjZWY4NjA3
+    amount: -40
+  - address: VDBjY2NmOGMyZmQ0MDc4NTIyNDBmYzNmOWQ3M2NlMzljODExOTBjYTQ0ZjMxMGFl
+    amount: 9000000000000000000000000
+  - address: invalid_address
+    amount: 100
