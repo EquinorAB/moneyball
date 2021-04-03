@@ -1,0 +1,5 @@
+fastnodes:
+ - invalid_address
+slownodes:
+ - invalid_address 
+
