@@ -39,4 +39,36 @@ module ::Units::Utils::NodeHelper
     end
   end
 
-  def exec_res
+  def exec_rest_api(res, status_code = 200, &block)
+    res.response.output.flush
+    res.response.output.close
+    output = res.response.output
+    case output
+    when IO
+      res.response.status_code.should eq(status_code)
+      http_res = res.response.unsafe_as(MockResponse).content
+      begin
+        yield JSON.parse(http_res.split("\n").find(&.includes?("result")).not_nil!.chomp)
+      rescue e : Exception
+        yield JSON.parse(http_res.split("\n").find(&.includes?("status")).not_nil!.chomp)
+      end
+    else
+      fail "expected an io response"
+    end
+  rescue e : Exception
+    fail "something failed: #{e}"
+  end
+
+  def with_rpc_exec_internal_post(rpc, json, status_code = 200, &block)
+    res = rpc.exec_internal_post(json, MockContext.new.unsafe_as(HTTP::Server::Context), {} of String => String)
+    res.response.output.flush
+    res.response.output.close
+    output = res.response.output
+    case output
+    when IO
+      res.response.status_code.should eq(status_code)
+      http_res = res.response.unsafe_as(MockResponse).content
+      json_result = JSON.parse(http_res.split("\n")[4].chomp)
+
+      if json_result["status"].as_s == "success"
+        # json_result s
