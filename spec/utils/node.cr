@@ -71,4 +71,39 @@ module ::Units::Utils::NodeHelper
       json_result = JSON.parse(http_res.split("\n")[4].chomp)
 
       if json_result["status"].as_s == "success"
-        # json_result s
+        # json_result step above does JSON.parse which converts the nonce to i64 instead of u64
+        # so this is a quick fix as we hardcode all the nonces in the specs
+        yield json_result["result"].to_json.gsub("-6727529038553890404", "11719215035155661212")
+      else
+        yield json_result["reason"].as_s
+      end
+    else
+      fail "expected an io response"
+    end
+  rescue e : Exception
+    yield e.message.not_nil!
+  end
+
+  def with_rpc_exec_internal_get(rpc, status_code = 200, &block)
+    res = rpc.exec_internal_get(MockContext.new("GET").unsafe_as(HTTP::Server::Context), {} of String => String)
+    res.response.output.flush
+    res.response.output.close
+    output = res.response.output
+    case output
+    when IO
+      res.response.status_code.should eq(status_code)
+      http_res = res.response.unsafe_as(MockResponse).content
+      json_result = JSON.parse(http_res.split("\n")[4].chomp)
+
+      if json_result["status"].as_s == "success"
+        yield json_result["result"].to_json
+      else
+        yield json_result["reason"].as_s
+      end
+    else
+      fail "expected an io response"
+    end
+  rescue e : Exception
+    fail "something failed: #{e}"
+  end
+end
