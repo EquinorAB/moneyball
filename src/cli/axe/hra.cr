@@ -216,3 +216,25 @@ module ::Axentro::Interface::Axe
 
         puts_success "address  : #{resolved["domain"]["address"]}"
         puts_success "status   : #{status}"
+        puts_success "price    : #{resolved["domain"]["price"].as_s}"
+      end
+    end
+
+    def lookup
+      puts_help(HELP_CONNECTING_NODE) unless node = G.op.__connect_node
+      puts_help(HELP_LOOKUP_ADDRESS) unless address = G.op.__address
+
+      json = lookup_internal(node, address)
+
+      puts_success "\n Human Readable Address domains mapped to address #{address}\n"
+
+      puts "   %s" % ["Domain"]
+
+      json["domains"].as_a.each do |domain|
+        puts " - %s" % [domain["domain_name"].as_s]
+      end
+
+      puts
+    end
+  end
+end
