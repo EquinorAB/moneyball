@@ -16,4 +16,43 @@ module ::Axentro::Interface::Axe
       [
         {
           name: I18n.translate("axe.cli.transaction.create.title"),
-          desc: I18n.translate("axe.cli.transactio
+          desc: I18n.translate("axe.cli.transaction.create.desc"),
+        },
+        {
+          name: I18n.translate("axe.cli.transaction.transactions.title"),
+          desc: I18n.translate("axe.cli.transaction.transactions.desc"),
+        },
+        {
+          name: I18n.translate("axe.cli.transaction.transaction.title"),
+          desc: I18n.translate("axe.cli.transaction.transaction.desc"),
+        },
+        {
+          name: I18n.translate("axe.cli.transaction.fees.title"),
+          desc: I18n.translate("axe.cli.transaction.fees.desc"),
+        },
+      ]
+    end
+
+    def option_parser : OptionParser?
+      G.op.create_option_parser([
+        Options::CONNECT_NODE,
+        Options::WALLET_PATH,
+        Options::WALLET_PASSWORD,
+        Options::JSON,
+        Options::ADDRESS,
+        Options::AMOUNT,
+        Options::ACTION,
+        Options::MESSAGE,
+        Options::BLOCK_INDEX,
+        Options::TRANSACTION_ID,
+        Options::FEE,
+        Options::DOMAIN,
+        Options::TOKEN,
+        Options::CONFIG_NAME,
+        Options::IS_FAST_TRANSACTION,
+      ])
+    end
+
+    def run_impl(action_name) : OptionParser?
+      case action_name
+      when I18n.translate("axe.cli.transaction.c
