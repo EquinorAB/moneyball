@@ -55,4 +55,33 @@ module ::Axentro::Interface::Axe
 
     def run_impl(action_name) : OptionParser?
       case action_name
-      when I18n.translate("axe.cli.transaction.c
+      when I18n.translate("axe.cli.transaction.create.title")
+        return create
+      when I18n.translate("axe.cli.transaction.transactions.title"), "txs"
+        return transactions
+      when I18n.translate("axe.cli.transaction.transaction.title"), "tx"
+        return transaction
+      when I18n.translate("axe.cli.transaction.fees.title")
+        return fees
+      end
+
+      specify_sub_action!(action_name)
+    rescue e : Exception
+      puts_error e.message
+    end
+
+    def create
+      puts_help(HELP_CONNECTING_NODE) unless node = G.op.__connect_node
+      puts_help(HELP_WALLET_PATH) unless wallet_path = G.op.__wallet_path
+      puts_help(HELP_AMOUNT) unless amount = G.op.__amount
+      puts_help(HELP_FEE) unless fee = G.op.__fee
+      puts_help(HELP_ADDRESS_DOMAIN_RECIPIENT) if G.op.__address.nil? && G.op.__domain.nil?
+
+      action = G.op.__action || "send"
+
+      recipient_address = if address = G.op.__address
+                            address
+                          else
+                            resolved = resolve_internal(node, G.op.__domain.not_nil!)
+                            raise "domain #{G.op.__domain.not_nil!} is not resolved" unless resolved["resolved"].as_bool
+                         
