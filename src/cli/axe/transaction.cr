@@ -84,4 +84,32 @@ module ::Axentro::Interface::Axe
                           else
                             resolved = resolve_internal(node, G.op.__domain.not_nil!)
                             raise "domain #{G.op.__domain.not_nil!} is not resolved" unless resolved["resolved"].as_bool
-                         
+                            resolved["domain"]["address"].as_s
+                          end
+
+      to_address = Address.from(recipient_address, "recipient")
+
+      wallet = get_wallet(wallet_path, G.op.__wallet_password)
+      wallets = [wallet]
+
+      senders = SendersDecimal.new
+      senders.push(
+        SenderDecimal.new(wallet.address, wallet.public_key, amount, fee, "0")
+      )
+
+      recipients = RecipientsDecimal.new
+      recipients.push(
+        RecipientDecimal.new(to_address.as_hex, amount)
+      )
+
+      kind = G.op.__is_fast_transaction ? TransactionKind::FAST : TransactionKind::SLOW
+
+      add_transaction(node, action, wallets, senders, recipients, [] of Transaction::Asset, [] of Transaction::Module, [] of Transaction::Input, [] of Transaction::Output, "", G.op.__message, G.op.__token || TOKEN_DEFAULT, kind)
+    end
+
+    def transactions
+      puts_help(HELP_CONNECTING_NODE) unless node = G.op.__connect_node
+      puts_help(HELP_BLOCK_INDEX_OR_ADDRESS) if G.op.__block_index.nil? && G.op.__address.nil?
+
+      payload = if block_index = G.op.__block_index
+                  success_message = I18n.translate("axe.cli.transaction.transactions.messages.index", {bloc
