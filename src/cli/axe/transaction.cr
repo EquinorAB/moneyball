@@ -112,4 +112,34 @@ module ::Axentro::Interface::Axe
       puts_help(HELP_BLOCK_INDEX_OR_ADDRESS) if G.op.__block_index.nil? && G.op.__address.nil?
 
       payload = if block_index = G.op.__block_index
-                  success_message = I18n.translate("axe.cli.transaction.transactions.messages.index", {bloc
+                  success_message = I18n.translate("axe.cli.transaction.transactions.messages.index", {block_index: block_index})
+                  {call: "transactions", index: block_index}.to_json
+                elsif address = G.op.__address
+                  success_message = I18n.translate("axe.cli.transaction.transactions.messages.address", {address: address})
+                  {call: "transactions", address: address}.to_json
+                else
+                  puts_help(HELP_BLOCK_INDEX_OR_ADDRESS)
+                end
+
+      body = rpc(node, payload)
+      json = JSON.parse(body)
+
+      puts_success(success_message) unless G.op.__json
+
+      if G.op.__json
+        puts body
+      else
+        table = Tallboy.table do
+          columns do
+            add "timestamp"
+            add "token"
+            add "id"
+            add "action"
+            add "from"
+            add "to"
+            add "amount"
+            add "message"
+            add "kind"
+          end
+          header
+          rows json.as_a.map { |t| [t["timestamp"], t["token"], Core::Transaction.short_id(t["id"].as_s), t["action"], recipients(t["recipients"].as_a, t["action"].as_s), to(t["senders"].as_a), amount(t["recipients"].as_a), t["message"], t["kin
