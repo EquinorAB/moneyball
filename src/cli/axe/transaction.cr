@@ -217,4 +217,35 @@ module ::Axentro::Interface::Axe
         when "not found"
           puts_error(I18n.translate("axe.cli.transaction.transaction.messages.not_found"))
         else
-          puts_error(I18n.translate("axe.cli.transaction.transaction
+          puts_error(I18n.translate("axe.cli.transaction.transaction.messages.unknown"))
+        end
+      end
+    end
+
+    def fees
+      puts_help(HELP_CONNECTING_NODE) unless node = G.op.__connect_node
+
+      payload = {call: "fees"}.to_json
+
+      body = rpc(node, payload)
+      json = JSON.parse(body)
+
+      puts_success(I18n.translate("axe.cli.transaction.fees.messages.fees"))
+
+      if G.op.__json
+        puts body
+      else
+        table = Tallboy.table do
+          columns do
+            add "action", align: :right
+            add "fee", align: :right, width: 20
+          end
+          header
+          rows json.as_h.map { |action, fee| [action, fee] }
+        end
+
+        puts table.render
+      end
+    end
+  end
+end
