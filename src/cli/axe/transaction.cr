@@ -191,3 +191,30 @@ module ::Axentro::Interface::Axe
 
           h = json.as_h
 
+          table = Tallboy.table do
+            columns do
+              add "status"
+              add "timestamp"
+              add "token"
+              add "id"
+              add "action"
+              add "from"
+              add "to"
+              add "amount"
+              add "message"
+              add "kind"
+              add "confirmations"
+            end
+            header
+            rows [h["transaction"]].map { |t| [h["status"], t["timestamp"], t["token"], Core::Transaction.short_id(t["id"].as_s), t["action"], recipients(t["recipients"].as_a, t["action"].as_s), to(t["senders"].as_a), amount(t["recipients"].as_a), t["message"], t["kind"], h["confirmations"]] }
+          end
+
+          puts table.render
+        when "pending"
+          puts_success(I18n.translate("axe.cli.transaction.transaction.messages.pending"))
+        when "rejected"
+          puts_error(I18n.translate("axe.cli.transaction.transaction.messages.rejected", {reason: json["reason"].as_s}))
+        when "not found"
+          puts_error(I18n.translate("axe.cli.transaction.transaction.messages.not_found"))
+        else
+          puts_error(I18n.translate("axe.cli.transaction.transaction
