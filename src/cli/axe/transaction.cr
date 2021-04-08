@@ -142,4 +142,52 @@ module ::Axentro::Interface::Axe
             add "kind"
           end
           header
-          rows json.as_a.map { |t| [t["timestamp"], t["token"], Core::Transaction.short_id(t["id"].as_s), t["action"], recipients(t["recipients"].as_a, t["action"].as_s), to(t["senders"].as_a), amount(t["recipients"].as_a), t["message"], t["kin
+          rows json.as_a.map { |t| [t["timestamp"], t["token"], Core::Transaction.short_id(t["id"].as_s), t["action"], recipients(t["recipients"].as_a, t["action"].as_s), to(t["senders"].as_a), amount(t["recipients"].as_a), t["message"], t["kind"]] }
+        end
+
+        puts table.render
+      end
+    end
+
+    private def recipients(recipients, action)
+      r = recipients.map(&.["address"].as_s.strip)
+      r.empty? ? "" : "#{r.first} #{for_action(action, r.size)} "
+    end
+
+    private def to(senders)
+      r = senders.map(&.["address"].as_s.strip)
+      r.empty? ? "" : "#{r.first} #{if_lots(r.size)} "
+    end
+
+    private def amount(recipients)
+      scale_decimal(recipients.sum(&.["amount"].as_i64))
+    end
+
+    private def if_lots(size)
+      size > 1 ? "(1/#{size})" : ""
+    end
+
+    private def for_action(action, size)
+      if action == "head"
+        if_lots(size)
+      end
+    end
+
+    def transaction
+      puts_help(HELP_CONNECTING_NODE) unless node = G.op.__connect_node
+      puts_help(HELP_TRANSACTION_ID) unless transaction_id = G.op.__transaction_id
+
+      payload = {call: "transaction", transaction_id: transaction_id}.to_json
+
+      body = rpc(node, payload)
+      json = JSON.parse(body)
+
+      if G.op.__json
+        puts body
+      else
+        case json["status"].as_s
+        when "accepted"
+          puts_success(I18n.translate("axe.cli.transaction.transaction.messages.accepted"))
+
+          h = json.as_h
+
