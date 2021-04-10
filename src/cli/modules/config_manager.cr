@@ -46,4 +46,49 @@ module ::Axentro::Interface
 
     def get_configs : Hash(String, Hash(String, ConfigManager::Configurable))
       raise "no configuration file found at: #{config_path} - to create, exec `axe config save [your_options]" unless File.exists?(config_path)
-      config = Config.from_yaml(File.rea
+      config = Config.from_yaml(File.read(config_path))
+      config.configs
+    end
+
+    def release_config
+      @config = nil
+    end
+
+    def set_override_state(value : Bool)
+      @override = value
+    end
+
+    private def with_config_for(name, override_name, &block)
+      return nil unless config_item = get_config(override_name)
+      return nil unless config = config_item.config
+      return nil unless config[name]?
+      return nil unless config_item.is_enabled?
+
+      yield config[name]
+    end
+
+    def get_s(name : String, config : String | Nil) : String?
+      with_config_for(name, config) do |config_name|
+        config_name.to_s
+      end
+    end
+
+    def get_i32(name : String, config : String | Nil) : Int32?
+      with_config_for(name, config) do |config_name|
+        config_name.to_s.to_i32
+      end
+    end
+
+    def get_i64(name : String, config : String | Nil) : Int64?
+      with_config_for(name, config) do |config_name|
+        config_name.to_i64
+      end
+    end
+
+    def get_bool(name : String, config : String | Nil) : Bool?
+      with_config_for(name, config) do |config_name|
+        config_name.to_s == "true"
+      end
+    end
+
+    de
