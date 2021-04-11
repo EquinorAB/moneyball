@@ -91,4 +91,44 @@ module ::Axentro::Interface
       end
     end
 
-    de
+    def save(name : String?, update_name_only : Bool = false)
+      config_name = name ? name : "config"
+      config = Config.from_yaml(File.read(config_path))
+      config.current_config = config_name
+      config.configs[config_name] = @config_map unless update_name_only
+      File.write(config_path, config.to_yaml)
+    end
+
+    def set_enabled_state(state : ConfigStatus)
+      config = File.exists?(config_path) ? Config.from_yaml(File.read(config_path)) : Config.new("config", state, {"config" => @config_map})
+      config.config_status = state
+      File.write(config_path, config.to_yaml)
+    end
+
+    def remove_all
+      FileUtils.rm_rf(config_path)
+    end
+
+    def remove_config(name : String)
+      config = Config.from_yaml(File.read(config_path))
+      config.configs.delete(name)
+      File.write(config_path, config.to_yaml)
+    end
+
+    def config_path : String
+      home = Path.home.to_s
+      FileUtils.mkdir_p("#{home}/.axentro")
+      "#{home}/.axentro/config"
+    end
+  end
+end
+
+enum ConfigStatus
+  Enabled
+  Disabled
+end
+
+struct ConfigItem
+  property name : String
+  property status : ConfigStatus
+  property config : Ha
