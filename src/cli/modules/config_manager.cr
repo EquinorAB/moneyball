@@ -131,4 +131,28 @@ end
 struct ConfigItem
   property name : String
   property status : ConfigStatus
-  property config : Ha
+  property config : Hash(String, ConfigManager::Configurable)
+
+  def initialize(@name : String, @status : ConfigStatus, @config : Hash(String, ConfigManager::Configurable))
+  end
+
+  def is_enabled?
+    @status == ConfigStatus::Enabled
+  end
+
+  def to_s
+    details = @config.join("\n") { |k, v| "#{k}:\t#{v}" }
+    "configuration is #{@status} \n--------------------\n#{details}"
+  end
+end
+
+class Config
+  include YAML::Serializable
+
+  property current_config : String
+  property configs : Hash(String, Hash(String, ConfigManager::Configurable))
+  property config_status : ConfigStatus
+
+  def initialize(@current_config, @config_status, @configs)
+  end
+end
