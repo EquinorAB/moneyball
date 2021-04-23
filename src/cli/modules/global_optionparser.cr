@@ -70,4 +70,66 @@ module ::Axentro::Interface
     @sync_chunk_size = 100
 
     @is_fast_transaction : Bool = false
-    @record_nonces : Bool 
+    @record_nonces : Bool = false
+
+    @whitelist : Array(String) = [] of String
+    @whitelist_message : String = ""
+    @metrics_whitelist : Array(String) = [] of String
+
+    @asset_id : String?
+    @asset_name : String?
+    @asset_description : String?
+    @asset_media_location : String?
+    @asset_locked : Bool = false
+
+    enum Options
+      # common options
+      CONNECT_NODE
+      WALLET_PATH
+      WALLET_PASSWORD
+      # flags
+      IS_TESTNET
+      IS_PRIVATE
+      JSON
+      # for node setting up
+      BIND_HOST
+      BIND_PORT
+      PUBLIC_URL
+      DATABASE_PATH
+      # for transaction
+      ADDRESS
+      AMOUNT
+      ACTION
+      MESSAGE
+      BLOCK_INDEX
+      TRANSACTION_ID
+      FEE
+      IS_FAST_TRANSACTION
+      # for blockchain
+      HEADER
+      # for miners
+      PROCESSES
+      # for wallet
+      ENCRYPTED
+      SEED
+      DERIVATION
+      # for hra
+      PRICE
+      DOMAIN
+      # for tokens
+      TOKEN
+      # for config
+      CONFIG_NAME
+      # for node
+      NODE_ID
+      DEVELOPER_FUND
+      FASTNODE
+      OFFICIAL_NODES
+      SECURITY_LEVEL_PERCENTAGE
+      SYNC_CHUNK_SIZE
+      MAX_MINERS
+      MAX_PRIVATE_NODES
+      EXIT_IF_UNOFFICIAL
+      RECORD_NONCES
+      WHITELIST
+      WHITELIST_MES
