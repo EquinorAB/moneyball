@@ -132,4 +132,37 @@ module ::Axentro::Interface
       EXIT_IF_UNOFFICIAL
       RECORD_NONCES
       WHITELIST
-      WHITELIST_MES
+      WHITELIST_MESSAGE
+      # for assets
+      ASSET_ID
+      ASSET_NAME
+      ASSET_DESCRIPTION
+      ASSET_MEDIA_LOCATION
+      ASSET_LOCKED
+      METRICS_WHITELIST
+    end
+
+    def create_option_parser(actives : Array(Options)) : OptionParser
+      OptionParser.new do |parser|
+        parse_version(parser)
+        parse_node(parser, actives)
+        parse_wallet_path(parser, actives)
+        parse_password(parser, actives)
+        parse_mainnet(parser, actives)
+        parse_testnet(parser, actives)
+        parse_public(parser, actives)
+        parse_private(parser, actives)
+        parse_json(parser, actives)
+        parse_bind_host(parser, actives)
+        parse_bind_port(parser, actives)
+        parse_public_url(parser, actives)
+        parse_database(parser, actives)
+        parse_address(parser, actives)
+        parse_amount(parser, actives)
+        parse_action(parser, actives)
+        parse_message(parser, actives)
+        parse_block_index(parser, actives)
+        parse_transaction_id(parser, actives)
+        parse_fee(parser, actives)
+        parse_header(parser, actives)
+        pa
