@@ -191,4 +191,36 @@ module ::Axentro::Interface
         parse_asset_name(parser, actives)
         parse_asset_description(parser, actives)
         parse_asset_media_location(parser, actives)
-        parse_asset_locked(pars
+        parse_asset_locked(parser, actives)
+        parse_metrics_whitelist(parser, actives)
+      end
+    end
+
+    private def parse_version(parser : OptionParser)
+      parser.on("-v", "--version", "version") {
+        puts {{ read_file("#{__DIR__}/../../../version.txt") }}
+        exit 0
+      }
+    end
+
+    private def parse_node(parser : OptionParser, actives : Array(Options))
+      parser.on("-n NODE", "--node=NODE", I18n.translate("cli.options.node.url")) { |connect_node|
+        @connect_node = connect_node
+      } if is_active?(actives, Options::CONNECT_NODE)
+    end
+
+    private def parse_wallet_path(parser : OptionParser, actives : Array(Options))
+      parser.on(
+        "-w WALLET_PATH",
+        "--wallet_path=WALLET_PATH",
+        I18n.translate("cli.options.wallet")
+      ) { |wallet_path| @wallet_path = wallet_path } if is_active?(actives, Options::WALLET_PATH)
+    end
+
+    private def parse_password(parser : OptionParser, actives : Array(Options))
+      parser.on("--password=PASSWORD", I18n.translate("cli.options.password")) { |password|
+        @wallet_password = password
+      } if is_active?(actives, Options::WALLET_PASSWORD)
+    end
+
+    private def parse_mainnet(parser : OptionParser, actives : Array(Opt
