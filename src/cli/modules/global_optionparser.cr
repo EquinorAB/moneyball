@@ -223,4 +223,33 @@ module ::Axentro::Interface
       } if is_active?(actives, Options::WALLET_PASSWORD)
     end
 
-    private def parse_mainnet(parser : OptionParser, actives : Array(Opt
+    private def parse_mainnet(parser : OptionParser, actives : Array(Options))
+      parser.on("--mainnet", I18n.translate("cli.options.mainnet")) {
+        @is_testnet = false
+        @is_testnet_changed = true
+      } if is_active?(actives, Options::IS_TESTNET)
+    end
+
+    private def parse_testnet(parser : OptionParser, actives : Array(Options))
+      parser.on("--testnet", I18n.translate("cli.options.testnet")) {
+        @is_testnet = true
+        @is_testnet_changed = true
+      } if is_active?(actives, Options::IS_TESTNET)
+    end
+
+    private def parse_if_unofficial_nodes(parser : OptionParser, actives : Array(Options))
+      parser.on("--exit-if-unofficial", I18n.translate("cli.options.unofficial")) {
+        @exit_if_unofficial = true
+      } if is_active?(actives, Options::EXIT_IF_UNOFFICIAL)
+    end
+
+    private def parse_public(parser : OptionParser, actives : Array(Options))
+      parser.on("--public", I18n.translate("cli.options.public.mode")) {
+        @is_private = false
+        @is_private_changed = true
+      } if is_active?(actives, Options::IS_PRIVATE)
+    end
+
+    private def parse_private(parser : OptionParser, actives : Array(Options))
+      parser.on("--private", I18n.translate("cli.options.private")) {
+        
