@@ -252,4 +252,29 @@ module ::Axentro::Interface
 
     private def parse_private(parser : OptionParser, actives : Array(Options))
       parser.on("--private", I18n.translate("cli.options.private")) {
-        
+        @is_private = true
+        @is_private_changed = true
+      } if is_active?(actives, Options::IS_PRIVATE)
+    end
+
+    private def parse_json(parser : OptionParser, actives : Array(Options))
+      parser.on("-j", "--json", I18n.translate("cli.options.json")) {
+        @json = true
+      } if is_active?(actives, Options::JSON)
+    end
+
+    private def parse_bind_host(parser : OptionParser, actives : Array(Options))
+      parser.on("-h BIND_HOST", "--bind_host=BIND_HOST", I18n.translate("cli.options.binding.host")) { |bind_host|
+        raise "invalid host: #{bind_host}" unless bind_host.count('.') == 3
+        @bind_host = bind_host
+      } if is_active?(actives, Options::BIND_HOST)
+    end
+
+    private def parse_bind_port(parser : OptionParser, actives : Array(Options))
+      parser.on("-p BIND_PORT", "--bind_port=BIND_PORT", I18n.translate("cli.options.binding.port")) { |bind_port|
+        @bind_port = bind_port.to_i
+      } if is_active?(actives, Options::BIND_PORT)
+    end
+
+    private def parse_public_url(parser : OptionParser, actives : Array(Options))
+      parser.on("-u PUBLIC_URL", "--public_url=PUBLIC_URL", I18n.translate("cli.options.public.url
