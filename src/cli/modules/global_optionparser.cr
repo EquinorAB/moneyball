@@ -277,4 +277,31 @@ module ::Axentro::Interface
     end
 
     private def parse_public_url(parser : OptionParser, actives : Array(Options))
-      parser.on("-u PUBLIC_URL", "--public_url=PUBLIC_URL", I18n.translate("cli.options.public.url
+      parser.on("-u PUBLIC_URL", "--public_url=PUBLIC_URL", I18n.translate("cli.options.public.url")) { |public_url|
+        @public_url = public_url
+      } if is_active?(actives, Options::PUBLIC_URL)
+    end
+
+    private def parse_database(parser : OptionParser, actives : Array(Options))
+      parser.on("-d DATABASE", "--database=DATABASE", I18n.translate("cli.options.database")) { |database_path|
+        @database_path = database_path
+      } if is_active?(actives, Options::DATABASE_PATH)
+    end
+
+    private def parse_address(parser : OptionParser, actives : Array(Options))
+      parser.on("-a ADDRESS", "--address=ADDRESS", I18n.translate("cli.options.address")) { |address|
+        @address = address
+      } if is_active?(actives, Options::ADDRESS)
+    end
+
+    private def parse_amount(parser : OptionParser, actives : Array(Options))
+      parser.on("-m AMOUNT", "--amount=AMOUNT", I18n.translate("cli.options.token.amount")) { |amount|
+        decimal_option(amount) do
+          @amount = amount
+        end
+      } if is_active?(actives, Options::AMOUNT)
+    end
+
+    private def parse_action(parser : OptionParser, actives : Array(Options))
+      parser.on("--action=ACTION", I18n.translate("cli.options.action")) { |action|
+        @action 
