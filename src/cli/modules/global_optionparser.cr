@@ -332,4 +332,35 @@ module ::Axentro::Interface
 
     private def parse_fee(parser : OptionParser, actives : Array(Options))
       parser.on("-f FEE", "--fee=FEE", I18n.translate("cli.options.fee")) { |fee|
-        decimal_option(fee) 
+        decimal_option(fee) do
+          @fee = fee
+        end
+      } if is_active?(actives, Options::FEE)
+    end
+
+    private def parse_header(parser : OptionParser, actives : Array(Options))
+      parser.on("-h", "--header", I18n.translate("cli.options.headers")) {
+        @header = true
+      } if is_active?(actives, Options::HEADER)
+    end
+
+    private def parse_processes(parser : OptionParser, actives : Array(Options))
+      parser.on("--process=PROCESSES", I18n.translate("cli.options.processes")) { |processes|
+        @processes = processes.to_i
+      } if is_active?(actives, Options::PROCESSES)
+    end
+
+    private def parse_encrypted(parser : OptionParser, actives : Array(Options))
+      parser.on("-e", "--encrypted", I18n.translate("cli.options.encrypted")) {
+        @encrypted = true
+      } if is_active?(actives, Options::ENCRYPTED)
+    end
+
+    private def parse_seed(parser : OptionParser, actives : Array(Options))
+      parser.on("--seed=SEED", I18n.translate("cli.options.seed")) { |seed|
+        @seed = seed
+      } if is_active?(actives, Options::SEED)
+    end
+
+    private def parse_derivation(parser : OptionParser, actives : Array(Options))
+      parser.on("--derivation=\"m/0'\"", I18n.t
