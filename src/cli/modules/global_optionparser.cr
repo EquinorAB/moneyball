@@ -304,4 +304,32 @@ module ::Axentro::Interface
 
     private def parse_action(parser : OptionParser, actives : Array(Options))
       parser.on("--action=ACTION", I18n.translate("cli.options.action")) { |action|
-        @action 
+        @action = action
+      } if is_active?(actives, Options::ACTION)
+    end
+
+    private def parse_message(parser : OptionParser, actives : Array(Options))
+      parser.on("--message=MESSAGE", I18n.translate("cli.options.message")) { |message|
+        @message = message
+      } if is_active?(actives, Options::MESSAGE)
+    end
+
+    private def parse_block_index(parser : OptionParser, actives : Array(Options))
+      parser.on("-i BLOCK_INDEX", "--index=BLOCK_INDEX", I18n.translate("cli.options.block")) { |block_index|
+        @block_index = block_index.to_i
+      } if is_active?(actives, Options::BLOCK_INDEX)
+    end
+
+    private def parse_transaction_id(parser : OptionParser, actives : Array(Options))
+      parser.on(
+        "-t TRANSACTION_ID",
+        "--transaction_id=TRANSACTION_ID",
+        I18n.translate("cli.options.transaction")
+      ) { |transaction_id|
+        @transaction_id = transaction_id
+      } if is_active?(actives, Options::TRANSACTION_ID)
+    end
+
+    private def parse_fee(parser : OptionParser, actives : Array(Options))
+      parser.on("-f FEE", "--fee=FEE", I18n.translate("cli.options.fee")) { |fee|
+        decimal_option(fee) 
