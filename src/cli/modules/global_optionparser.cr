@@ -391,4 +391,31 @@ module ::Axentro::Interface
     private def parse_config_name(parser : OptionParser, actives : Array(Options))
       parser.on("-c", "--config=CONFIG_NAME", I18n.translate("cli.options.config")) { |name|
         @config_name = name
-      } if is_active?(actives, 
+      } if is_active?(actives, Options::CONFIG_NAME)
+    end
+
+    private def parse_node_id(parser : OptionParser, actives : Array(Options))
+      parser.on("--node_id=NODE_ID", I18n.translate("cli.options.node.id")) { |node_id|
+        @node_id = node_id
+      } if is_active?(actives, Options::NODE_ID)
+    end
+
+    private def parse_developer_fund(parser : OptionParser, actives : Array(Options))
+      parser.on("--developer-fund=DEVELOPER_FUND", I18n.translate("cli.options.developer_fund")) { |developer_fund|
+        @developer_fund_path = developer_fund
+      } if is_active?(actives, Options::DEVELOPER_FUND)
+    end
+
+    private def parse_official_nodes(parser : OptionParser, actives : Array(Options))
+      parser.on("--official-nodes=OFFICAL_NODES", I18n.translate("cli.options.official_nodes")) { |official_nodes|
+        @official_nodes_path = official_nodes
+      } if is_active?(actives, Options::OFFICIAL_NODES)
+    end
+
+    private def parse_fast_node(parser : OptionParser, actives : Array(Options))
+      parser.on("--fastnode", I18n.translate("cli.options.fastnode")) {
+        @fastnode = true
+      } if is_active?(actives, Options::FASTNODE)
+    end
+
+    private def par
