@@ -363,4 +363,32 @@ module ::Axentro::Interface
     end
 
     private def parse_derivation(parser : OptionParser, actives : Array(Options))
-      parser.on("--derivation=\"m/0'\"", I18n.t
+      parser.on("--derivation=\"m/0'\"", I18n.translate("cli.options.derivation")) { |derivation|
+        @derivation = derivation
+      } if is_active?(actives, Options::DERIVATION)
+    end
+
+    private def parse_price(parser : OptionParser, actives : Array(Options))
+      parser.on("--price=PRICE", I18n.translate("cli.options.hra.price")) { |price|
+        decimal_option(price) do
+          @price = price
+        end
+      } if is_active?(actives, Options::PRICE)
+    end
+
+    private def parse_domain(parser : OptionParser, actives : Array(Options))
+      parser.on("--domain=DOMAIN", I18n.translate("cli.options.hra.domain")) { |domain|
+        @domain = domain
+      } if is_active?(actives, Options::DOMAIN)
+    end
+
+    private def parse_token(parser : OptionParser, actives : Array(Options))
+      parser.on("--token=TOKEN", I18n.translate("cli.options.token.kind")) { |token|
+        @token = token
+      } if is_active?(actives, Options::TOKEN)
+    end
+
+    private def parse_config_name(parser : OptionParser, actives : Array(Options))
+      parser.on("-c", "--config=CONFIG_NAME", I18n.translate("cli.options.config")) { |name|
+        @config_name = name
+      } if is_active?(actives, 
