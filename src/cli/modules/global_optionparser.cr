@@ -439,4 +439,29 @@ module ::Axentro::Interface
 
     private def parse_slow_transaction(parser : OptionParser, actives : Array(Options))
       parser.on("--slow-transaction", I18n.translate("cli.options.slow_transaction")) {
-        @is_fast_transac
+        @is_fast_transaction = false
+        @is_fast_transaction_changed = true
+      } if is_active?(actives, Options::IS_FAST_TRANSACTION)
+    end
+
+    private def parse_fast_transaction(parser : OptionParser, actives : Array(Options))
+      parser.on("--fast-transaction", I18n.translate("cli.options.fast_transaction")) {
+        @is_fast_transaction = true
+        @is_fast_transaction_changed = true
+      } if is_active?(actives, Options::IS_FAST_TRANSACTION)
+    end
+
+    private def parse_max_miners(parser : OptionParser, actives : Array(Options))
+      parser.on("--max-miners=VALUE", I18n.translate("cli.options.max_miners")) { |v|
+        @max_miners = v.to_i
+      } if is_active?(actives, Options::MAX_MINERS)
+    end
+
+    private def parse_whitelist(parser : OptionParser, actives : Array(Options))
+      parser.on("--whitelist=VALUE", I18n.translate("cli.options.whitelist")) { |v|
+        @whitelist = v.split(",").uniq
+      } if is_active?(actives, Options::WHITELIST)
+    end
+
+    private def parse_whitelist_message(parser : OptionParser, actives : Array(Options))
+      parser.on("--whitelist-message=VALUE", I18n.translate("cli.options.whitelist_
