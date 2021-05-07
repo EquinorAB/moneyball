@@ -418,4 +418,25 @@ module ::Axentro::Interface
       } if is_active?(actives, Options::FASTNODE)
     end
 
-    private def par
+    private def parse_security_level_percentage(parser : OptionParser, actives : Array(Options))
+      parser.on("--security-level-percentage=PERCENT_VALUE", I18n.translate("cli.options.security_level_percentage")) { |slp|
+        @security_level_percentage = Math.max(slp.to_i64, 2_i64)
+      } if is_active?(actives, Options::SECURITY_LEVEL_PERCENTAGE)
+    end
+
+    private def parse_sync_chunk_size(parser : OptionParser, actives : Array(Options))
+      parser.on("--sync-chunk-size=VALUE", I18n.translate("cli.options.sync_chunk_size")) { |sc|
+        raise "sync chunk size must be greater than 0" if sc.to_i <= 0
+        @sync_chunk_size = sc.to_i
+      } if is_active?(actives, Options::SYNC_CHUNK_SIZE)
+    end
+
+    private def parse_record_nonces(parser : OptionParser, actives : Array(Options))
+      parser.on("--record-nonces", I18n.translate("cli.options.record_nonces")) {
+        @record_nonces = true
+      } if is_active?(actives, Options::RECORD_NONCES)
+    end
+
+    private def parse_slow_transaction(parser : OptionParser, actives : Array(Options))
+      parser.on("--slow-transaction", I18n.translate("cli.options.slow_transaction")) {
+        @is_fast_transac
