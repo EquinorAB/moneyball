@@ -464,4 +464,30 @@ module ::Axentro::Interface
     end
 
     private def parse_whitelist_message(parser : OptionParser, actives : Array(Options))
-      parser.on("--whitelist-message=VALUE", I18n.translate("cli.options.whitelist_
+      parser.on("--whitelist-message=VALUE", I18n.translate("cli.options.whitelist_message")) { |v|
+        @whitelist_message = v
+      } if is_active?(actives, Options::WHITELIST_MESSAGE)
+    end
+
+    private def parse_metrics_whitelist(parser : OptionParser, actives : Array(Options))
+      parser.on("--metrics-whitelist=VALUE", I18n.translate("cli.options.metrics_whitelist")) { |v|
+        @metrics_whitelist = v.split(",").uniq
+      } if is_active?(actives, Options::METRICS_WHITELIST)
+    end
+
+    private def parse_max_private_nodes(parser : OptionParser, actives : Array(Options))
+      parser.on("--max-private-nodes=VALUE", I18n.translate("cli.options.max_private_nodes")) { |v|
+        @max_nodes = v.to_i
+      } if is_active?(actives, Options::MAX_PRIVATE_NODES)
+    end
+
+    private def parse_asset_id(parser : OptionParser, actives : Array(Options))
+      parser.on("--asset-id=VALUE", I18n.translate("cli.options.asset_id")) { |v|
+        @asset_id = v
+      } if is_active?(actives, Options::ASSET_ID)
+    end
+
+    private def parse_asset_name(parser : OptionParser, actives : Array(Options))
+      parser.on("--asset-name=VALUE", I18n.translate("cli.options.asset_name")) { |v|
+        @asset_name = v
+      } if is
