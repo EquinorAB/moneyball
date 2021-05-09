@@ -560,4 +560,78 @@ module ::Axentro::Interface
     end
 
     def __database_path : String?
-      with_string_config("database_path", @databa
+      with_string_config("database_path", @database_path)
+    end
+
+    def __address : String?
+      with_string_config("address", @address)
+    end
+
+    def __asset_id : String?
+      @asset_id
+    end
+
+    def __asset_name : String?
+      @asset_name
+    end
+
+    def __asset_description : String?
+      @asset_description
+    end
+
+    def __asset_media_location : String?
+      @asset_media_location
+    end
+
+    def __asset_locked : Bool
+      @asset_locked
+    end
+
+    def __whitelist : Array(String)
+      @whitelist
+    end
+
+    def __whitelist_message : String
+      @whitelist_message
+    end
+
+    def __metrics_whitelist : Array(String)
+      @metrics_whitelist
+    end
+
+    def __amount : String?
+      @amount
+    end
+
+    def __action : String?
+      @action
+    end
+
+    def __message : String
+      @message
+    end
+
+    def __block_index : Int32?
+      @block_index
+    end
+
+    def __transaction_id : String?
+      @transaction_id
+    end
+
+    def __fee : String?
+      @fee
+    end
+
+    def __header : Bool
+      @header
+    end
+
+    def __processes : Int32
+      return @processes if @processes != 1
+      return cm.get_i32("processes", @config_name).not_nil! if cm.get_i32("processes", @config_name)
+      @processes
+    end
+
+    def __encrypted : Bool
+      return @encrypte
