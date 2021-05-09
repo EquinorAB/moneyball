@@ -520,4 +520,44 @@ module ::Axentro::Interface
     end
 
     def __wallet_path : String?
-      with_string_con
+      with_string_config("wallet_path", @wallet_path)
+    end
+
+    def __wallet_password : String?
+      with_string_config("wallet_password", @wallet_password)
+    end
+
+    def __is_testnet : Bool
+      return @is_testnet if @is_testnet_changed
+      return cm.get_bool("is_testnet", @config_name).not_nil! if cm.get_bool("is_testnet", @config_name)
+      @is_testnet
+    end
+
+    def __is_private : Bool
+      return @is_private if @is_private_changed
+      return cm.get_bool("is_private", @config_name).not_nil! if cm.get_bool("is_private", @config_name)
+      @is_private
+    end
+
+    def __json : Bool
+      @json
+    end
+
+    def __bind_host : String
+      return @bind_host if @bind_host != "0.0.0.0"
+      return cm.get_s("bind_host", @config_name).not_nil! if cm.get_s("bind_host", @config_name)
+      @bind_host
+    end
+
+    def __bind_port : Int32
+      return @bind_port if @bind_port != 3000
+      return cm.get_i32("bind_port", @config_name).not_nil! if cm.get_i32("bind_port", @config_name)
+      @bind_port
+    end
+
+    def __public_url : String?
+      with_string_config("public_url", @public_url)
+    end
+
+    def __database_path : String?
+      with_string_config("database_path", @databa
