@@ -490,4 +490,34 @@ module ::Axentro::Interface
     private def parse_asset_name(parser : OptionParser, actives : Array(Options))
       parser.on("--asset-name=VALUE", I18n.translate("cli.options.asset_name")) { |v|
         @asset_name = v
-      } if is
+      } if is_active?(actives, Options::ASSET_NAME)
+    end
+
+    private def parse_asset_description(parser : OptionParser, actives : Array(Options))
+      parser.on("--asset-description=VALUE", I18n.translate("cli.options.asset_description")) { |v|
+        @asset_description = v
+      } if is_active?(actives, Options::ASSET_DESCRIPTION)
+    end
+
+    private def parse_asset_media_location(parser : OptionParser, actives : Array(Options))
+      parser.on("--asset-media-location=VALUE", I18n.translate("cli.options.asset_media_location")) { |v|
+        @asset_media_location = v
+      } if is_active?(actives, Options::ASSET_MEDIA_LOCATION)
+    end
+
+    private def parse_asset_locked(parser : OptionParser, actives : Array(Options))
+      parser.on("--lock-asset", I18n.translate("cli.options.asset_locked")) { |_|
+        @asset_locked = true
+      } if is_active?(actives, Options::ASSET_LOCKED)
+    end
+
+    def is_active?(actives : Array(Options), option : Options) : Bool
+      actives.includes?(option)
+    end
+
+    def __connect_node : String?
+      with_string_config("connect_node", @connect_node)
+    end
+
+    def __wallet_path : String?
+      with_string_con
