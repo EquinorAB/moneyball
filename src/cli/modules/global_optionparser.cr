@@ -698,3 +698,37 @@ module ::Axentro::Interface
     def __max_miners : Int32
       @max_miners
     end
+
+    def __max_nodes : Int32
+      @max_nodes
+    end
+
+    def __is_fast_transaction : Bool
+      return @is_fast_transaction if @is_fast_transaction_changed
+      return cm.get_bool("is_fast_transaction", @config_name).not_nil! if cm.get_bool("is_fast_transaction", @config_name)
+      @is_fast_transaction
+    end
+
+    def cm
+      ConfigManager.get_instance
+    end
+
+    def decimal_option(value, &block)
+      valid_amount?(value)
+      yield value
+    rescue e : InvalidBigDecimalException
+      puts_error I18n.translate("cli.errors.decimal", {value: value})
+    end
+
+    private def with_string_config(name, var)
+      return var if var
+      cm.get_s(name, @config_name)
+    end
+
+    include Logger
+    include Common::Validator
+  end
+
+  alias G = GlobalOptionParser
+  alias Options = G::Options
+end
