@@ -634,4 +634,67 @@ module ::Axentro::Interface
     end
 
     def __encrypted : Bool
-      return @encrypte
+      return @encrypted if @encrypted
+      return cm.get_bool("encrypted", @config_name).not_nil! if cm.get_bool("encrypted", @config_name)
+      @encrypted
+    end
+
+    def __seed : String?
+      @seed
+    end
+
+    def __derivation : String?
+      @derivation
+    end
+
+    def __price : String?
+      @price
+    end
+
+    def __domain : String?
+      with_string_config("domain", @domain)
+    end
+
+    def __token : String?
+      @token
+    end
+
+    def __name : String?
+      @config_name
+    end
+
+    def __node_id : String?
+      @node_id
+    end
+
+    def __developer_fund : Core::DeveloperFund?
+      Core::DeveloperFund.validate(@developer_fund_path)
+    end
+
+    def __official_nodes : Core::OfficialNodes?
+      Core::OfficialNodes.validate(@official_nodes_path)
+    end
+
+    def __fastnode : Bool
+      @fastnode
+    end
+
+    def __exit_if_unofficial : Bool
+      @exit_if_unofficial
+    end
+
+    def __security_level_percentage : Int64
+      @security_level_percentage
+    end
+
+    def __sync_chunk_size : Int32
+      @sync_chunk_size
+    end
+
+    def __record_nonces : Bool
+      @record_nonces
+    end
+
+    def __max_miners : Int32
+      @max_miners
+    end
