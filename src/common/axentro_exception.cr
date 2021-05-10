@@ -10,6 +10,10 @@
 #
 # Removal or modification of this copyright notice is prohibited.
 
-require "../core/developer_fund/*"
-require "./modules/logger"
-require "./modules/*"
+module ::Axentro::Common
+  class AxentroException < Exception
+  end
+
+  class InvalidAmount < AxentroException
+    def initialize
+      s
