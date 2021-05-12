@@ -1,3 +1,4 @@
+
 # Copyright © 2017-2020 The Axentro Core developers
 #
 # See the LICENSE file at the top-level directory of this distribution
@@ -10,13 +11,18 @@
 #
 # Removal or modification of this copyright notice is prohibited.
 
-module ::Axentro::Common
-  class AxentroException < Exception
+module ::Axentro::Common::Denomination
+  SCALE_DECIMAL = 8
+
+  def scale_i64(value : String) : Int64
+    BigDecimal.new(value).scale_to(BigDecimal.new(1, SCALE_DECIMAL)).value.to_i64
   end
 
-  class InvalidAmount < AxentroException
-    def initialize
-      super("the amount is out of range")
-    end
+  def scale_i64(value : BigDecimal) : Int64
+    value.scale_to(BigDecimal.new(1, SCALE_DECIMAL)).value.to_i64
+  end
+
+  def scale_decimal(value : Int64) : String
+    BigDecimal.new(value, SCALE_DECIMAL).to_s
   end
 end
