@@ -10,18 +10,13 @@
 #
 # Removal or modification of this copyright notice is prohibited.
 
-module ::Axentro::Common::Timestamp
-  def __timestamp : Int64
-    Time.utc.to_unix_ms
+module ::Axentro::Common::Validator
+  def valid_amount?(amount : Int64) : Bool
+    raise InvalidAmount.new if amount < 0
+    true
   end
 
-  module Int64::EpochMillisConverter
-    def self.to_json(value : Int64, json : JSON::Builder)
-      json.string(Time.unix_ms(value).to_s)
-    end
+  def valid_amount?(amount : String, message : String = "") : Bool
+    amount_decimal = BigDecimal.new(amount)
 
-    def self.from_json(value : JSON::PullParser) : Int64
-      Time.parse_utc(value.read_string, "%Y-%m-%d %H:%M:%S %z").to_unix_ms
-    end
-  end
-end
+    if BigDecimal.new(Int64::MAX, Denomination::SCALE_DECIMAL) < amo
