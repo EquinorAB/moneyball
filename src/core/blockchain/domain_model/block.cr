@@ -136,4 +136,41 @@ module ::Axentro::Core
       sha256(string)
     end
 
-    def ca
+    def calculate_merkle_tree_root(transactions : Array(Transaction)) : String
+      MerkleTreeCalculator.new(@hash_version).calculate_merkle_tree_root(transactions)
+    end
+
+    def is_slow_block?
+      @kind == BlockKind::SLOW
+    end
+
+    def is_fast_block?
+      @kind == BlockKind::FAST
+    end
+
+    def kind : String
+      is_slow_block? ? "SLOW" : "FAST"
+    end
+
+    # This uses the @ shortcut to set the nonce onto the block
+    def with_nonce(@nonce : BlockNonce) : Block
+      self
+    end
+
+    def with_difficulty(@difficulty : Int32) : Block
+      self
+    end
+
+    def with_timestamp(@timestamp : Int64) : Block
+      self
+    end
+
+    def valid_block_nonce?(difficulty : Int32) : Bool
+      is_nonce_valid?(mining_version, to_hash, @nonce, difficulty)
+    end
+
+    def valid?(blockchain : Blockchain, skip_transactions : Bool = false, doing_replace : Bool = false) : Bool
+      if @kind == BlockKind::FAST
+        return true if @index <= 1_i64
+        validated_block = BlockValidator.validate_fast(self, blockchain, skip_transactions, doing_replace)
+        validated_block.valid ? validated_block.valid : raise Axentro::Common::AxentroException.new(validated_block.r
