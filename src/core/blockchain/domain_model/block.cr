@@ -47,4 +47,50 @@ module ::Axentro::Core
       @index : Int64,
       @transactions : Array(Transaction),
       @nonce : BlockNonce,
-      @prev_hash 
+      @prev_hash : String,
+      @timestamp : Int64,
+      @difficulty : Int32,
+      @kind : BlockKind,
+      @address : String,
+      @public_key : String,
+      @signature : String,
+      @hash : String,
+      @version : BlockVersion,
+      @hash_version : HashVersion,
+      @merkle_tree_root : String,
+      @checkpoint : String,
+      @mining_version : MiningVersion
+    )
+    end
+
+    # slow
+    def initialize(
+      @index : Int64,
+      @transactions : Array(Transaction),
+      @nonce : BlockNonce,
+      @prev_hash : String,
+      @timestamp : Int64,
+      @difficulty : Int32,
+      @address : String,
+      @version : BlockVersion,
+      @hash_version : HashVersion,
+      @checkpoint : String,
+      @mining_version : MiningVersion
+    )
+      @public_key = ""
+      @signature = ""
+      @hash = ""
+      @kind = BlockKind::SLOW
+      if index.odd?
+        raise AxentroException.new("index must be even number")
+      end
+
+      @merkle_tree_root = calculate_merkle_tree_root(@transactions)
+    end
+
+    # fast
+    def initialize(
+      @index : Int64,
+      @transactions : Array(Transaction),
+      @prev_hash : String,
+      @timestam
