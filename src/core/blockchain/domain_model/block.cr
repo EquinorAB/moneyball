@@ -93,4 +93,47 @@ module ::Axentro::Core
       @index : Int64,
       @transactions : Array(Transaction),
       @prev_hash : String,
-      @timestam
+      @timestamp : Int64,
+      @address : String,
+      @public_key : String,
+      @signature : String,
+      @hash : String,
+      @version : BlockVersion,
+      @hash_version : HashVersion,
+      @checkpoint : String
+    )
+      @nonce = ""
+      @difficulty = 0
+      @kind = BlockKind::FAST
+      @mining_version = MiningVersion::V1
+
+      if index.even?
+        raise AxentroException.new("index must be odd number")
+      end
+
+      @merkle_tree_root = calculate_merkle_tree_root(@transactions)
+    end
+
+    def to_header : Blockchain::Header
+      {
+        index:            @index,
+        nonce:            @nonce,
+        prev_hash:        @prev_hash,
+        merkle_tree_root: @merkle_tree_root,
+        timestamp:        @timestamp,
+        difficulty:       @difficulty,
+      }
+    end
+
+    def to_hash : String
+      string = BlockNoTimestamp.from_block(self).to_json
+      argon2(string)
+    end
+
+    # for fast block
+    def self.to_hash(index : Int64, transactions : Array(Transaction), prev_hash : String, address : String, public_key : String) : String
+      string = {index: index, transactions: transactions, prev_hash: prev_hash, address: address, public_key: public_key}.to_json
+      sha256(string)
+    end
+
+    def ca
