@@ -212,4 +212,38 @@ module ::Axentro::Core
     property hash : String
     property version : BlockVersion
     property hash_version : HashVersion
-    property checkpoi
+    property checkpoint : String
+    property mining_version : MiningVersion
+
+    def self.from_block(b : Block)
+      self.new(b.index, b.transactions, b.nonce, b.prev_hash, b.merkle_tree_root, b.difficulty, b.address, b.public_key, b.signature, b.hash, b.version, b.hash_version, b.checkpoint, b.mining_version)
+    end
+
+    def initialize(
+      @index : Int64,
+      @transactions : Array(Transaction),
+      @nonce : String,
+      @prev_hash : String,
+      @merkle_tree_root : String,
+      @difficulty : Int32,
+      @address : String,
+      @public_key : String,
+      @signature : String,
+      @hash : String,
+      @version : BlockVersion,
+      @hash_version : HashVersion,
+      @checkpoint : String,
+      @mining_version : MiningVersion
+    )
+    end
+
+    def to_json(j : JSON::Builder)
+      sorted_transactions = @transactions.sort_by { |t| {t.timestamp, t.id} }
+      j.object do
+        j.field("index", @index)
+        j.field("nonce", @nonce)
+        j.field("prev_hash", @prev_hash)
+        j.field("merkle_tree_root", @merkle_tree_root)
+        j.field("difficulty", @difficulty)
+        j.field("address", @address)
+        j.field("public_key", 
