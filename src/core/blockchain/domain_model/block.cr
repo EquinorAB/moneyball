@@ -173,4 +173,43 @@ module ::Axentro::Core
       if @kind == BlockKind::FAST
         return true if @index <= 1_i64
         validated_block = BlockValidator.validate_fast(self, blockchain, skip_transactions, doing_replace)
-        validated_block.valid ? validated_block.valid : raise Axentro::Common::AxentroException.new(validated_block.r
+        validated_block.valid ? validated_block.valid : raise Axentro::Common::AxentroException.new(validated_block.reason)
+      else
+        validated_block = BlockValidator.validate_slow(self, blockchain, skip_transactions, doing_replace)
+        validated_block.valid ? validated_block.valid : raise Axentro::Common::AxentroException.new(validated_block.reason)
+      end
+    end
+
+    def find_transaction(transaction_id : String) : Transaction?
+      @transactions.find(&.id.starts_with?(transaction_id))
+    end
+
+    def set_transactions(txns : Transactions)
+      @transactions = txns
+      verbose "Number of transactions in block: #{txns.size}"
+      @merkle_tree_root = calculate_merkle_tree_root(@transactions)
+    end
+
+    include Hashes
+    include Logger
+    include Protocol
+    include Consensus
+    include Common
+    include NonceModels
+  end
+
+  class BlockNoTimestamp
+    include JSON::Serializable
+    property index : Int64
+    property transactions : Array(Transaction)
+    property nonce : String
+    property prev_hash : String
+    property merkle_tree_root : String
+    property difficulty : Int32
+    property address : String
+    property public_key : String
+    property signature : String
+    property hash : String
+    property version : BlockVersion
+    property hash_version : HashVersion
+    property checkpoi
