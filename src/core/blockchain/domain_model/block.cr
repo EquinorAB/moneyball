@@ -246,4 +246,17 @@ module ::Axentro::Core
         j.field("merkle_tree_root", @merkle_tree_root)
         j.field("difficulty", @difficulty)
         j.field("address", @address)
-        j.field("public_key", 
+        j.field("public_key", @public_key)
+        j.field("signature", @signature)
+        j.field("hash", @hash)
+        j.field("version", @version)
+        j.field("hash_version", @hash_version)
+        j.field("checkpoint", @checkpoint)
+        j.field("mining_version", @mining_version)
+        j.field("transactions", sorted_transactions)
+      end
+    end
+
+    include NonceModels
+  end
+end
