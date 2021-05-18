@@ -18,4 +18,44 @@ module ::Axentro::Core::NonceModels
     getter value : BlockNonce
     getter timestamp : Int64 = 0_i64
     getter address : String = "0"
-    get
+    getter node_id : String = "0"
+    getter difficulty : Int32 = 1
+
+    def initialize(@value : BlockNonce); end
+
+    def self.from(block_nonce : BlockNonce) : MinerNonce
+      MinerNonce.new(block_nonce)
+    end
+
+    def ==(other) : Bool
+      value == other.value
+    end
+
+    def with_mid(@mid : String) : MinerNonce
+      self
+    end
+
+    def with_value(@value : String) : MinerNonce
+      self
+    end
+
+    def with_timestamp(@timestamp : Int64) : MinerNonce
+      self
+    end
+
+    def with_address(@address : String) : MinerNonce
+      self
+    end
+
+    def with_node_id(@node_id : String) : MinerNonce
+      self
+    end
+
+    def with_difficulty(@difficulty : Int32) : MinerNonce
+      self
+    end
+  end
+
+  alias MinerNonces = Array(MinerNonce)
+  alias BlockNonce = String
+end
