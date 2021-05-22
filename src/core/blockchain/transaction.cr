@@ -49,4 +49,49 @@ module ::Axentro::Core
         j.field("action", @action)
         j.field("message", @message)
         j.field("token", @token)
-       
+        j.field("prev_hash", @prev_hash)
+        j.field("timestamp", @timestamp)
+        j.field("scaled", @scaled)
+        j.field("kind", @kind)
+        j.field("version", @version)
+        j.field("senders", sorted_senders)
+        j.field("recipients", sorted_recipients)
+        j.field("assets", sorted_assets)
+        j.field("modules", sorted_modules)
+        j.field("inputs", sorted_inputs)
+        j.field("outputs", sorted_outputs)
+        j.field("linked", @linked)
+      end
+    end
+
+    def initialize(
+      @id : String,
+      @action : String,
+      @senders : Array(Sender),
+      @recipients : Recipients,
+      @assets : Array(Asset),
+      @modules : Array(Module),
+      @inputs : Array(Input),
+      @outputs : Array(Output),
+      @linked : String,
+      @message : String,
+      @token : String,
+      @prev_hash : String,
+      @timestamp : Int64,
+      @scaled : Int32,
+      @kind : TransactionKind,
+      @version : TransactionVersion
+    )
+    end
+
+    def set_common_validated : Core::Transaction
+      @common_validated = true
+      self
+    end
+
+    def is_common_validated?
+      @common_validated
+    end
+
+    def is_coinbase?
+      @action =
