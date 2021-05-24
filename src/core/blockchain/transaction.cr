@@ -94,4 +94,59 @@ module ::Axentro::Core
     end
 
     def is_coinbase?
-      @action =
+      @action == "head"
+    end
+
+    def add_prev_hash(prev_hash : String) : Transaction
+      unless is_coinbase?
+        self.prev_hash = prev_hash
+      end
+      self
+    end
+
+    def self.create_id : String
+      tmp_id = Random::Secure.hex(32)
+      return create_id if tmp_id[0] == "0"
+      tmp_id
+    end
+
+    def to_hash : String
+      string = self.to_json
+      sha256(string)
+    end
+
+    def short_id : String
+      @id[0..7]
+    end
+
+    def self.short_id(txn_id) : String
+      txn_id[0..7]
+    end
+
+    def as_unsigned : Transaction
+      unsigned_senders = self.senders.map do |s|
+        Sender.new(s.address, s.public_key, s.amount, s.fee, "0", s.asset_id, s.asset_quantity)
+      end
+
+      Transaction.new(
+        self.id,
+        self.action,
+        unsigned_senders,
+        self.recipients,
+        self.assets,
+        self.modules,
+        self.inputs,
+        self.outputs,
+        self.linked,
+        self.message,
+        self.token,
+        "0",
+        self.timestamp,
+        self.scaled,
+        self.kind,
+        self.version
+      )
+    end
+
+    def as_signed(wallets : Array(Wallet)) : Transaction
+      signed_senders = self.senders.map_with_index {
