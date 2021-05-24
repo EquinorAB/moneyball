@@ -200,3 +200,38 @@ module ::Axentro::Core
 
     def set_recipients(@recipients)
     end
+
+    def set_assets(@assets)
+    end
+
+    #
+    # ignore prev_hash for comparison
+    #
+    def ==(other : Transaction) : Bool
+      return false unless @id == other.id
+      return false unless @action == other.action
+      return false unless @senders == other.senders
+      return false unless @recipients == other.recipients
+      return false unless @assets == other.assets
+      return false unless @modules == other.modules
+      return false unless @inputs == other.inputs
+      return false unless @outputs == other.outputs
+      return false unless @linked == other.linked
+      return false unless @token == other.token
+      return false unless @timestamp == other.timestamp
+      return false unless @scaled == other.scaled
+      return false unless @kind == other.kind
+      return false unless @version == other.version
+
+      true
+    end
+
+    include Hashes
+    include Logger
+    include TransactionModels
+    include Common::Validator
+    include Common::Denomination
+  end
+end
+
+require "./transaction/*"
