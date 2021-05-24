@@ -149,4 +149,54 @@ module ::Axentro::Core
     end
 
     def as_signed(wallets : Array(Wallet)) : Transaction
-      signed_senders = self.senders.map_with_index {
+      signed_senders = self.senders.map_with_index { |s, i|
+        private_key = Wif.new(wallets[i].wif).private_key
+        signature = KeyUtils.sign(private_key.as_hex, self.to_hash)
+        Sender.new(s.address, s.public_key, s.amount, s.fee, signature, s.asset_id, s.asset_quantity)
+      }
+
+      Transaction.new(
+        self.id,
+        self.action,
+        signed_senders,
+        self.recipients,
+        self.assets,
+        self.modules,
+        self.inputs,
+        self.outputs,
+        self.linked,
+        self.message,
+        self.token,
+        "0",
+        self.timestamp,
+        self.scaled,
+        self.kind,
+        self.version
+      )
+    end
+
+    def is_slow_transaction?
+      self.kind == TransactionKind::SLOW
+    end
+
+    def is_fast_transaction?
+      self.kind == TransactionKind::FAST
+    end
+
+    def sender_total_amount : Int64
+      senders.reduce(0_i64) { |sum, sender| sum + sender.amount }
+    end
+
+    def recipient_total_amount : Int64
+      recipients.reduce(0_i64) { |sum, recipient| sum + recipient.amount }
+    end
+
+    def total_fees : Int64
+      senders.reduce(0_i64) { |sum, sender| sum + sender.fee }
+    end
+
+    def set_senders(@senders)
+    end
+
+    def set_recipients(@recipients)
+    end
