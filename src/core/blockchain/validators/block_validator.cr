@@ -33,4 +33,28 @@ module ::Axentro::Core::BlockValidator
     BlockValidator::Rules.rule_merkle_tree(block)
 
     ValidatedBlock.new(true, block)
-  rescue e : Axe
+  rescue e : Axentro::Common::AxentroException
+    ValidatedBlock.new(false, block, e.message || "unknown error")
+  rescue e : Exception
+    error("#{e.class}: #{e.message || "unknown error"}\n#{e.backtrace.join("\n")}")
+    ValidatedBlock.new(false, block, "unexpected error: #{e.message || "unknown error"}")
+  end
+
+  def checkpoint_validate(block : Block, blocks : Array(Block)) : ValidatedBlock
+    result = ValidatedBlock.new(true, block)
+    actual = MerkleTreeCalculator.new(HashVersion::V2).calculate_merkle_tree_root(blocks)
+    if actual != block.checkpoint
+      result = ValidatedBlock.new(false, block, "checkpoint validation for index: #{block.index} failed. Actual #{actual} did not match expected #{block.checkpoint}")
+    end
+    result
+  rescue e : Exception
+    error("#{e.class}: #{e.message || "unknown error"}\n#{e.backtrace.join("\n")}")
+    ValidatedBlock.new(false, block, "unexpected error: #{e.message || "unknown error"}")
+  end
+
+  def validate_genesis(block : Block)
+    BlockValidator::Rules.rule_genesis(block)
+    ValidatedBlock.new(true, block)
+  rescue e : Axentro::Common::AxentroException
+    ValidatedBlock.new(false, block, e.message || "unknown error")
+  
