@@ -79,4 +79,30 @@ module ::Axentro::Core::BlockValidator
 
     BlockValidator::Rules.rule_slow_transactions(skip_transactions, block.transactions, blockchain, block.index)
 
-    BlockValidator::Rules.rule_timestamp(
+    BlockValidator::Rules.rule_timestamp(block.timestamp, prev_block, 0_i64)
+
+    BlockValidator::Rules.rule_difficulty(block)
+
+    BlockValidator::Rules.rule_merkle_tree(block)
+
+    ValidatedBlock.new(true, block)
+  rescue e : Axentro::Common::AxentroException
+    ValidatedBlock.new(false, block, e.message || "unknown error")
+  rescue e : Exception
+    error("#{e.class}: #{e.message || "unknown error"}\n#{e.backtrace.join("\n")}")
+    ValidatedBlock.new(false, block, "unexpected error: #{e.message || "unknown error"}")
+  end
+
+  def validate_fast_block(block : Block, blockchain : Blockchain, skip_transactions : Bool = false, doing_replace : Bool = false) : ValidatedBlock
+    chain_network = blockchain.database.chain_network_kind
+    block_network = Address.get_network_from_address(block.address)
+
+    prev_block_index = block.index - 2_i64
+    _prev_block = blockchain.database.get_block(prev_block_index)
+
+    raise AxentroException.new("(fast_block::valid?) error finding previous fast block: #{prev_block_index} for current block: #{block.index}") if _prev_block.nil?
+    prev_block = _prev_block.not_nil!
+
+    BlockValidator::Rules.rule_fast_signature(block)
+
+    BlockValidator::Rules.rule_network_type(chain_network, block_n
