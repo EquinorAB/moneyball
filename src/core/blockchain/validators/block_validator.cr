@@ -131,4 +131,19 @@ module ::Axentro::Core::BlockValidator
     def rule_genesis(block)
       raise AxentroException.new("Invalid Genesis Index: index has to be '0' for genesis block: #{block.index}") if block.index != 0
       raise AxentroException.new("Invalid Genesis Nonce: nonce has to be '0' for genesis block: #{block.nonce}") if block.nonce != "0"
-      raise AxentroException.new("Invalid Genesis Previous Hash: prev_hash has to be 'genesis
+      raise AxentroException.new("Invalid Genesis Previous Hash: prev_hash has to be 'genesis' for genesis block: #{block.prev_hash}") if block.prev_hash != "genesis"
+      raise AxentroException.new("Invalid Genesis Difficulty: difficulty has to be '#{Consensus::MINER_DIFFICULTY_TARGET}' for genesis block: #{block.difficulty}") if block.difficulty != Consensus::MINER_DIFFICULTY_TARGET
+      raise AxentroException.new("Invalid Genesis Address: address has to be 'genesis' for genesis block") if block.address != "genesis"
+    end
+
+    def rule_network_type(chain_network, block_network)
+      if chain_network && block_network != chain_network
+        raise AxentroException.new("Invalid block network type: incoming block is of type: #{block_network[:name]} but chain is of type: #{chain_network.not_nil![:name]}")
+      end
+    end
+
+    def rule_prev_block_slow_index(doing_replace, blockchain, current_block_index)
+      unless doing_replace
+        latest_slow_index = blockchain.database.highest_index_of_kind(BlockKind::SLOW) + 2
+        raise AxentroException.new("Index Mismatch: the current block index: #{current_block_index} should match the latest slow block index: #{latest_slow_index}") if current_block_index != latest_slow_index
+      
