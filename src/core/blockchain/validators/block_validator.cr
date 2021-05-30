@@ -146,4 +146,26 @@ module ::Axentro::Core::BlockValidator
       unless doing_replace
         latest_slow_index = blockchain.database.highest_index_of_kind(BlockKind::SLOW) + 2
         raise AxentroException.new("Index Mismatch: the current block index: #{current_block_index} should match the latest slow block index: #{latest_slow_index}") if current_block_index != latest_slow_index
-      
+      end
+    end
+
+    def rule_prev_block_fast_index(doing_replace, blockchain, current_block_index)
+      unless doing_replace
+        latest_slow_index = blockchain.database.highest_index_of_kind(BlockKind::FAST) + 2
+        raise AxentroException.new("Index Mismatch: the current block index: #{current_block_index} should match the latest fast block index: #{latest_slow_index}") if current_block_index != latest_slow_index
+      end
+    end
+
+    def rule_prev_hash(block, prev_block)
+      regen_prev_hash = prev_block.to_hash
+      raise AxentroException.new("Invalid Previous Slow Block Hash: for current index: #{block.index} the slow block prev_hash is invalid: (prev index: #{prev_block.index}) #{regen_prev_hash} != #{block.prev_hash}") if regen_prev_hash != block.prev_hash
+    end
+
+    def rule_slow_transactions(skip_transactions, transactions, blockchain, current_block_index)
+      unless skip_transactions
+        vt = validate_slow_transactions(transactions, blockchain, current_block_index)
+        raise AxentroException.new(vt.failed.first.reason) if vt.failed.size != 0
+      end
+    end
+
+    def rule_fast_transactions(skip_transactions, transactions, blockchain, current_bloc
