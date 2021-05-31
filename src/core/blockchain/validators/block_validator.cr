@@ -192,4 +192,30 @@ module ::Axentro::Core::BlockValidator
 
     def rule_difficulty(block)
       if block.difficulty > 0
-        raise AxentroException.new("Invalid Nonce: #{block.nonce} for difficulty #{block.difficulty}") unless block.calculate_pow_difficulty(block.mining_version, block
+        raise AxentroException.new("Invalid Nonce: #{block.nonce} for difficulty #{block.difficulty}") unless block.calculate_pow_difficulty(block.mining_version, block.to_hash, block.nonce, block.difficulty) >= block.block_difficulty_to_miner_difficulty(block.difficulty)
+      end
+    end
+
+    def rule_merkle_tree(block)
+      merkle_tree_root = block.calculate_merkle_tree_root(block.transactions)
+
+      if merkle_tree_root != block.merkle_tree_root
+        raise AxentroException.new("Invalid Merkle Tree Root: (expected #{block.merkle_tree_root} but got #{merkle_tree_root})")
+      end
+    end
+
+    private def validate_slow_transactions(transactions : Array(Transaction), blockchain : Blockchain, current_block_index : Int64) : ValidatedTransactions
+      result = SlowTransactionPool.find_all(transactions)
+      slow_transactions = result.found + result.not_found
+
+      vt = TransactionValidator.validate_common(slow_transactions, blockchain.network_type)
+
+      coinbase_transactions = vt.passed.select(&.is_coinbase?)
+      body_transactions = vt.passed.reject(&.is_coinbase?)
+
+      vt.concat(TransactionValidator.validate_coinbase(coinbase_transactions, body_transactions, blockchain, current_block_index))
+      vt.concat(TransactionValidator.validate_embedded(coinbase_transactions + body_transactions, blockchain))
+      vt
+    end
+
+    
