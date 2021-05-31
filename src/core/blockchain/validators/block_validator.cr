@@ -218,4 +218,26 @@ module ::Axentro::Core::BlockValidator
       vt
     end
 
-    
+    private def validate_fast_transactions(transactions : Array(Transaction), blockchain : Blockchain, current_block_index : Int64) : ValidatedTransactions
+      result = FastTransactionPool.find_all(transactions)
+      fast_transactions = result.found + result.not_found
+
+      vt = TransactionValidator.validate_common(fast_transactions, blockchain.network_type)
+
+      coinbase_transactions = vt.passed.select(&.is_coinbase?)
+      body_transactions = vt.passed.reject(&.is_coinbase?)
+
+      vt.concat(TransactionValidator.validate_coinbase(coinbase_transactions, body_transactions, blockchain, current_block_index))
+      vt.concat(TransactionValidator.validate_embedded(coinbase_transactions + body_transactions, blockchain))
+      vt
+    end
+  end
+
+  struct ValidatedBlock
+    getter valid : Bool
+    getter block : Block
+    getter reason : String
+
+    def initialize(@valid, @block, @reason = ""); end
+  end
+end
