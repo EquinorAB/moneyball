@@ -168,4 +168,28 @@ module ::Axentro::Core::BlockValidator
       end
     end
 
-    def rule_fast_transactions(skip_transactions, transactions, blockchain, current_bloc
+    def rule_fast_transactions(skip_transactions, transactions, blockchain, current_block_index)
+      unless skip_transactions
+        vt = validate_fast_transactions(transactions, blockchain, current_block_index)
+        raise AxentroException.new(vt.failed.first.reason) if vt.failed.size != 0
+      end
+    end
+
+    def rule_fast_signature(block)
+      valid_signature = KeyUtils.verify_signature(block.hash, block.signature, block.public_key)
+      raise AxentroException.new("Invalid Block Signature: the current block index: #{block.index} has an invalid signature") unless valid_signature
+    end
+
+    def rule_timestamp(block_timestamp, prev_block, padding)
+      next_timestamp = __timestamp + padding
+      prev_timestamp = prev_block.timestamp
+
+      if prev_timestamp > block_timestamp || next_timestamp < block_timestamp
+        raise AxentroException.new("Invalid Timestamp: #{block_timestamp} " +
+                                   "(timestamp should be bigger than #{prev_timestamp} and smaller than #{next_timestamp})")
+      end
+    end
+
+    def rule_difficulty(block)
+      if block.difficulty > 0
+        raise AxentroException.new("Invalid Nonce: #{block.nonce} for difficulty #{block.difficulty}") unless block.calculate_pow_difficulty(block.mining_version, block
