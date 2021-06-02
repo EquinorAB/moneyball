@@ -55,4 +55,36 @@ module ::Axentro::Core::TransactionValidator
       verbose "public key: #{public_key.as_hex}"
       verbose "signature: #{sender.signature}"
 
-      verify_result = KeyUtils.verify_signature(transaction.as_unsigned.to_hash, sender.signature, p
+      verify_result = KeyUtils.verify_signature(transaction.as_unsigned.to_hash, sender.signature, public_key.as_hex)
+
+      verbose "verify signature result: #{verify_result}"
+
+      if !verify_result
+        return FailedTransaction.new(transaction, "invalid signing for sender: #{sender.address}")
+      end
+
+      unless Keys::Address.from(sender.address, "sender")
+        return FailedTransaction.new(transaction, "invalid checksum for sender's address: #{sender.address}")
+      end
+
+      valid_amount?(sender.amount)
+      nil
+    end
+  end
+
+  def validate_recipients(transaction : Axentro::Core::Transaction, network_type : String)
+    transaction.recipients.each do |recipient|
+      recipient_address = Keys::Address.from(recipient.address, "recipient")
+      unless recipient_address
+        return FailedTransaction.new(transaction, "invalid checksum for recipient's address: #{recipient.address}")
+      end
+
+      network = recipient_address.network
+      return FailedTransaction.new(transaction, "recipient address: #{recipient.address} has wrong network type: #{network[:name]}, this node is running as: #{network_type}") if network[:name] != network_type
+
+      valid_amount?(recipient.amount)
+    end
+  end
+
+  # ameba:disable Metrics/CyclomaticComplexity
+  def validat
