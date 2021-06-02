@@ -87,4 +87,16 @@ module ::Axentro::Core::TransactionValidator
   end
 
   # ameba:disable Metrics/CyclomaticComplexity
-  def validat
+  def validate_common(transactions : Array(Axentro::Core::Transaction), network_type : String) : ValidatedTransactions
+    vt = ValidatedTransactions.empty
+    transactions.each do |transaction|
+      vt << FailedTransaction.new(transaction, "length of transaction id has to be 64: #{transaction.id}") && next if transaction.id.size != 64
+      vt << FailedTransaction.new(transaction, "message size exceeds: #{transaction.message.bytesize} for #{MESSAGE_SIZE_LIMIT}") && next if transaction.message.bytesize > MESSAGE_SIZE_LIMIT
+      vt << FailedTransaction.new(transaction, "token size exceeds: #{transaction.token.bytesize} for #{TOKEN_SIZE_LIMIT}") && next if transaction.token.bytesize > TOKEN_SIZE_LIMIT
+      vt << FailedTransaction.new(transaction, "unscaled transaction") && next if transaction.scaled != 1
+      vt << FailedTransaction.new(transaction, "action must not be empty") && next if transaction.action.empty?
+
+      # TODO - validate transaction id is not already in db or in current batch of transactions
+
+      if !DApps::ASSET_ACTIONS.includes?(transaction.action) && transaction.assets.size > 0
+        vt << FailedT
