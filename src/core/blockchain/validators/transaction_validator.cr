@@ -99,4 +99,37 @@ module ::Axentro::Core::TransactionValidator
       # TODO - validate transaction id is not already in db or in current batch of transactions
 
       if !DApps::ASSET_ACTIONS.includes?(transaction.action) && transaction.assets.size > 0
-        vt << FailedT
+        vt << FailedTransaction.new(transaction, "assets must be empty for supplied action: #{transaction.action}")
+        next
+      end
+
+      if transaction.modules.size > 0
+        vt << FailedTransaction.new(transaction, "modules must be empty as still in development")
+      end
+
+      if transaction.inputs.size > 0
+        vt << FailedTransaction.new(transaction, "inputs must be empty as still in development")
+      end
+
+      if transaction.outputs.size > 0
+        vt << FailedTransaction.new(transaction, "outputs must be empty as still in development")
+      end
+
+      if transaction.linked != ""
+        vt << FailedTransaction.new(transaction, "linked must be empty as still in development")
+      end
+
+      if failed_transaction = validate_senders(transaction, network_type)
+        vt << failed_transaction
+        next
+      end
+
+      if failed_transaction = validate_recipients(transaction, network_type)
+        vt << failed_transaction
+        next
+      end
+
+      transaction = transaction.set_common_validated
+      vt << transaction
+    rescue e : Axentro::Common::AxentroException
+      vt << FailedTransaction.new(transaction, e.message || "unkn
