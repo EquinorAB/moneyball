@@ -147,4 +147,20 @@ module ::Axentro::Core::TransactionValidator
       vt << FailedTransaction.new(transaction, "actions has to be 'head' for coinbase transaction") && next if transaction.action != "head"
       vt << FailedTransaction.new(transaction, "message has to be '0' for coinbase transaction") && next if transaction.message != "0"
       vt << FailedTransaction.new(transaction, "token has to be #{TOKEN_DEFAULT} for coinbase transaction") && next if transaction.token != TOKEN_DEFAULT
-      vt << FailedTransaction.new(transaction, "there should be no Sender for a coinbase transaction") && next if transaction.senders.si
+      vt << FailedTransaction.new(transaction, "there should be no Sender for a coinbase transaction") && next if transaction.senders.size != 0
+      vt << FailedTransaction.new(transaction, "prev_hash of coinbase transaction has to be '0'") && next if transaction.prev_hash != "0"
+
+      served_sum = transaction.recipients.reduce(0_i64) { |sum, recipient| sum + recipient.amount }
+      served_sum_expected = transaction.is_slow_transaction? ? (blockchain.coinbase_slow_amount(block_index, embedded_transactions) + blockchain.total_fees(embedded_transactions)) : blockchain.coinbase_fast_amount(block_index, embedded_transactions)
+
+      if served_sum != served_sum_expected
+        vt << FailedTransaction.new(transaction, "invalid served amount for coinbase transaction at index: #{block_index} " +
+                                                 "expected #{scale_decimal(served_sum_expected)} but got #{scale_decimal(served_sum)}")
+        next
+      end
+      vt << transaction
+    rescue e : Axentro::Common::AxentroException
+      vt << FailedTransaction.new(transaction, e.message || "unknown error")
+    rescue e : Exception
+      vt << FailedTransaction.new(transaction, "unexpected error")
+      error("#{e.class}: #{e.message || "unknown error"}\n#{e.backtrace.
