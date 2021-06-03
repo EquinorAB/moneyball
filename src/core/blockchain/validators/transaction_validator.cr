@@ -132,4 +132,19 @@ module ::Axentro::Core::TransactionValidator
       transaction = transaction.set_common_validated
       vt << transaction
     rescue e : Axentro::Common::AxentroException
-      vt << FailedTransaction.new(transaction, e.message || "unkn
+      vt << FailedTransaction.new(transaction, e.message || "unknown error")
+    rescue e : Exception
+      vt << FailedTransaction.new(transaction, "unexpected error")
+      error("#{e.class}: #{e.message || "unknown error"}\n#{e.backtrace.join("\n")}")
+    end
+    vt
+  end
+
+  # ameba:disable Metrics/CyclomaticComplexity
+  def validate_coinbase(coinbase_transactions : Array(Axentro::Core::Transaction), embedded_transactions : Array(Axentro::Core::Transaction), blockchain : Blockchain, block_index : Int64) : ValidatedTransactions
+    vt = ValidatedTransactions.empty
+    coinbase_transactions.each do |transaction|
+      vt << FailedTransaction.new(transaction, "actions has to be 'head' for coinbase transaction") && next if transaction.action != "head"
+      vt << FailedTransaction.new(transaction, "message has to be '0' for coinbase transaction") && next if transaction.message != "0"
+      vt << FailedTransaction.new(transaction, "token has to be #{TOKEN_DEFAULT} for coinbase transaction") && next if transaction.token != TOKEN_DEFAULT
+      vt << FailedTransaction.new(transaction, "there should be no Sender for a coinbase transaction") && next if transaction.senders.si
