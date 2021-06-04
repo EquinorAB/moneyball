@@ -194,4 +194,33 @@ module ::Axentro::Core::TransactionValidator
         coinbase_transaction.prev_hash != "0" ? FailedTransaction.new(coinbase_transaction, "invalid prev_hash: expected 0 but got #{coinbase_transaction.prev_hash}") : coinbase_transaction
       end
 
-      def rule_prev_hash(transaction : Axentro::Cor
+      def rule_prev_hash(transaction : Axentro::Core::Transaction, prev_transaction : Axentro::Core::Transaction)
+        transaction.prev_hash != prev_transaction.to_hash ? FailedTransaction.new(transaction, "invalid prev_hash: expected #{prev_transaction.to_hash} but got #{transaction.prev_hash}") : transaction
+      end
+
+      def rule_prev_hashes(transactions : Array(Axentro::Core::Transaction))
+        vt = ValidatedTransactions.empty
+        transactions.each_with_index do |transaction, index|
+          vt << (transaction.is_coinbase? ? rule_coinbase_prev_hash(transaction) : rule_prev_hash(transaction, transactions[index - 1]))
+        end
+        vt
+      end
+    end
+  end
+
+  include Logger
+end
+
+class ValidatedTransactions
+  getter failed : Array(FailedTransaction)
+  getter passed : Array(Axentro::Core::Transaction)
+
+  def initialize(@failed, @passed)
+  end
+
+  def self.empty
+    ValidatedTransactions.new(Array(FailedTransaction).new, Array(Axentro::Core::Transaction).new)
+  end
+
+  def self.with(failed_transactions : Array(Axentro::Core::Transaction), reason : String, passed_transactions : Array(Axentro::Core::Transaction))
+    ValidatedTransactions.new(failed_transactions.map { |t| FailedTransaction.new(t, reason) }, pas
