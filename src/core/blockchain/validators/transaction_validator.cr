@@ -163,4 +163,35 @@ module ::Axentro::Core::TransactionValidator
       vt << FailedTransaction.new(transaction, e.message || "unknown error")
     rescue e : Exception
       vt << FailedTransaction.new(transaction, "unexpected error")
-      error("#{e.class}: #{e.message || "unknown error"}\n#{e.backtrace.
+      error("#{e.class}: #{e.message || "unknown error"}\n#{e.backtrace.join("\n")}")
+    end
+    vt
+  end
+
+  module Rules
+    extend self
+
+    module Sender
+      extend self
+
+      def rule_sender_mismatch(transaction : Axentro::Core::Transaction)
+        transaction.sender_total_amount != transaction.recipient_total_amount ? FailedTransaction.new(transaction, "amount mismatch for senders (#{scale_decimal(transaction.sender_total_amount)}) and recipients (#{scale_decimal(transaction.recipient_total_amount)})") : transaction
+      end
+
+      def rule_sender_mismatches(transactions : Array(Axentro::Core::Transaction)) : ValidatedTransactions
+        vt = ValidatedTransactions.empty
+        transactions.reject(&.is_coinbase?).each do |transaction|
+          vt << rule_sender_mismatch(transaction)
+        end
+        vt
+      end
+    end
+
+    module PrevHash
+      extend self
+
+      def rule_coinbase_prev_hash(coinbase_transaction : Axentro::Core::Transaction)
+        coinbase_transaction.prev_hash != "0" ? FailedTransaction.new(coinbase_transaction, "invalid prev_hash: expected 0 but got #{coinbase_transaction.prev_hash}") : coinbase_transaction
+      end
+
+      def rule_prev_hash(transaction : Axentro::Cor
