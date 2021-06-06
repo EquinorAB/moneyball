@@ -223,4 +223,38 @@ class ValidatedTransactions
   end
 
   def self.with(failed_transactions : Array(Axentro::Core::Transaction), reason : String, passed_transactions : Array(Axentro::Core::Transaction))
-    ValidatedTransactions.new(failed_transactions.map { |t| FailedTransaction.new(t, reason) }, pas
+    ValidatedTransactions.new(failed_transactions.map { |t| FailedTransaction.new(t, reason) }, passed_transactions)
+  end
+
+  def self.passed(transactions : Array(Axentro::Core::Transaction))
+    ValidatedTransactions.new([] of FailedTransaction, transactions)
+  end
+
+  def <<(failed_tx : FailedTransaction)
+    failed << failed_tx
+    passed.delete(failed_tx.transaction)
+    self
+  end
+
+  def <<(tx : Axentro::Core::Transaction)
+    passed << tx
+    self
+  end
+
+  def concat(other : ValidatedTransactions) : ValidatedTransactions
+    add_passed_unless_dup(other)
+    add_failed_unless_dup(other)
+    # remove any rejected from passed
+    failed.each { |failed_tx| passed.delete(failed_tx.transaction) }
+    self
+  end
+
+  private def add_passed_unless_dup(other : ValidatedTransactions)
+    # add the new transactions unless already exists or it was already failed
+    other.passed.each do |transaction|
+      passed << transaction unless passed.map(&.id).includes?(transaction.id) || failed.map(&.transaction.id).includes?(transaction.id)
+    end
+
+    # if any of the new transactions are common validated and already stored in passed - updated the stored ones
+    # and set them as common validated
+    other.passed.select(&.is_common_validated?).each do |transaction
