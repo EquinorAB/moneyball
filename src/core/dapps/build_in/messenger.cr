@@ -33,4 +33,19 @@ module ::Axentro::Core::DApps::BuildIn
     def clear
     end
 
-    def define_rpc?(call, json, context, params) : HTTP::Server::Context
+    def define_rpc?(call, json, context, params) : HTTP::Server::Context?
+      nil
+    end
+
+    def on_message(action : String, from_address : String, content : String, from = nil) : Bool
+      return false unless action == "message"
+
+      _m_content = MContentClientMessage.from_json(content)
+
+      to = _m_content.to
+      message = _m_content.message
+
+      node.send_content_to_client(from_address, to, message, from)
+    end
+  end
+end
