@@ -242,3 +242,74 @@ module ::Axentro::Core::DApps::BuildIn
       when "hra_lookup"
         return hra_lookup(json, context, params)
       end
+
+      nil
+    end
+
+    def hra_resolve(json, context, params)
+      domain_name = json["domain_name"].as_s
+
+      context.response.print api_success(hra_resolve_impl(domain_name))
+      context
+    end
+
+    def hra_resolve_impl(domain_name : String)
+      domain = resolve_for(domain_name)
+
+      if domain
+        confirmation = database.get_confirmations(domain[:block])
+        {resolved: true, confirmation: confirmation, domain: scale_decimal(domain)}
+      else
+        default_domain = {domain_name: domain_name, address: "", status: Status::NOT_FOUND, price: "0.0"}
+        {resolved: false, confirmation: 0, domain: default_domain}
+      end
+    end
+
+    def hra_for_sale(json, context, params)
+      context.response.print api_success(hra_for_sale_impl)
+      context
+    end
+
+    def hra_for_sale_impl
+      database.get_domains_for_sale.map { |d| scale_decimal(d) }
+    end
+
+    def hra_lookup(json, context, params)
+      address = json["address"].as_s
+
+      context.response.print api_success(hra_lookup_impl(address))
+      context
+    end
+
+    def hra_lookup_impl(address : String)
+      domains = lookup_for(address)
+      domain_results = Array(DomainResult).new
+
+      domains.each do |domain|
+        domain_results << DomainResult.new(
+          domain_name: domain[:domain_name],
+          address: domain[:address],
+          status: domain[:status],
+          price: scale_decimal(domain[:price]),
+          block: domain[:block])
+      end
+      {address: address, domains: domain_results}
+    end
+
+    def scale_decimal(domain : Domain)
+      {
+        domain_name: domain[:domain_name],
+        address:     domain[:address],
+        status:      domain[:status],
+        price:       scale_decimal(domain[:price]),
+        block:       domain[:block],
+      }
+    end
+
+    def on_message(action : String, from_address : String, content : String, from = nil) : Bool
+      false
+    end
+
+    include Consensus
+  end
+end
