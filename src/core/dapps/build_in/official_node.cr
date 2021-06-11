@@ -55,4 +55,22 @@ module ::Axentro::Core::DApps::BuildIn
 
     def i_am_a_fastnode?(address : String) : Bool
       all_fast_impl.includes?(address)
-    en
+    end
+
+    def a_fastnode_is_online?(online_nodes : Array(String)) : Bool
+      all_fast_impl.each do |fn|
+        return true if online_nodes.includes?(fn)
+      end
+      false
+    end
+
+    # At the moment we don't want to publicise the official_node dapp
+    def self.apply_exclusions(dapps : Array(Axentro::Core::DApps::DApp)) : Array(Axentro::Core::DApps::DApp)
+      dapps.reject { |dapp| dapp.class.to_s == "Axentro::Core::DApps::BuildIn::OfficialNode" }
+    end
+
+    def on_message(action : String, from_address : String, content : String, from = nil) : Bool
+      false
+    end
+  end
+end
