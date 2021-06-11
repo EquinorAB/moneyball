@@ -63,4 +63,21 @@ module ::Axentro::Core::DApps::BuildIn
     end
 
     def nonces_impl(address : String, block_id : Int64) : Array(Nonce)
-   
+      database.find_nonces_by_address_and_block_id(address, block_id)
+    end
+
+    def pending_nonces_impl(address : String) : Array(Nonce)
+      mining_block = blockchain.mining_block
+      block_id = mining_block.index
+      difficulty = mining_block.difficulty
+      latest_hash = mining_block.to_hash
+      MinerNoncePool.find_by_address(address).map do |mn|
+        Nonce.new(address, mn.value, latest_hash, block_id, difficulty, mn.timestamp)
+      end
+    end
+
+    def on_message(action : String, from_address : String, content : String, from = nil) : Bool
+      false
+    end
+  end
+end
