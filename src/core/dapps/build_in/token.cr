@@ -72,4 +72,28 @@ module ::Axentro::Core::DApps::BuildIn
           raise "invalid quantity: #{recipient_amount}, must be a positive number greater than 0" unless recipient_amount > 0_i64
         end
 
-        # ru
+        # rules for create token
+        token_exists_in_db = !token_map[token]?.nil?
+
+        # find if the token was created within the current set of transactions
+        token_exists_in_transactions = processed_transactions.find { |processed_transaction|
+          processed_transaction.token == token && processed_transaction.action == "create_token"
+        }
+
+        # find if the token was locked within the current set of transactions
+        token_locked_in_transactions = processed_transactions.find { |processed_transaction|
+          processed_transaction.token == token && processed_transaction.action == "lock_token"
+        }
+
+        if action == "create_token"
+          raise "the token #{token} is already created" if token_exists_in_db
+
+          processed_transactions.each do |processed_transaction|
+            raise "the token #{token} is already created" if processed_transaction.token == token
+          end
+        end
+
+        # rules for just update
+        if action == "update_token"
+          if (token_exists_in_db && token_map[token].is_locked) || !token_locked_in_transactions.nil?
+            raise "the token: #{token} is locked and may no longer
