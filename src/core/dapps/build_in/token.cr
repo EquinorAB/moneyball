@@ -96,4 +96,28 @@ module ::Axentro::Core::DApps::BuildIn
         # rules for just update
         if action == "update_token"
           if (token_exists_in_db && token_map[token].is_locked) || !token_locked_in_transactions.nil?
-            raise "the token: #{token} is locked and may no longer
+            raise "the token: #{token} is locked and may no longer be updated"
+          end
+        end
+
+        # rules for just burn
+        if action == "burn_token"
+          action_name = action.split("_").join(" ")
+          # token must already exist either in the db or in current transactions
+          raise "the token #{token} does not exist, you must create it before attempting to perform #{action_name}" unless (token_exists_in_db || token_exists_in_transactions)
+        end
+
+        # rules for update and lock token
+        if ["update_token", "lock_token"].includes?(action)
+          action_name = action.split("_").join(" ")
+
+          # token must already exist either in the db or in current transactions
+          raise "the token #{token} does not exist, you must create it before attempting to perform #{action_name}" unless (token_exists_in_db || token_exists_in_transactions)
+
+          unless token_exists_in_transactions.nil?
+            token_creator = token_exists_in_transactions.not_nil!.recipients[0].address
+            raise "only the token creator can perform #{action_name} on existing token: #{token}" unless token_creator == recipient_address
+          end
+
+          if token_exists_in_db
+            ra
