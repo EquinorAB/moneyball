@@ -120,4 +120,43 @@ module ::Axentro::Core::DApps::BuildIn
           end
 
           if token_exists_in_db
-            ra
+            raise "only the token creator can perform #{action_name} on existing token: #{token}" unless token_map[token].created_by == recipient_address
+          end
+        end
+
+        # rules for just lock token
+        if action == "lock_token"
+          raise "the sender amount must be 0 when locking the token: #{token}" unless recipient_amount == 0_i64
+
+          if (token_exists_in_db && token_map[token].is_locked) || !token_locked_in_transactions.nil?
+            raise "the token: #{token} is already locked"
+          end
+        end
+
+        vt << transaction
+        processed_transactions << transaction
+      rescue e : Exception
+        vt << FailedTransaction.new(transaction, e.message || "unknown error")
+      end
+      vt
+    end
+
+    def self.valid_token_name?(token : String) : Bool
+      unless token =~ /^[A-Z0-9]{1,20}$/
+        token_rule = <<-RULE
+You token '#{token}' is not valid
+
+1. token name can only contain uppercase letters or numbers
+2. token name length must be between 1 and 20 characters
+RULE
+        raise token_rule
+      end
+
+      true
+    end
+
+    def valid_token_name?(token : String) : Bool
+      Token.valid_token_name?(token)
+    end
+
+   
