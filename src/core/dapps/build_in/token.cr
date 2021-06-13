@@ -47,4 +47,29 @@ module ::Axentro::Core::DApps::BuildIn
         action = transaction.action
 
         # common rules for token
-        raise "must not be the default token: #{token}" if t
+        raise "must not be the default token: #{token}" if token == TOKEN_DEFAULT
+        raise "senders can only be 1 for token action" if transaction.senders.size != 1
+        raise "number of specified senders must be 1 for '#{action}'" if transaction.senders.size != 1
+        raise "number of specified recipients must be 1 for '#{action}'" if transaction.recipients.size != 1
+
+        sender = transaction.senders[0]
+        sender_address = sender.address
+        sender_amount = sender.amount
+
+        recipient = transaction.recipients[0]
+        recipient_address = recipient.address
+        recipient_amount = recipient.amount
+
+        raise "address mismatch for '#{action}'. " +
+              "sender: #{sender_address}, recipient: #{recipient_address}" if sender_address != recipient_address
+
+        raise "amount mismatch for '#{action}'. " +
+              "sender: #{sender_amount}, recipient: #{recipient_amount}" if sender_amount != recipient_amount
+
+        raise "invalid token name: #{token}" unless valid_token_name?(token)
+
+        if ["create_token", "update_token", "burn_token"].includes?(action)
+          raise "invalid quantity: #{recipient_amount}, must be a positive number greater than 0" unless recipient_amount > 0_i64
+        end
+
+        # ru
