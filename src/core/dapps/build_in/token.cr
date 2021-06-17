@@ -159,4 +159,48 @@ RULE
       Token.valid_token_name?(token)
     end
 
-   
+    def record(chain : Blockchain::Chain)
+    end
+
+    def clear
+    end
+
+    def define_rpc?(call, json, context, params) : HTTP::Server::Context?
+      case call
+      when "token_list"
+        return list(json, context, params)
+      end
+
+      nil
+    end
+
+    def list(json, context, params)
+      page, per_page, direction = 0, 50, 0
+      context.response.print api_success(tokens_list_impl(page, per_page, direction))
+      context
+    end
+
+    def tokens_list_impl(page, per_page, direction)
+      (["AXNT"] + database.get_paginated_tokens(page, per_page, Direction.new(direction).to_s)).to_set
+    end
+
+    def self.fee(action : String) : Int64
+      case action
+      when "create_token"
+        return scale_i64("10")
+      when "update_token"
+        return scale_i64("0.0001")
+      when "lock_token"
+        return scale_i64("0.0001")
+      when "burn_token"
+        return scale_i64("0.0001")
+      end
+
+      raise "got unknown action #{action} while getting a fee for token"
+    end
+
+    def on_message(action : String, from_address : String, content : String, from = nil) : Bool
+      false
+    end
+  end
+end
