@@ -38,4 +38,31 @@ module ::Axentro::Core::DApps::BuildIn
       when "create_unsigned_transaction"
         return create_unsigned_transaction(json, context, params)
       when "create_transaction"
-        return create_transacti
+        return create_transaction(json, context, params)
+      end
+
+      nil
+    end
+
+    def create_unsigned_transaction(json, context, params)
+      action = json["action"].as_s
+      senders = SendersDecimal.from_json(json["senders"].to_json)
+      recipients = RecipientsDecimal.from_json(json["recipients"].to_json)
+      assets = Assets.from_json(json["assets"].to_json)
+      modules = Modules.from_json(json["modules"].to_json)
+      inputs = Inputs.from_json(json["inputs"].to_json)
+      outputs = Outputs.from_json(json["outputs"].to_json)
+      linked = json["linked"].as_s
+      message = json["message"].as_s
+      token = json["token"].as_s
+      kind = TransactionKind.parse(json["kind"].as_s)
+      version = TransactionVersion.parse(json["version"].as_s)
+
+      transaction = create_unsigned_transaction_impl(action, senders, recipients, assets, modules, inputs, outputs, linked, message, token, kind, version)
+
+      context.response.print api_success(transaction)
+      context
+    end
+
+    def create_sender(amount : String, address : String, public_key : String, fee : String, asset_id : String? = nil, asset_quantity : Int32? = nil) : SendersDecimal
+ 
