@@ -65,4 +65,45 @@ module ::Axentro::Core::DApps::BuildIn
     end
 
     def create_sender(amount : String, address : String, public_key : String, fee : String, asset_id : String? = nil, asset_quantity : Int32? = nil) : SendersDecimal
- 
+      senders = SendersDecimal.new
+      senders.push(
+        SenderDecimal.new(address, public_key, amount, fee, "0", asset_id, asset_quantity))
+      senders
+    end
+
+    def create_recipient(address : String, amount : String, asset_id : String? = nil, asset_quantity : Int32? = nil) : RecipientsDecimal
+      recipients = RecipientsDecimal.new
+      recipients.push(
+        RecipientDecimal.new(address, amount, asset_id, asset_quantity))
+      recipients
+    end
+
+    def create_unsigned_send_token_impl(
+      to_address : String,
+      from_address : String,
+      amount : String,
+      fee : String,
+      kind : TransactionKind,
+      public_key : String
+    )
+      senders = create_sender(amount, from_address, public_key, fee)
+      recipients = create_recipient(to_address, amount)
+
+      create_unsigned_transaction_impl(
+        "send",
+        senders,
+        recipients,
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "", # linked
+        "",
+        "AXNT",
+        kind,
+        TransactionVersion::V1,
+        Transaction.create_id
+      )
+    end
+
+    def create_unsig
