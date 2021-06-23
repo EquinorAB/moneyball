@@ -106,4 +106,47 @@ module ::Axentro::Core::DApps::BuildIn
       )
     end
 
-    def create_unsig
+    def create_unsigned_send_asset_impl(
+      to_address : String,
+      from_address : String,
+      asset_id : String,
+      amount : Int32,
+      kind : TransactionKind,
+      public_key : String
+    )
+      senders = create_sender("0", from_address, public_key, "0", asset_id, amount)
+      recipients = create_recipient(to_address, "0", asset_id, amount)
+
+      create_unsigned_transaction_impl(
+        "send_asset",
+        senders,
+        recipients,
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "", # linked
+        "",
+        "AXNT",
+        kind,
+        TransactionVersion::V1,
+        Transaction.create_id
+      )
+    end
+
+    def create_unsigned_create_asset_impl(
+      address : String,
+      public_key : String,
+      name : String,
+      description : String,
+      media_location : String,
+      media_hash : String,
+      quantity : Int32,
+      terms : String,
+      locked : AssetAccess,
+      version : Int32,
+      timestamp : Int64,
+      kind : TransactionKind
+    )
+      senders = create_sender("0", address, public_key, "0")
+      recipients = create_recipi
