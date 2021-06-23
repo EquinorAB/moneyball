@@ -149,4 +149,50 @@ module ::Axentro::Core::DApps::BuildIn
       kind : TransactionKind
     )
       senders = create_sender("0", address, public_key, "0")
-      recipients = create_recipi
+      recipients = create_recipient(address, "0")
+      asset = Transaction::Asset.new(Transaction::Asset.create_id, name, description, media_location, media_hash, quantity, terms, locked, version, timestamp)
+
+      create_unsigned_transaction_impl(
+        "create_asset",
+        senders,
+        recipients,
+        [asset],
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "", # linked
+        "",
+        "AXNT",
+        kind,
+        TransactionVersion::V1,
+        Transaction.create_id
+      )
+    end
+
+    def create_unsigned_update_asset_impl(
+      address : String,
+      public_key : String,
+      asset : Transaction::Asset,
+      kind : TransactionKind
+    )
+      senders = create_sender("0", address, public_key, "0")
+      recipients = create_recipient(address, "0")
+
+      create_unsigned_transaction_impl(
+        "create_asset",
+        senders,
+        recipients,
+        [asset],
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "", # linked
+        "",
+        "AXNT",
+        kind,
+        TransactionVersion::V1,
+        Transaction.create_id
+      )
+    end
+
+    def create
