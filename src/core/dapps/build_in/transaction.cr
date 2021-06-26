@@ -195,4 +195,47 @@ module ::Axentro::Core::DApps::BuildIn
       )
     end
 
-    def create
+    def create_unsigned_transaction_impl(
+      action : String,
+      senders : SendersDecimal,
+      recipients : RecipientsDecimal,
+      assets : Assets,
+      modules : Modules,
+      inputs : Inputs,
+      outputs : Outputs,
+      linked : String,
+      message : String,
+      token : String,
+      kind : TransactionKind,
+      version : TransactionVersion,
+      id : String = Transaction.create_id
+    )
+      transaction = TransactionDecimal.new(
+        id,
+        action,
+        senders,
+        recipients,
+        assets,
+        modules,
+        inputs,
+        outputs,
+        linked,
+        message,
+        token,
+        "0",         # prev_hash
+        __timestamp, # timestamp
+        0,           # scaled
+        kind,
+        version
+      ).to_transaction
+
+      if !ASSET_ACTIONS.includes?(action)
+        fee = transaction.total_fees
+
+        minimum_fee = if _fee = blockchain.fees.fees_impl[action]?
+                        scale_i64(_fee)
+                      else
+                        Core::DApps::BuildIn::UTXO.fee("send")
+                      end
+
+        raise "the fee (#{scale_decimal(fee)}) is less than the m
