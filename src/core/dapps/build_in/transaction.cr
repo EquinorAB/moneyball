@@ -238,4 +238,31 @@ module ::Axentro::Core::DApps::BuildIn
                         Core::DApps::BuildIn::UTXO.fee("send")
                       end
 
-        raise "the fee (#{scale_decimal(fee)}) is less than the m
+        raise "the fee (#{scale_decimal(fee)}) is less than the minimum fee (#{scale_decimal(minimum_fee)})." if fee < minimum_fee
+      end
+
+      transaction
+    end
+
+    def create_transaction(json, context, params)
+      transaction = Transaction.from_json(json["transaction"].to_json)
+      transaction = create_transaction_impl(transaction)
+
+      context.response.print api_success(transaction)
+      context
+    end
+
+    def create_transaction_impl(transaction : Transaction)
+      node.broadcast_transaction(transaction)
+
+      transaction
+    end
+
+    def on_message(action : String, from_address : String, content : String, from = nil) : Bool
+      false
+    end
+
+    include TransactionModels
+    include Common::Timestamp
+  end
+end
