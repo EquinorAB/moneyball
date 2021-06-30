@@ -60,4 +60,22 @@ module ::Axentro::Core::DApps::BuildIn
       # get amounts for all addresses into an in memory structure for all relevant tokens
       addresses = transactions.flat_map { |t| t.senders.map(&.address) }
       historic_per_address = database.get_address_amounts(addresses)
-  
+      vt = ValidatedTransactions.empty
+
+      # add coinbase here as needed for the amount calculations used in get_pending
+      processed_transactions = transactions.select(&.is_coinbase?)
+
+      # remove coinbases as not required for validation here
+      transactions.reject(&.is_coinbase?).each do |transaction|
+        # common rules
+        raise "there must be 1 or less recipients" if transaction.recipients.size > 1
+        raise "there must be 1 sender" if transaction.senders.size != 1
+
+        sender = transaction.senders[0]
+
+        amount_token = get_pending_batch(sender.address, processed_transactions, transaction.token, historic_per_address)
+        amount_default = transaction.token == DEFAULT ? amount_token : get_pending_batch(sender.address, processed_transactions, DEFAULT, historic_per_address)
+
+        as_recipients = transaction.recipients.select(&.address.==(sender.address))
+        amount_token_as_recipients = as_recipients.reduce(0_i64) { |sum, recipient| sum + recipient.amount }
+        amount_default_as_recipients = transaction.token == DEFAULT ? amount_token_as_recipients : 0_i64
