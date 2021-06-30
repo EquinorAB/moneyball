@@ -38,4 +38,26 @@ module ::Axentro::Core::DApps::BuildIn
         recipients_sum = transactions.select(&.token.==(token)).flat_map(&.recipients).select(&.address.==(address)).sum(&.amount)
         historic + (recipients_sum - (senders_sum + fees_sum))
       else
-        # when tokens are created or
+        # when tokens are created or updated the sender == recipient. This results in 0 pending amounts since the total is recipient - sender.
+        # so for these cases we discard the sender amount in the calculation.
+        exclusions = ["create_token", "update_token"]
+        senders_sum = transactions.reject { |t| exclusions.includes?(t.action) }.select(&.token.==(token)).flat_map(&.senders).select(&.address.==(address)).sum(&.amount)
+        recipients_sum = transactions.select(&.token.==(token)).flat_map(&.recipients).select(&.address.==(address)).sum(&.amount)
+        historic + (recipients_sum - (senders_sum))
+      end
+    end
+
+    def transaction_actions : Array(String)
+      ["send"]
+    end
+
+    def transaction_related?(action : String) : Bool
+      UTXO_ACTIONS.includes?(action)
+    end
+
+    # ameba:disable Metrics/CyclomaticComplexity
+    def valid_transactions?(transactions : Array(Transaction)) : ValidatedTransactions
+      # get amounts for all addresses into an in memory structure for all relevant tokens
+      addresses = transactions.flat_map { |t| t.senders.map(&.address) }
+      historic_per_address = database.get_address_amounts(addresses)
+  
