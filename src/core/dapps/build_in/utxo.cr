@@ -94,4 +94,48 @@ module ::Axentro::Core::DApps::BuildIn
           raise "Unable to send #{scale_decimal(pay_default)} #{DEFAULT} to recipient because you do not have enough #{DEFAULT}. You currently have: #{scale_decimal(amount_default)} #{DEFAULT} and you are receiving: #{scale_decimal(amount_default_as_recipients)} #{DEFAULT} from senders,  giving a total of: #{scale_decimal(total_default_available)} #{DEFAULT}"
         end
 
-        # burn token rule
+        # burn token rules
+        if transaction.action == "burn_token"
+          total_available = amount_token
+          if (total_available - pay_token) < 0
+            raise "Unable to burn #{scale_decimal(pay_token)} #{transaction.token} because you do not have enough #{transaction.token}. You currently have: #{scale_decimal(amount_token)} #{transaction.token}"
+          end
+        end
+
+        vt << transaction
+        processed_transactions << transaction
+      rescue e : Exception
+        vt << FailedTransaction.new(transaction, e.message || "unknown error")
+      end
+
+      vt
+    end
+
+    def record(chain : Blockchain::Chain)
+    end
+
+    def clear
+    end
+
+    def define_rpc?(call, json, context, params) : HTTP::Server::Context?
+      case call
+      when "amount"
+        return amount(json, context, params)
+      end
+
+      nil
+    end
+
+    def amount(json, context, params)
+      address = json["address"].as_s
+      token = json["token"].as_s
+
+      context.response.print api_success(amount_impl(address, token))
+      context
+    end
+
+    def amount_impl(address, token)
+      pairs = [] of NamedTuple(token: String, amount: String)
+
+      if token != "all"
+        tokens = database.get_address_amo
