@@ -138,4 +138,41 @@ module ::Axentro::Core::DApps::BuildIn
       pairs = [] of NamedTuple(token: String, amount: String)
 
       if token != "all"
-        tokens = database.get_address_amo
+        tokens = database.get_address_amount(address).select(&.token.==(token))
+        if tokens.empty?
+          pairs
+        else
+          balance = tokens.sum(&.amount)
+          pairs << {token: token, amount: scale_decimal(balance)}
+        end
+      else
+        database.get_address_amount(address).each do |tq|
+          pairs << {token: tq.token, amount: scale_decimal(tq.amount)}
+        end
+      end
+      confirmation = database.get_amount_confirmation(address)
+      {confirmation: confirmation, pairs: pairs}
+    end
+
+    def self.fee(action : String) : Int64
+      scale_i64("0.0001")
+    end
+
+    def on_message(action : String, from_address : String, content : String, from = nil) : Bool
+      return false unless action == "amount"
+
+      _m_content = MContentClientAmount.from_json(content)
+
+      token = _m_content.token
+
+      node.send_content_to_client(
+        from_address,
+        from_address,
+        amount_impl(from_address, token).to_json,
+        from,
+      )
+    end
+
+    include Consensus
+  end
+end
