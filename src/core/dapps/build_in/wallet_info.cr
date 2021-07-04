@@ -196,3 +196,73 @@ module ::Axentro::Core::DApps::BuildIn
         if kind == TransactionKind::FAST
           "Maintenance fund"
         else
+          "Mining reward"
+        end
+      when "send"
+        "Payment"
+      when "hra_buy"
+        "Payment (Human readable address)"
+      when "hra_sell"
+        "Payment (Human readable address)"
+      when "hra_cancel"
+        "Cancel (Human readable address)"
+      when "create_token"
+        "Create token"
+      when "update_token"
+        "Update token"
+      when "lock_token"
+        "Lock token"
+      when "create_official_node_slow"
+        "Create slow official node"
+      when "create_official_node_fast"
+        "Create fast official node"
+      else
+        action
+      end
+    end
+
+    private def amount_for_recipients(address, recipients) : String
+      scale_decimal(recipients.select(&.address.==(address)).map(&.amount).reduce(0_i64) { |acc, v| acc + v })
+    end
+
+    private def amount_for_senders(address, senders) : String
+      scale_decimal(senders.select(&.address.==(address)).map(&.amount).reduce(0_i64) { |acc, v| acc + v })
+    end
+
+    private def fee_for_senders(address, senders) : String
+      scale_decimal(senders.select(&.address.==(address)).map(&.fee).reduce(0_i64) { |acc, v| acc + v })
+    end
+
+    private def domain_for_senders(senders) : String
+      _senders = senders.map(&.address).uniq!
+      if _senders.size > 0
+        domains = _senders.flat_map { |address| database.get_domain_map_for_address(address).keys.uniq! }
+        if domains.size > 0
+          domains.first
+        else
+          ""
+        end
+      else
+        ""
+      end
+    end
+
+    private def domain_for_recipients(recipients) : String
+      _recipients = recipients.map(&.address).uniq!
+      if _recipients.size > 0
+        domains = _recipients.flat_map { |address| database.get_domain_map_for_address(address).keys.uniq! }
+        if domains.size > 0
+          domains.first
+        else
+          ""
+        end
+      else
+        ""
+      end
+    end
+
+    def on_message(action : String, from_address : String, content : String, from = nil) : Bool
+      false
+    end
+  end
+end
