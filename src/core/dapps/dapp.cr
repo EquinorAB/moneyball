@@ -50,4 +50,35 @@ module ::Axentro::Core::DApps
     end
 
     private def rule_not_enough_fee(transaction : Transaction)
-      transaction.total_fees < self.class.fee(transaction.action) ? FailedTransaction.new(transaction, "not enough fee, should be #{scale_decimal(transaction.to
+      transaction.total_fees < self.class.fee(transaction.action) ? FailedTransaction.new(transaction, "not enough fee, should be #{scale_decimal(transaction.total_fees)} >= #{scale_decimal(self.class.fee(transaction.action))}") : transaction
+    end
+
+    #
+    # Default fee is 0.0001 AXNT
+    # Third party dApps cannot override here.
+    # Otherwise the transactions will be rejected from other nodes.
+    #
+    def self.fee(action : String) : Int64
+      scale_i64("0.0001")
+    end
+
+    private def blockchain : Blockchain
+      @blockchain
+    end
+
+    private def node : Node
+      @blockchain.node
+    end
+
+    private def database : Database
+      @blockchain.database
+    end
+
+    include Logger
+    include Protocol
+    include Common::Denomination
+    include NodeComponents::APIFormat
+  end
+end
+
+require "./build_in"
