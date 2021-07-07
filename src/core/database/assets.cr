@@ -261,3 +261,6 @@ module ::Axentro::Core::Data::Assets
     end
     assets
   end
+
+  include ::Axentro::Core::DApps::BuildIn
+end
