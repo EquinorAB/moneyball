@@ -21,4 +21,33 @@ module ::Axentro::Core::DApps
     abstract def setup
     abstract def transaction_actions : Array(String)
     abstract def transaction_related?(action : String) : Bool
-    abstract def valid_transactions?(transactions : Array(Transaction)) : ValidatedTransact
+    abstract def valid_transactions?(transactions : Array(Transaction)) : ValidatedTransactions
+    abstract def record(chain : Blockchain::Chain)
+    abstract def clear
+    abstract def define_rpc?(
+      call : String,
+      json : JSON::Any,
+      context : HTTP::Server::Context,
+      params : Hash(String, String)
+    ) : HTTP::Server::Context?
+    abstract def on_message(
+      action : String,
+      from_address : String,
+      content : String,
+      from : NodeComponents::Chord::NodeContext? = nil
+    ) : Bool
+
+    def initialize(@blockchain : Blockchain)
+    end
+
+    def valid?(transactions : Array(Transaction)) : ValidatedTransactions
+      vt = ValidatedTransactions.empty
+      # coinbase transactions should not be checked for fees
+      transactions.each do |transaction| # all asset transactions are free
+        vt << rule_not_enough_fee(transaction) unless transaction.is_coinbase? || ASSET_ACTIONS.includes?(transaction.action)
+      end
+      vt.concat(valid_transactions?(transactions))
+    end
+
+    private def rule_not_enough_fee(transaction : Transaction)
+      transaction.total_fees < self.class.fee(transaction.action) ? FailedTransaction.new(transaction, "not enough fee, should be #{scale_decimal(transaction.to
