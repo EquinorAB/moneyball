@@ -11,10 +11,10 @@
 # Removal or modification of this copyright notice is prohibited.
 
 @[MG::Tags("main")]
-class AddBlockVersionToArchive < MG::Base
+class AddHashVersionToArchive < MG::Base
   def up : String
     <<-SQL
-      ALTER TABLE archived_blocks ADD COLUMN version TEXT NOT NULL DEFAULT "V2"
+      ALTER TABLE archived_blocks ADD COLUMN hash_version TEXT NOT NULL DEFAULT "V2"
     SQL
   end
 

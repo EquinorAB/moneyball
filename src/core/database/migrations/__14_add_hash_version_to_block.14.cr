@@ -1,3 +1,4 @@
+
 # Copyright © 2017-2020 The Axentro Core developers
 #
 # See the LICENSE file at the top-level directory of this distribution
@@ -11,10 +12,10 @@
 # Removal or modification of this copyright notice is prohibited.
 
 @[MG::Tags("main")]
-class AddBlockVersionToArchive < MG::Base
+class AddHashVersionToBlock < MG::Base
   def up : String
     <<-SQL
-      ALTER TABLE archived_blocks ADD COLUMN version TEXT NOT NULL DEFAULT "V2"
+      ALTER TABLE blocks ADD COLUMN hash_version TEXT NOT NULL DEFAULT "V2"
     SQL
   end
 
