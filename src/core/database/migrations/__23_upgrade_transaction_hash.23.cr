@@ -1,4 +1,3 @@
-
 # Copyright © 2017-2020 The Axentro Core developers
 #
 # See the LICENSE file at the top-level directory of this distribution
@@ -12,18 +11,16 @@
 # Removal or modification of this copyright notice is prohibited.
 
 @[MG::Tags("main")]
-class AddMiningVersionToBlock < MG::Base
+class UpgradeTransactionHash < MG::Base
   include Axentro::Core
   include Data
 
   def up : String
-    <<-SQL
-      ALTER TABLE blocks ADD COLUMN mining_version TEXT NOT NULL DEFAULT "V1";
-      ALTER TABLE archived_blocks ADD COLUMN mining_version TEXT NOT NULL DEFAULT "V1";
-    SQL
-  end
-
-  def down : String
     ""
   end
-end
+
+  def after_up(conn : DB::Connection)
+    Blocks.retrieve_blocks(conn) do |block|
+      sorted_aligned_transactions = block.transactions.select(&.is_coinbase?) + block.transactions.reject(&.is_coinbase?).sort_by!(&.timestamp)
+      sorted_aligned_transactions.map_with_index do |transaction, index|
+        transaction.add_prev_hash((index == 0 ? "0" : sorted_align

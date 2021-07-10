@@ -12,18 +12,27 @@
 # Removal or modification of this copyright notice is prohibited.
 
 @[MG::Tags("main")]
-class AddMiningVersionToBlock < MG::Base
-  include Axentro::Core
-  include Data
-
+class CreateBlocksTable < MG::Base
   def up : String
     <<-SQL
-      ALTER TABLE blocks ADD COLUMN mining_version TEXT NOT NULL DEFAULT "V1";
-      ALTER TABLE archived_blocks ADD COLUMN mining_version TEXT NOT NULL DEFAULT "V1";
+    CREATE TABLE IF NOT EXISTS blocks (
+      idx             INTEGER PRIMARY KEY,
+      nonce           TEXT NOT NULL,
+      prev_hash       TEXT NOT NULL,
+      timestamp       INTEGER NOT NULL,
+      difficulty      INTEGER NOT NULL,
+      address         TEXT NOT NULL,
+      kind            TEXT NOT NULL,
+      public_key      TEXT NOT NULL,
+      signature       TEXT NOT NULL,
+      hash            TEXT NOT NULL
+      );
     SQL
   end
 
   def down : String
-    ""
+    <<-SQL
+      DROP TABLE blocks;
+    SQL
   end
 end
