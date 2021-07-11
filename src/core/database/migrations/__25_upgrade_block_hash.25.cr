@@ -1,3 +1,4 @@
+
 # Copyright © 2017-2020 The Axentro Core developers
 #
 # See the LICENSE file at the top-level directory of this distribution
@@ -11,7 +12,7 @@
 # Removal or modification of this copyright notice is prohibited.
 
 @[MG::Tags("main")]
-class UpgradeMerkleRoot < MG::Base
+class UpgradeBlockHash < MG::Base
   include Axentro::Core
   include Data
 
@@ -20,9 +21,20 @@ class UpgradeMerkleRoot < MG::Base
   end
 
   def after_up(conn : DB::Connection)
-    Blocks.retrieve_blocks(conn) do |block|
-      merkle = MerkleTreeCalculator.new(HashVersion::V2).calculate_merkle_tree_root(block.transactions)
-      conn.exec("update blocks set merkle_tree_root = '#{merkle}' where idx = ?", block.index)
+    [BlockKind::SLOW, BlockKind::FAST].each do |block_kind|
+      prev_block : Block? = nil
+      Blocks.retrieve_blocks(conn, 0_i64, block_kind) do |block|
+        if prev_block.nil?
+          prev_block = block
+          next
+        end
+
+        prev_block_hash = prev_block.not_nil!.to_hash
+        block.prev_hash = prev_block_hash
+        conn.exec("update blocks set prev_hash = '#{prev_block_hash}' where idx = ?", block.index)
+
+        prev_block = block
+      end
     end
   end
 

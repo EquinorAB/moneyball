@@ -11,22 +11,16 @@
 # Removal or modification of this copyright notice is prohibited.
 
 @[MG::Tags("main")]
-class UpgradeMerkleRoot < MG::Base
-  include Axentro::Core
-  include Data
-
+class AddRecipientsAddressIndex < MG::Base
   def up : String
-    ""
-  end
-
-  def after_up(conn : DB::Connection)
-    Blocks.retrieve_blocks(conn) do |block|
-      merkle = MerkleTreeCalculator.new(HashVersion::V2).calculate_merkle_tree_root(block.transactions)
-      conn.exec("update blocks set merkle_tree_root = '#{merkle}' where idx = ?", block.index)
-    end
+    <<-SQL
+      CREATE INDEX IF NOT EXISTS idx_recipients_address on recipients (address);
+    SQL
   end
 
   def down : String
-    ""
+    <<-SQL
+      DROP INDEX idx_recipients_address;
+    SQL
   end
 end

@@ -1,3 +1,4 @@
+
 # Copyright © 2017-2020 The Axentro Core developers
 #
 # See the LICENSE file at the top-level directory of this distribution
@@ -11,22 +12,23 @@
 # Removal or modification of this copyright notice is prohibited.
 
 @[MG::Tags("main")]
-class UpgradeMerkleRoot < MG::Base
-  include Axentro::Core
-  include Data
-
+class CreateRecipientsTable < MG::Base
   def up : String
-    ""
-  end
-
-  def after_up(conn : DB::Connection)
-    Blocks.retrieve_blocks(conn) do |block|
-      merkle = MerkleTreeCalculator.new(HashVersion::V2).calculate_merkle_tree_root(block.transactions)
-      conn.exec("update blocks set merkle_tree_root = '#{merkle}' where idx = ?", block.index)
-    end
+    <<-SQL
+    CREATE TABLE IF NOT EXISTS recipients (
+      transaction_id      TEXT NOT NULL,
+      block_id            INTEGER NOT NULL,
+      idx                 INTEGER NOT NULL,
+      address             TEXT NOT NULL,
+      amount              INTEGER NOT NULL,
+      PRIMARY KEY         (transaction_id, block_id, idx)
+      );
+    SQL
   end
 
   def down : String
-    ""
+    <<-SQL
+      DROP TABLE recipients;
+    SQL
   end
 end
