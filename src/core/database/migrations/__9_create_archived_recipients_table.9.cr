@@ -1,3 +1,4 @@
+
 # Copyright © 2017-2020 The Axentro Core developers
 #
 # See the LICENSE file at the top-level directory of this distribution
@@ -11,24 +12,18 @@
 # Removal or modification of this copyright notice is prohibited.
 
 @[MG::Tags("main")]
-class CreateArchivedTransactionsTable < MG::Base
+class CreateArchivedRecipientsTable < MG::Base
   def up : String
     <<-SQL
-    CREATE TABLE IF NOT EXISTS archived_transactions (
+    CREATE TABLE IF NOT EXISTS archived_recipients (
       block_hash             TEXT NOT NULL,
       archive_timestamp      INTEGER NOT NULL,
       reason                 TEXT NOT NULL,
-      id                     TEXT NOT NULL,
-      idx                    INTEGER NOT NULL,
+      transaction_id         TEXT NOT NULL,
       block_id               INTEGER NOT NULL,
-      action                 TEXT NOT NULL,
-      message                TEXT NOT NULL,
-      token                  TEXT NOT NULL,
-      prev_hash              TEXT NOT NULL,
-      timestamp              INTEGER NOT NULL,
-      scaled                 INTEGER NOT NULL,
-      kind                   TEXT NOT NULL,
-      version                TEXT NOT NULL,
+      idx                    INTEGER NOT NULL,
+      address                TEXT NOT NULL,
+      amount                 INTEGER NOT NULL,
       PRIMARY KEY            (block_hash, idx, block_id)
       );
     SQL
@@ -36,7 +31,7 @@ class CreateArchivedTransactionsTable < MG::Base
 
   def down : String
     <<-SQL
-      DROP TABLE archived_transactions;
+      DROP TABLE archived_recipients;
     SQL
   end
 end
