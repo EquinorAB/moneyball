@@ -23,4 +23,42 @@ module ::Axentro::Core::Data::Rejects
 
   # ------- Query -------
   def find_reject(transaction_id : String) : Reject?
-    rejects = [] 
+    rejects = [] of Reject
+    @db.query("select * from rejects where transaction_id like ? || '%'", transaction_id) do |rows|
+      rows.each do
+        tid = rows.read(String)
+        addr = rows.read(String)
+        reason = rows.read(String)
+        timestamp = rows.read(Int64)
+        rejects << Reject.new(tid, addr, reason, timestamp)
+      end
+    end
+    rejects.size > 0 ? rejects.first : nil
+  end
+
+  def find_reject_by_address(address : String, limit : Int32 = 5) : Array(Reject)
+    rejects = [] of Reject
+    @db.query("select * from rejects where address = ? order by timestamp desc limit ?", address, limit) do |rows|
+      rows.each do
+        tid = rows.read(String)
+        addr = rows.read(String)
+        reason = rows.read(String)
+        timestamp = rows.read(Int64)
+        rejects << Reject.new(tid, addr, reason, timestamp)
+      end
+    end
+    rejects
+  end
+
+  def total_rejects : Int32
+    @db.query_one("select count(*) from rejects", as: Int32)
+  end
+
+  def all_rejects : Array(Reject)
+    rejects = [] of Reject
+    @db.query("select * from rejects") do |rows|
+      rows.each do
+        tid = rows.read(String)
+        addr = rows.read(String)
+        reason = rows.read(String)
+        timestamp = row
