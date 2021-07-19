@@ -61,4 +61,12 @@ module ::Axentro::Core::Data::Rejects
         tid = rows.read(String)
         addr = rows.read(String)
         reason = rows.read(String)
-        timestamp = row
+        timestamp = rows.read(Int64)
+        rejects << Reject.new(tid, addr, reason, timestamp)
+      end
+    end
+    rejects
+  end
+
+  include Axentro::Core::DApps::BuildIn
+end
