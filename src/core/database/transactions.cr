@@ -136,4 +136,42 @@ module ::Axentro::Core::Data::Transactions
     @db.query("select count(distinct token) from transactions where token = ?", token) do |rows|
       rows.each do
         res = rows.read(Int32)
-      en
+      end
+    end
+    res != 0
+  end
+
+  def get_block_index_for_transaction(transaction_id : String) : Int64?
+    idx : Int64? = nil
+    @db.query("select block_id from transactions where id like ? || '%'", transaction_id) do |rows|
+      rows.each do
+        idx = rows.read(Int64 | Nil)
+      end
+    end
+    idx
+  end
+
+  def get_block_index_for_asset(asset_id : String) : Int64?
+    idx : Int64? = nil
+    @db.query("select block_id from assets where asset_id like ? || '%'", asset_id) do |rows|
+      rows.each do
+        idx = rows.read(Int64?)
+      end
+    end
+    idx
+  end
+
+  def get_domain_map_for(domain_name : String) : DomainMap
+    domain_map = DomainMap.new
+    @db.query(
+      "select message, address, action, amount, t.block_id " \
+      "from transactions t " \
+      "join senders s on s.transaction_id = t.id " \
+      "where action in ('hra_buy', 'hra_sell', 'hra_cancel') " \
+      "and message = ?", domain_name) do |rows|
+      rows.each do
+        domain_map[domain_name] = {
+          domain_name: rows.read(String),
+          address:     rows.read(String),
+          status:      status(rows.read(String)),
+          price:       rows.read(Int64),
