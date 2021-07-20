@@ -175,3 +175,41 @@ module ::Axentro::Core::Data::Transactions
           address:     rows.read(String),
           status:      status(rows.read(String)),
           price:       rows.read(Int64),
+          block:       rows.read(Int64),
+        }
+      end
+    end
+    domain_map
+  end
+
+  def get_domain_map_for_address(address : String) : DomainMap
+    domains = [] of String
+    domain_map = DomainMap.new
+    @db.query(
+      "select message, address, action, amount, t.block_id " \
+      "from transactions t " \
+      "join senders s on s.transaction_id = t.id " \
+      "where action in ('hra_buy', 'hra_sell', 'hra_cancel') " \
+      "and address = ? " \
+      "order by t.block_id desc", address) do |rows|
+      rows.each do
+        domains << rows.read(String)
+      end
+    end
+    domain_maps = domains.uniq.map { |domain| get_domain_map_for(domain) }
+    domain_maps.reduce(domain_map) { |acc, dm| acc.merge(dm) }.select { |_, d| d[:address] == address }
+  end
+
+  def get_confirmations(block_index : Int64) : Int32
+    get_amount_blocks_ontop_of(block_index)
+  end
+
+  def get_domains_for_sale : Array(Domain)
+    domain_names = [] of String
+    @db.query(
+      "select distinct(message) from transactions where action = 'hra_sell'") do |rows|
+      rows.each do
+        domain_names << rows.read(String)
+      end
+    end
+    domain_names.c
