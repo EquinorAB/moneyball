@@ -100,4 +100,40 @@ module ::Axentro::Core::Data::Transactions
       limit, offset)
   end
 
-  def get_paginated_transactions_for_address(address : String, page : Int32, per_page : Int32, direction : String, sort_field : 
+  def get_paginated_transactions_for_address(address : String, page : Int32, per_page : Int32, direction : String, sort_field : String, actions : Array(String))
+    limit = per_page
+    offset = Math.max((limit * page) - limit, 0)
+    actions = actions.join(",") { |a| "'#{a}'" }
+
+    transactions_by_query(
+      "select * from transactions where id in " \
+      "(select transaction_id from senders where address = ? " \
+      "union select transaction_id from recipients " \
+      "where address = ?) " +
+      (actions.empty? ? "" : "and action in (#{actions}) ") +
+      "order by #{sort_field} #{direction}  " \
+      "limit ? offset ?",
+      address, address, limit, offset)
+  end
+
+  def get_paginated_tokens(page : Int32, per_page : Int32, direction : String)
+    res = [] of String
+    limit = per_page
+    offset = Math.max((limit * page) - limit, 0)
+
+    @db.query(
+      "select distinct(token) from transactions " \
+      "order by token #{direction} " \
+      "limit ? offset ?",
+      limit, offset) do |rows|
+      rows.each { res << rows.read(String) }
+    end
+    res
+  end
+
+  def token_exists?(token) : Bool
+    res = 0
+    @db.query("select count(distinct token) from transactions where token = ?", token) do |rows|
+      rows.each do
+        res = rows.read(Int32)
+      en
