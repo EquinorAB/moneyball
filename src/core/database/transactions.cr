@@ -70,4 +70,34 @@ module ::Axentro::Core::Data::Transactions
   end
 
   def total_transactions_size : Int32
-    @
+    @db.query_one("select count(*) from transactions", as: Int32)
+  end
+
+  def get_paginated_transactions(block_index : Int64, page : Int32, per_page : Int32, direction : String, sort_field : String, actions : Array(String))
+    limit = per_page
+    offset = Math.max((limit * page) - limit, 0)
+
+    actions = actions.join(",") { |a| "'#{a}'" }
+    transactions_by_query(
+      "select * from transactions " \
+      "where block_id = ? " +
+      (actions.empty? ? "" : "and action in (#{actions}) ") +
+      "order by #{sort_field} #{direction} " \
+      "limit ? offset ?",
+      block_index, limit, offset)
+  end
+
+  def get_paginated_all_transactions(page : Int32, per_page : Int32, direction : String, sort_field : String, actions : Array(String))
+    limit = per_page
+    offset = Math.max((limit * page) - limit, 0)
+
+    actions = actions.join(",") { |a| "'#{a}'" }
+    transactions_by_query(
+      "select * from transactions " +
+      (actions.empty? ? "" : "where action in (#{actions}) ") +
+      "order by #{sort_field} #{direction} " \
+      "limit ? offset ?",
+      limit, offset)
+  end
+
+  def get_paginated_transactions_for_address(address : String, page : Int32, per_page : Int32, direction : String, sort_field : 
