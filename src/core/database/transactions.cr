@@ -42,4 +42,32 @@ module ::Axentro::Core::Data::Transactions
   end
 
   def get_transactions_for_asset(asset_id : String) : Array(AssetVersion)
-    transactions = transactions_by_query("select * from transactions 
+    transactions = transactions_by_query("select * from transactions where id in (select transaction_id from assets where asset_id = ? order by version desc)", asset_id)
+    transactions.map do |t|
+      asset = t.assets.first
+      address = t.action == "send_asset" ? t.recipients.map(&.address).first : t.senders.map(&.address).first
+      AssetVersion.new(asset_id, t.id, asset.version, t.action, address)
+    end
+  end
+
+  # ------- API -------
+  def total_transactions(transaction_kind : TransactionKind) : Int32
+    kind = transaction_kind == TransactionKind::SLOW ? "SLOW" : "FAST"
+    @db.query_one("select count(*) from transactions where kind = ?", kind, as: Int32)
+  end
+
+  def total_transactions_for_block(block_index : Int64) : Int32
+    @db.query_one("select count(*) from transactions where block_id = ?", block_index, as: Int32)
+  end
+
+  def total_transactions_for_address(address : String) : Int32
+    @db.query_one(
+      "select count(*) from transactions " \
+      "where id in (select transaction_id from senders " \
+      "where address = ? " \
+      "union select transaction_id from recipients " \
+      "where address = ?) ", address, address, as: Int32)
+  end
+
+  def total_transactions_size : Int32
+    @
