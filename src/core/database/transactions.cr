@@ -212,4 +212,37 @@ module ::Axentro::Core::Data::Transactions
         domain_names << rows.read(String)
       end
     end
-    domain_names.c
+    domain_names.compact_map { |n| get_domain_map_for(n)[n]? }
+  end
+
+  private def status(action) : Status
+    case action
+    when "hra_buy"
+      Status::ACQUIRED
+    when "hra_sell"
+      Status::FOR_SALE
+    else
+      Status::ACQUIRED
+    end
+  end
+
+  # --------- utxo -----------
+
+  def get_address_amounts(addresses : Array(String)) : Hash(String, Array(TokenQuantity))
+    addresses.uniq!
+    amounts_per_address : Hash(String, Array(TokenQuantity)) = {} of String => Array(TokenQuantity)
+    addresses.each { |a| amounts_per_address[a] = [] of TokenQuantity }
+
+    recipient_sum_per_address = get_recipient_sum_per_address(addresses)
+    sender_sum_per_address = get_sender_sum_per_address(addresses)
+    fee_sum_per_address = get_fee_sum_per_address(addresses)
+    burned_sum_per_address = get_burned_token_sum_per_address(addresses)
+
+    addresses.each do |address|
+      recipient_sum = recipient_sum_per_address[address]
+      sender_sum = sender_sum_per_address[address]
+      burned_sum = burned_sum_per_address[address]
+      unique_tokens = (recipient_sum + sender_sum + burned_sum).map(&.token).push("AXNT").uniq
+
+      unique_tokens.map do |token|
+        recipient = recipient_sum.selec
