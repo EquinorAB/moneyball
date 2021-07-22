@@ -318,4 +318,37 @@ module ::Axentro::Core::Data::Transactions
   end
 
   private def get_recipient_sum_per_address(addresses : Array(String)) : Hash(String, Array(TokenQuantity))
-    amounts_per_address : Hash(String, Array(TokenQuantity)) = {} of String => Array(TokenQuantity
+    amounts_per_address : Hash(String, Array(TokenQuantity)) = {} of String => Array(TokenQuantity)
+    addresses.uniq.each { |a| amounts_per_address[a] = [] of TokenQuantity }
+    address_list = addresses.map { |a| "'#{a}'" }.uniq!.join(",")
+    @db.query(
+      "select r.address, t.token, sum(r.amount) as 'rec' from transactions t " \
+      "join recipients r on r.transaction_id = t.id " \
+      "where r.address in (#{address_list}) " \
+      "and t.action in (#{internal_actions_list}) " \
+      "group by r.address, t.token") do |rows|
+      rows.each do
+        address = rows.read(String)
+        token = rows.read(String)
+        amount = rows.read(Int64 | Nil) || 0_i64
+        amounts_per_address[address] << TokenQuantity.new(token, amount)
+      end
+    end
+    amounts_per_address
+  end
+
+  private def get_sender_sum(address : String) : Array(TokenQuantity)
+    token_quantity = [] of TokenQuantity
+    @db.query(
+      "select t.token, sum(s.amount) " \
+      "from transactions t " \
+      "join senders s on s.transaction_id = t.id " \
+      "where s.address = ? " \
+      "and t.action = 'send' " \
+      "group by t.token",
+      address
+    ) do |rows|
+      rows.each do
+        token = rows.read(String)
+        amount = rows.read(Int64 | Nil) || 0_i64
+        token_quantity << Token
