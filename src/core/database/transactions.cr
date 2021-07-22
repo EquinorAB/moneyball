@@ -351,4 +351,37 @@ module ::Axentro::Core::Data::Transactions
       rows.each do
         token = rows.read(String)
         amount = rows.read(Int64 | Nil) || 0_i64
-        token_quantity << Token
+        token_quantity << TokenQuantity.new(token, amount)
+      end
+    end
+    token_quantity
+  end
+
+  private def get_sender_sum_per_address(addresses : Array(String)) : Hash(String, Array(TokenQuantity))
+    amounts_per_address : Hash(String, Array(TokenQuantity)) = {} of String => Array(TokenQuantity)
+    addresses.uniq.each { |a| amounts_per_address[a] = [] of TokenQuantity }
+    address_list = addresses.map { |a| "'#{a}'" }.uniq!.join(",")
+    @db.query(
+      "select s.address, t.token, sum(s.amount) as 'send' from transactions t " \
+      "join senders s on s.transaction_id = t.id " \
+      "where s.address in (#{address_list}) " \
+      "and t.action = 'send' " \
+      "group by s.address, t.token") do |rows|
+      rows.each do
+        address = rows.read(String)
+        token = rows.read(String)
+        amount = rows.read(Int64 | Nil) || 0_i64
+        amounts_per_address[address] << TokenQuantity.new(token, amount)
+      end
+    end
+    amounts_per_address
+  end
+
+  private def get_fee_sum(address : String) : Int64
+    amount = 0_i64
+    @db.query(
+      "select sum(fee) " \
+      "from senders " \
+      "where address = ?",
+      address
+    )
