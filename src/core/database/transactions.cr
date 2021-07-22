@@ -283,3 +283,39 @@ module ::Axentro::Core::Data::Transactions
     end
   end
 
+  def get_amount_confirmation(address : String) : Int32
+    block = nil
+    @db.query("select max(block_id) from recipients where address = ?", address) do |rows|
+      rows.each do
+        block = rows.read(Int64 | Nil)
+      end
+    end
+    if block
+      get_confirmations(block.not_nil!)
+    else
+      0
+    end
+  end
+
+  private def get_recipient_sum(address : String) : Array(TokenQuantity)
+    token_quantity = [] of TokenQuantity
+    @db.query(
+      "select t.token, sum(r.amount) " \
+      "from transactions t " \
+      "join recipients r on r.transaction_id = t.id " \
+      "where r.address = ? " \
+      "and t.action in (#{internal_actions_list}) " \
+      "group by t.token",
+      address
+    ) do |rows|
+      rows.each do
+        token = rows.read(String)
+        amount = rows.read(Int64 | Nil) || 0_i64
+        token_quantity << TokenQuantity.new(token, amount)
+      end
+    end
+    token_quantity
+  end
+
+  private def get_recipient_sum_per_address(addresses : Array(String)) : Hash(String, Array(TokenQuantity))
+    amounts_per_address : Hash(String, Array(TokenQuantity)) = {} of String => Array(TokenQuantity
