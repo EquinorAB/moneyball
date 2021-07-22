@@ -245,4 +245,41 @@ module ::Axentro::Core::Data::Transactions
       unique_tokens = (recipient_sum + sender_sum + burned_sum).map(&.token).push("AXNT").uniq
 
       unique_tokens.map do |token|
-        recipient = recipient_sum.selec
+        recipient = recipient_sum.select(&.token.==(token)).sum(&.amount)
+        sender = sender_sum.select(&.token.==(token)).sum(&.amount)
+        burned = burned_sum.select(&.token.==(token)).sum(&.amount)
+        fee = fee_sum_per_address[address]
+
+        if token == "AXNT"
+          sender = sender + fee
+        end
+        balance = recipient - (sender + burned)
+
+        amounts_per_address[address] << TokenQuantity.new(token, balance)
+      end
+    end
+
+    amounts_per_address
+  end
+
+  def get_address_amount(address : String) : Array(TokenQuantity)
+    recipient_sum = get_recipient_sum(address)
+    sender_sum = get_sender_sum(address)
+    burned_sum = get_burned_token_sum(address)
+    unique_tokens = (recipient_sum + sender_sum + burned_sum).map(&.token).push("AXNT").uniq
+    fee = get_fee_sum(address)
+    unique_tokens.map do |token|
+      recipient = recipient_sum.select(&.token.==(token)).sum(&.amount)
+      sender = sender_sum.select(&.token.==(token)).sum(&.amount)
+      burned = burned_sum.select(&.token.==(token)).sum(&.amount)
+
+      if token == "AXNT"
+        sender = sender + fee
+      end
+
+      balance = recipient - (sender + burned)
+
+      TokenQuantity.new(token, balance)
+    end
+  end
+
