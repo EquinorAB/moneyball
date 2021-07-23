@@ -421,4 +421,36 @@ module ::Axentro::Core::Data::Transactions
       "group by t.token",
       address
     ) do |rows|
-      rows.eac
+      rows.each do
+        token = rows.read(String)
+        amount = rows.read(Int64 | Nil) || 0_i64
+        token_quantity << TokenQuantity.new(token, amount)
+      end
+    end
+    token_quantity
+  end
+
+  private def get_burned_token_sum_per_address(addresses : Array(String)) : Hash(String, Array(TokenQuantity))
+    amounts_per_address : Hash(String, Array(TokenQuantity)) = {} of String => Array(TokenQuantity)
+    addresses.uniq.each { |a| amounts_per_address[a] = [] of TokenQuantity }
+    address_list = addresses.map { |a| "'#{a}'" }.uniq!.join(",")
+    @db.query(
+      "select r.address, t.token, sum(r.amount) as 'burn' " \
+      "from transactions t " \
+      "join recipients r on r.transaction_id = t.id " \
+      "where r.address in (#{address_list}) " \
+      "and t.action = 'burn_token' " \
+      "group by t.token"
+    ) do |rows|
+      rows.each do
+        address = rows.read(String)
+        token = rows.read(String)
+        amount = rows.read(Int64 | Nil) || 0_i64
+        amounts_per_address[address] << TokenQuantity.new(token, amount)
+      end
+    end
+    amounts_per_address
+  end
+
+  # ------- Indices -------
+  def get_transactions_and_block_that_exist(trans
