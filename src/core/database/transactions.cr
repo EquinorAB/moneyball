@@ -384,4 +384,41 @@ module ::Axentro::Core::Data::Transactions
       "from senders " \
       "where address = ?",
       address
-    )
+    ) do |rows|
+      rows.each do
+        amount = rows.read(Int64 | Nil) || 0_i64
+      end
+    end
+    amount
+  end
+
+  private def get_fee_sum_per_address(addresses : Array(String)) : Hash(String, Int64)
+    amounts_per_address : Hash(String, Int64) = {} of String => Int64
+    addresses.uniq.each { |a| amounts_per_address[a] = 0_i64 }
+    address_list = addresses.map { |a| "'#{a}'" }.uniq!.join(",")
+    @db.query(
+      "select address, sum(fee) as 'fee' " \
+      "from senders " \
+      "where address in (#{address_list})"
+    ) do |rows|
+      rows.each do
+        address = rows.read(String | Nil) || "no-address"
+        fee = rows.read(Int64 | Nil) || 0_i64
+        amounts_per_address[address] = fee
+      end
+    end
+    amounts_per_address
+  end
+
+  private def get_burned_token_sum(address : String) : Array(TokenQuantity)
+    token_quantity = [] of TokenQuantity
+    @db.query(
+      "select t.token, sum(r.amount) " \
+      "from transactions t " \
+      "join recipients r on r.transaction_id = t.id " \
+      "where address = ? " \
+      "and t.action = 'burn_token' " \
+      "group by t.token",
+      address
+    ) do |rows|
+      rows.eac
