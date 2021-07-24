@@ -453,4 +453,36 @@ module ::Axentro::Core::Data::Transactions
   end
 
   # ------- Indices -------
-  def get_transactions_and_block_that_exist(trans
+  def get_transactions_and_block_that_exist(transactions : Array(Transaction)) : Array(TransactionWithBlock)
+    transaction_list = transactions.map { |t| "'#{t.id}'" }.uniq!.join(",")
+    transaction_ids = {} of String => Int64
+    @db.query(
+      "select id, block_id from transactions " \
+      "where id in (#{transaction_list})"
+    ) do |rows|
+      rows.each do
+        transaction_id = rows.read(String)
+        block_id = rows.read(Int64)
+        transaction_ids[transaction_id] = block_id
+      end
+    end
+
+    transactions.select { |t| transaction_ids.keys.includes?(t.id) }.map do |transaction|
+      block = transaction_ids[transaction.id]
+      TransactionWithBlock.new(transaction, block)
+    end
+  end
+
+  # ------- Official nodes -------
+  def get_official_nodes : OfficialNodesConfig
+    official_nodes_config = {"slownodes" => [] of String, "fastnodes" => [] of String}
+    @db.query(
+      "select r.address, t.action " \
+      "from transactions t " \
+      "join recipients r on r.transaction_id = t.id " \
+      "where action in ( 'create_official_node_slow', 'create_official_node_fast') "
+    ) do |rows|
+      rows.each do
+        address = rows.read(String)
+        action = rows.read(String)
+        if action == 
