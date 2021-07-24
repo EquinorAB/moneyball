@@ -519,4 +519,31 @@ module ::Axentro::Core::Data::Transactions
   # ------- Helpers -------
   def transactions_by_query(query, *args)
     transactions = [] of Transaction
-    verbose "Reading transactions from the database for block #{arg
+    verbose "Reading transactions from the database for block #{args}"
+    ti = 0
+    @db.query(query, args: args.to_a) do |rows|
+      rows.each do
+        t_id = rows.read(String)
+        rows.read(Int32)
+        rows.read(Int64)
+        action = rows.read(String)
+        message = rows.read(String)
+        token = rows.read(String)
+        prev_hash = rows.read(String)
+        timestamp = rows.read(Int64)
+        scaled = rows.read(Int32)
+        kind_string = rows.read(String)
+        kind = kind_string == "SLOW" ? TransactionKind::SLOW : TransactionKind::FAST
+        version_string = rows.read(String)
+        version = TransactionVersion.parse(version_string)
+
+        t = Transaction.new(t_id, action, [] of Transaction::Sender, [] of Transaction::Recipient, [] of Transaction::Asset, [] of Transaction::Module, [] of Transaction::Input, [] of Transaction::Output, "", message, token, prev_hash, timestamp, scaled, kind, version)
+        transactions << t
+        verbose "reading transaction #{ti} from database with short ID of #{t.short_id}" if ti < 4
+        ti += 1
+      end
+    end
+    transactions.each do |t|
+      t.set_senders(get_senders(t))
+      t.set_recipients(get_recipients(t))
+      t.
