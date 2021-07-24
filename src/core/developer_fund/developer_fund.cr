@@ -38,4 +38,36 @@ module ::Axentro::Core
       @config.addresses.reduce(0_i64) { |total, item| total + scale_i64(item["amount"]) }
     end
 
-    def self.transactions(config : DeveloperFundCon
+    def self.transactions(config : DeveloperFundConfig)
+      recipients = config.addresses.map do |item|
+        RecipientDecimal.new(item["address"], item["amount"].to_s)
+      end
+
+      transaction_id = Transaction.create_id
+      [TransactionDecimal.new(
+        transaction_id,
+        "head",
+        [] of Transaction::SenderDecimal,
+        recipients,
+        [] of Transaction::Asset,
+        [] of Transaction::Module,
+        [] of Transaction::Input,
+        [] of Transaction::Output,
+        "",            # linked
+        "0",           # message
+        TOKEN_DEFAULT, # token
+        "0",           # prev_hash
+        0,             # timestamp
+        0,             # scaled
+        TransactionKind::SLOW,
+        TransactionVersion::V1
+      ).to_transaction]
+    end
+
+    private def validate(path : String)
+      raise("Developer fund input file must be a valid .yml file - you supplied #{path}") unless File.extname(path) == ".yml"
+      content = DeveloperFundConfig.from_yaml(File.read(path))
+      content.addresses.each do |item|
+        address = item["address"]
+        amount = item["amount"]
+        raise("The supplied address: #{address} i
