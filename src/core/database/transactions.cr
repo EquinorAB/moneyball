@@ -546,4 +546,10 @@ module ::Axentro::Core::Data::Transactions
     transactions.each do |t|
       t.set_senders(get_senders(t))
       t.set_recipients(get_recipients(t))
-      t.
+      t.set_assets(get_assets(t))
+    end
+    transactions
+  end
+
+  include Axentro::Core::DApps::BuildIn
+end
