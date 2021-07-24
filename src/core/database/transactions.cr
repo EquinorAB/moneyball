@@ -485,4 +485,38 @@ module ::Axentro::Core::Data::Transactions
       rows.each do
         address = rows.read(String)
         action = rows.read(String)
-        if action == 
+        if action == "create_official_node_slow"
+          official_nodes_config["slownodes"] << address
+        elsif action == "create_official_node_fast"
+          official_nodes_config["fastnodes"] << address
+        end
+      end
+    end
+    official_nodes_config
+  end
+
+  # ------- Tokens -------
+  def token_info(unique_tokens : Array(String)) : Hash(String, DApps::BuildIn::TokenInfo)
+    token_list = unique_tokens.map { |t| "'#{t}'" }.uniq!.join(",")
+    token_map = {} of String => DApps::BuildIn::TokenInfo
+    @db.query(
+      "select t.token, r.address, t.action " \
+      "from transactions t " \
+      "join recipients r on r.transaction_id = t.id " \
+      "where t.token in (#{token_list}) " \
+      "and t.action in ('create_token','lock_token')"
+    ) do |rows|
+      rows.each do
+        token = rows.read(String)
+        address = rows.read(String)
+        action = rows.read(String)
+        token_map[token] = DApps::BuildIn::TokenInfo.new(address, action == "lock_token")
+      end
+    end
+    token_map
+  end
+
+  # ------- Helpers -------
+  def transactions_by_query(query, *args)
+    transactions = [] of Transaction
+    verbose "Reading transactions from the database for block #{arg
