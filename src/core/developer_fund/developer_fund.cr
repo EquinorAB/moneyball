@@ -70,4 +70,20 @@ module ::Axentro::Core
       content.addresses.each do |item|
         address = item["address"]
         amount = item["amount"]
-        raise("The supplied address: #{address} i
+        raise("The supplied address: #{address} is invalid") unless Address.is_valid?(address)
+        valid_amount?(amount, "The supplied amount: #{amount} for address: #{address} - ")
+      end
+      content
+    end
+  end
+
+  class DeveloperFundConfig
+    include YAML::Serializable
+    property addresses : Array(Hash(String, String))
+
+    def initialize(@addresses : Array(Hash(String, String)))
+    end
+  end
+
+  include TransactionModels
+end
