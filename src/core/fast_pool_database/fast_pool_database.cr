@@ -58,4 +58,33 @@ module ::Axentro::Core
     # ------- Insert -------
     def insert_transaction(transaction : Transaction)
       @db.exec("insert into transactions (id, content) values (?, ?)", transaction.id, transaction.to_json)
-    r
+    rescue e : Exception
+      warning "Handling error on insert fast transaction to database with message: #{e.message || "unknown"}"
+    end
+
+    # ------- Query -------
+    def get_all_transactions : Array(Transaction)
+      transactions = [] of Transaction
+      @db.query(
+        "select content from transactions"
+      ) do |rows|
+        rows.each do
+          json = rows.read(String)
+          transactions << Transaction.from_json(json)
+        end
+        transactions
+      end
+    end
+
+    # ------- Delete -------
+    def delete_all
+      @db.exec("delete from transactions")
+    end
+
+    def delete(transaction : Transaction)
+      @db.exec("delete from transactions where id = ?", transaction.id)
+    end
+
+    include Logger
+  end
+end
