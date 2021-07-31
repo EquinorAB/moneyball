@@ -35,4 +35,26 @@ module ::Axentro::Core::Keys
 
     def self.generate_hd(seed : String? = nil, derivation : String? = nil, network : Core::Node::Network = MAINNET)
       _seed = seed.nil? ? Random::Secure.random_bytes(64).hexstring : seed.not_nil!
-      keys = (derivation.nil? || derivation.not_nil! == "m") ? ED25519::HD::KeyRing.get_master_key_from_seed(_seed) : E
+      keys = (derivation.nil? || derivation.not_nil! == "m") ? ED25519::HD::KeyRing.get_master_key_from_seed(_seed) : ED25519::HD::KeyRing.derive_path(derivation.not_nil!, _seed, ED25519::HD::HARDENED_AXENTRO)
+
+      private_key = PrivateKey.new(keys.private_key, network)
+      _public_key = ED25519::HD::KeyRing.get_public_key(keys.private_key)
+      public_key = PublicKey.new(_public_key.hexbytes[1..-1].hexstring, network)
+      KeyRing.new(private_key, public_key, private_key.wif, public_key.address, _seed)
+    end
+
+    def self.is_valid?(public_key : String, wif : String, address : String)
+      address = Address.from(address)
+      wif = Wif.new(wif)
+
+      raise "network mismatch between address and wif" if address.network != wif.network
+
+      public_key = PublicKey.from(public_key, address.network)
+      raise "public key mismatch between public key and wif" if public_key.as_hex != wif.public_key.as_hex
+
+      true
+    end
+  end
+end
+
+require "./keys/*"
