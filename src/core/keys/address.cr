@@ -42,4 +42,28 @@ module ::Axentro::Core::Keys
       checksum = decoded_address[-6..-1]
       checksum == hashed_address[0..5]
     rescue e : Exception
-  
+      false
+    end
+
+    def self.get_network_from_address(hex_address) : Core::Node::Network
+      begin
+        decoded_address = Base64.decode_string(hex_address)
+      rescue Base64::Error
+        raise Axentro::Common::AxentroException.new("invalid address")
+      end
+
+      case decoded_address[0..1]
+      when MAINNET[:prefix]
+        MAINNET
+      when TESTNET[:prefix]
+        TESTNET
+      else
+        raise Axentro::Common::AxentroException.new("invalid network: #{decoded_address[0..1]} for address: #{hex_address}")
+      end
+    end
+
+    def to_s : String
+      as_hex
+    end
+  end
+end
