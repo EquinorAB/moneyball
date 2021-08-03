@@ -14,4 +14,37 @@ module ::Axentro::Core::Keys
   class PublicKey
     getter network : Core::Node::Network
 
-    def initialize(public_key_h
+    def initialize(public_key_hex : String, @network : Core::Node::Network = MAINNET)
+      @hex = public_key_hex
+      raise "invalid public key: #{@hex}" unless is_valid?
+    end
+
+    def self.from(hex : String, network : Core::Node::Network = MAINNET) : PublicKey
+      PublicKey.new(hex, network)
+    end
+
+    def self.from(bytes : Bytes, network : Core::Node::Network = MAINNET) : PublicKey
+      PublicKey.new(KeyUtils.to_hex(bytes), network)
+    end
+
+    def as_hex : String
+      @hex
+    end
+
+    def as_bytes : Bytes
+      KeyUtils.to_bytes(@hex)
+    end
+
+    def as_big_i : BigInt
+      @hex.to_big_i(16)
+    end
+
+    def address : Address
+      Address.new(KeyUtils.get_address_from_public_key(self), @network)
+    end
+
+    def is_valid? : Bool
+      @hex.hexbytes? != nil && @hex.size == 64
+    end
+  end
+end
