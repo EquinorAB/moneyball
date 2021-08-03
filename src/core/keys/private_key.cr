@@ -33,4 +33,28 @@ module ::Axentro::Core::Keys
 
     def as_bytes : Bytes
       KeyUtils.to_bytes(@hex)
-    e
+    end
+
+    def as_big_i : BigInt
+      @hex.to_big_i(16)
+    end
+
+    def wif : Wif
+      Wif.from(self, @network)
+    end
+
+    def public_key : PublicKey
+      secret_key = Crypto::SecretKey.new(self.as_hex)
+      hex_public_key = Crypto::Ed25519PublicSigningKey.new(secret: secret_key).to_slice.hexstring
+      PublicKey.new(hex_public_key, @network)
+    end
+
+    def address : Address
+      Address.new(KeyUtils.get_address_from_public_key(self.public_key), @network)
+    end
+
+    def is_valid? : Bool
+      @hex.hexbytes? != nil && @hex.size == 64
+    end
+  end
+end
