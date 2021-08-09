@@ -67,4 +67,22 @@ module ::Axentro::Core
 
       response(miner_nonce.to_json)
     rescue e : Exception
-      error e.message
+      error e.message.not_nil!
+      error e.backtrace.join("\n")
+    end
+
+    private def work_rate_with_unit(work_rate : Float64) : String
+      return "#{work_rate.to_i} [Work/s]" if work_rate / 1000.0 <= 1.0
+      return "#{(work_rate/1000.0).to_i} [KWork/s]" if work_rate / 1000000.0 <= 1.0
+      return "#{(work_rate/1000000.0).to_i} [MWork/s]" if work_rate / 1000000000.0 <= 1.0
+      "#{(work_rate/1000000000.0).to_i} [GWork/s]"
+    end
+
+    include Logger
+    include Consensus
+    include Common::Color
+    include Common::Timestamp
+  end
+
+  include NonceModels
+end
