@@ -443,3 +443,268 @@ module ::Axentro::Core::NodeComponents
               successor_node_id > _context.id &&
               @node_id < _context.id
           send_once(
+            _context,
+            M_TYPE_CHORD_FOUND_SUCCESSOR,
+            {
+              context: successor.context,
+            }
+          )
+
+          connect_to_successor(node, _context)
+        else
+          send_overlay(
+            successor.socket,
+            M_TYPE_CHORD_SEARCH_SUCCESSOR,
+            {
+              context: _context,
+            }
+          )
+        end
+      else
+        send_once(
+          _context,
+          M_TYPE_CHORD_FOUND_SUCCESSOR,
+          {
+            context: context,
+          }
+        )
+
+        connect_to_successor(node, _context)
+      end
+    end
+
+    def find_successor? : Node?
+      return nil if @successor_list.size == 0
+
+      @successor_list[0]
+    end
+
+    def find_predecessor? : Node?
+      @predecessor
+    end
+
+    def find_nodes : NamedTuple(successor: Node?, private_nodes: Nodes)
+      {
+        successor:     @successor_list.size > 0 ? @successor_list[0] : nil,
+        private_nodes: @private_nodes,
+      }
+    end
+
+    def find_all_nodes : NamedTuple(private_nodes: Nodes, public_nodes: Set(NodeContext))
+      public_nodes = @finger_table.group_by { |ctx| [ctx.host, ctx.port] }.flat_map(&.last)
+      public_nodes += @successor_list.map(&.context)
+      if predecessor = @predecessor
+        public_nodes << predecessor.context
+      end
+      {
+        private_nodes: @private_nodes,
+        public_nodes:  public_nodes.reject(&.id.==(context.id)).to_set,
+      }
+    end
+
+    def connect_to_successor(node, _context : NodeContext)
+      if _context.is_private
+        error "the connecting node is private"
+        error "please specify a public node as connecting node"
+        error "exit with -1"
+        exit -1
+      end
+
+      info "found new successor: #{_context.host}:#{_context.port}"
+
+      socket = HTTP::WebSocket.new(_context.host, "/peer?node", _context.port, @use_ssl)
+
+      node.peer(socket)
+
+      spawn do
+        socket.run
+      rescue e : Exception
+        handle_exception(socket, e)
+      end
+
+      if @successor_list.size > 0
+        @successor_list[0].socket.close
+        @successor_list[0] = Node.new(_context, socket)
+      else
+        @successor_list.push(Node.new(_context, socket))
+      end
+
+      METRICS_NODES_COUNTER[kind: "public_node_joined"].inc
+      METRICS_CONNECTED_GAUGE[kind: "public_nodes"].set (@successor_list.size + (@predecessor.nil? ? 0 : 1))
+    end
+
+    def align_successors
+      @successor_list = @successor_list.compact
+
+      if @successor_list.size > SUCCESSOR_LIST_SIZE
+        removed_successors = @successor_list[SUCCESSOR_LIST_SIZE..-1]
+        removed_successors.each do |successor|
+          successor.socket.close
+        end
+
+        @successor_list = @successor_list[0..SUCCESSOR_LIST_SIZE - 1]
+      end
+
+      if @successor_list.size > 0
+        successor = @successor_list[0]
+
+        unless @is_private
+          send_overlay(
+            successor.socket,
+            M_TYPE_CHORD_STABILIZE_AS_SUCCESSOR,
+            {
+              predecessor_context: context,
+            }
+          )
+        end
+      end
+    end
+
+    def send_once(_context : NodeContext, t : Int32, content)
+      send_once(_context.host, _context.port, t, content)
+    end
+
+    def send_once(connect_host : String, connect_port : Int32, t : Int32, content)
+      socket = HTTP::WebSocket.new(connect_host, "/peer?node", connect_port, @use_ssl)
+
+      send_once(socket, t, content)
+    end
+
+    def send_once(socket, t, content)
+      send_overlay(socket, t, content)
+
+      socket.close
+
+      clean_connection(socket)
+    end
+
+    def send_overlay(socket, t, content)
+      send(socket, t, content)
+    end
+
+    def ping_all
+      @successor_list.each do |successor|
+        ping(successor.socket)
+      end
+
+      if predecessor = @predecessor
+        ping(predecessor.socket)
+      end
+    end
+
+    def stabilise_finger_table
+      sockets = [] of HTTP::WebSocket
+      @finger_table.each do |ctx|
+        debug "stabilize finger table: #{ctx.host}:#{ctx.port}}"
+        socket = HTTP::WebSocket.new(ctx.host, "/peer?node", ctx.port, ctx.ssl)
+        sockets << socket
+        socket.ping
+      rescue i : IO::Error
+        @finger_table.delete(ctx)
+      end
+      sockets.each(&.close)
+    rescue i : IO::Error
+      stabilise_finger_table
+    end
+
+    def ping(socket : HTTP::WebSocket)
+      socket.ping
+    rescue i : IO::Error
+      clean_connection(socket)
+    end
+
+    def clean_connection(socket)
+      @successor_list.each do |successor|
+        if successor.socket == socket
+          current_successors = @successor_list.size
+
+          @successor_list.delete(successor)
+          debug "successor has been removed from successor list."
+          debug "#{current_successors} => #{@successor_list.size}"
+          METRICS_NODES_COUNTER[kind: "public_node_removed"].inc
+
+          break
+        end
+      end
+
+      if predecessor = @predecessor
+        if predecessor.socket == socket
+          debug "predecessor has been removed"
+
+          @predecessor = nil
+        end
+      end
+
+      METRICS_CONNECTED_GAUGE[kind: "public_nodes"].set (@successor_list.size + (@predecessor.nil? ? 0 : 1))
+
+      @private_nodes.each do |private_node|
+        if private_node.socket == socket
+          @private_nodes.delete(private_node)
+          METRICS_NODES_COUNTER[kind: "private_node_removed"].inc
+        end
+      end
+      METRICS_CONNECTED_GAUGE[kind: "private_nodes"].set @private_nodes.size
+    end
+
+    def connected_nodes
+      {
+        successor_list: extract_context(@successor_list),
+        predecessor:    extract_context(@predecessor),
+        private_nodes:  extract_context(@private_nodes),
+        finger_table:   @finger_table,
+      }
+    end
+
+    def extract_context(nodes : Nodes) : NodeContexts
+      nodes.map { |n| extract_context(n) }
+    end
+
+    def extract_context(node : Node) : NodeContext
+      node.context
+    end
+
+    def extract_context(node : Nil) : Nil
+      nil
+    end
+
+    def find_node(id : String) : NodeContext
+      return context if context.id == id
+
+      (@finger_table.to_a + @private_nodes.map { |n| extract_context(n) }).each do |ctx|
+        return ctx if ctx.id == id
+      end
+
+      raise "the node #{id} not found. (only searching nodes which are currently connected.)"
+    end
+
+    def find_node_by_address(address : String) : Array(NodeContext)
+      list = @finger_table.to_a + @private_nodes.map { |n| extract_context(n) }
+      list = list << context
+      result = list.select(&.address.==(address))
+
+      raise "the node with address #{address} not found. (only searching nodes which are currently connected.)" if result.empty?
+      result.uniq
+    end
+
+    def official_nodes_list
+      {
+        all:    @official_node.all_impl,
+        online: online_official_nodes,
+      }
+    end
+
+    private def online_official_nodes
+      list = @finger_table << context
+      list = list.reject(&.is_private).select { |ctx| @official_node.all_impl.includes?(ctx.address) }
+      list.map do |ctx|
+        transport = ctx.ssl ? "https://" : "http://"
+        {id: ctx.id, address: ctx.address, url: "#{transport}#{ctx.host}:#{ctx.port}"}
+      end
+    end
+
+    include Protocol
+    include Consensus
+    include Common::Color
+    include Metrics
+  end
+end
