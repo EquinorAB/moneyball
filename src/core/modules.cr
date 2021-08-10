@@ -10,20 +10,4 @@
 #
 # Removal or modification of this copyright notice is prohibited.
 
-module ::Axentro::Core::Hashes
-  def sha256(base : Bytes | String) : String
-    hash = OpenSSL::Digest.new("SHA256")
-    hash.update(base)
-    hash.final.hexstring
-  end
-
-  def ripemd160(base : Bytes | String) : String
-    hash = OpenSSL::Digest.new("RIPEMD160")
-    hash.update(base)
-    hash.final.hexstring
-  end
-
-  def argon2(base : String) : String
-    Argon2::Engine.hash_argon2id_raw(base, "AXENTRO_BLOCKCHAIN", 1, 4)
-  end
-end
+require "./modules/*"
