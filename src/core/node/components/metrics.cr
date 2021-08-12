@@ -40,4 +40,7 @@ module ::Axentro::Core::NodeComponents::Metrics
   METRICS_NODES_COUNTER = NodeConnectionCounter.new(:axnt_node_connections, "Node connections (joined, removed, sync_requested)")
 
   # Transactions
-  # fast, s
+  # fast, slow, rejected
+  Crometheus.alias TransactionsCounter = Crometheus::Counter[:kind]
+  METRICS_TRANSACTIONS_COUNTER = TransactionsCounter.new(:axnt_transactions_received, "Transactions received (fast, slow, rejected)")
+end
