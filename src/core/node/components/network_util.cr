@@ -39,4 +39,10 @@ module ::Axentro::Core::NodeComponents
       forwarded_port = request.headers["X-Forwarded-Port"]?.try(&.to_i)
       forwarded_protocol = request.headers["X-Forwarded-Proto"]?
 
-      ip =
+      ip = forwarded_ip || raw_ip
+      port = forwarded_port || raw_port
+
+      RemoteConnection.new(ip, port, raw_ip, raw_port, forwarded_ip, forwarded_port, forwarded_protocol)
+    end
+  end
+end
