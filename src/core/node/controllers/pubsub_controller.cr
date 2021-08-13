@@ -1,3 +1,4 @@
+
 # Copyright © 2017-2020 The Axentro Core developers
 #
 # See the LICENSE file at the top-level directory of this distribution
@@ -7,10 +8,3 @@
 # no part of this software, including this file, may be copied, modified,
 # propagated, or distributed except according to the terms contained in the
 # LICENSE file.
-#
-# Removal or modification of this copyright notice is prohibited.
-
-module ::Axentro::Core::NodeComponents
-end
-
-require "./components/*"

@@ -1,3 +1,4 @@
+
 # Copyright © 2017-2020 The Axentro Core developers
 #
 # See the LICENSE file at the top-level directory of this distribution
@@ -10,7 +11,15 @@
 #
 # Removal or modification of this copyright notice is prohibited.
 
-module ::Axentro::Core::NodeComponents
-end
+module ::Axentro::Core::Controllers
+  class HealthController < Controller
+    def exec_internal_get(context, params) : HTTP::Server::Context
+      context.response.status_code == 200
+      context
+    end
 
-require "./components/*"
+    def exec_internal_post(json, context, params) : HTTP::Server::Context
+      unpermitted_method(context)
+    end
+  end
+end
