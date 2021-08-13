@@ -77,4 +77,29 @@ module ::Axentro::Core::NodeComponents
             # incoming block is earlier then ours (take theirs)
             SlowSyncState::REPLACE
           elsif @incoming_block.timestamp > existing_block.timestamp
-            # i
+            # incoming block is not as early as ours (keep ours & ignore)
+            SlowSyncState::REJECT_OLD
+          else
+            # incoming block is exactly the same timestamp - check the hashes
+            if @incoming_block.to_hash == existing_block.to_hash
+              # keep ours as it's identical
+              SlowSyncState::REJECT_OLD
+            else
+              # take theirs (more stable)
+              SlowSyncState::REPLACE
+            end
+          end
+        end
+      else
+        # if incoming block is not latest in sequence
+        if @incoming_block.index > @latest_slow.index
+          # incoming block is ahead of our latest
+          SlowSyncState::SYNC
+        else
+          # incoming block is behind our latest (can ignore this block)
+          SlowSyncState::REJECT_VERY_OLD
+        end
+      end
+    end
+  end
+end
