@@ -12,4 +12,42 @@
 
 module ::Axentro::Core::Controllers
   class RPCController < Controller
-    def exec_internal_post(json, context, params) :
+    def exec_internal_post(json, context, params) : HTTP::Server::Context
+      call = json["call"].to_s
+
+      @blockchain.dapps.each do |dapp|
+        # pp dapp.transaction_actions
+        next unless result_context = dapp.define_rpc?(call, json, context, params)
+        return result_context
+      end
+
+      unpermitted_call(call, context)
+    end
+
+    def exec_internal_get(context, params) : HTTP::Server::Context
+      unpermitted_method(context)
+    end
+
+    def unpermitted_call(call, context) : HTTP::Server::Context
+      context.response.status_code = 403
+      context.response.print api_error("unpermitted call: #{call}")
+      context
+    end
+
+    def get_handler
+      options "/rpc" do |context|
+        context.response.headers["Allow"] = "HEAD,GET,PUT,POST,DELETE,OPTIONS"
+        context.response.headers["Access-Control-Allow-Origin"] = "*"
+        context.response.headers["Access-Control-Allow-Headers"] =
+          "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
+        context.response.status_code = 200
+        context.response.print ""
+        context
+      end
+
+      post "/rpc" do |context, params|
+        context.response.headers["Access-Control-Allow-Origin"] = "*"
+        exec(context, params)
+      end
+
+     
