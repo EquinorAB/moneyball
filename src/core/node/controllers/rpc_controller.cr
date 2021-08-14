@@ -50,4 +50,9 @@ module ::Axentro::Core::Controllers
         exec(context, params)
       end
 
-     
+      route_handler
+    end
+
+    include Router
+  end
+end
