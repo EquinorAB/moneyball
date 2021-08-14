@@ -32,4 +32,36 @@ module ::Axentro::Core::Controllers
             break
           end
         end
-        debug "a w
+        debug "a wallet info subscriber disconnected (#{@sockets.size})"
+      end
+
+      @sockets << socket
+      debug "new wallet info subscriber coming (#{@sockets.size})"
+
+      socket.on_message do |message|
+        begin
+          wallet_message = WalletMessage.from_json(message)
+          address = get_address(wallet_message.address)
+          @socket_address[address] = socket
+          socket.send(@blockchain.wallet_info.wallet_info_impl(address).to_json)
+        rescue
+          socket.send({message: "could not process message: #{message}"}.to_json)
+        end
+      end
+    end
+
+    def update_wallet_information(transactions)
+      debug "broadcast to the subscribers (#{@sockets.size})"
+
+      senders = transactions.flat_map { |t| t.senders.map(&.address) }
+      recipients = transactions.flat_map { |t| t.recipients.map(&.address) }
+      addresses = (senders + recipients).uniq
+
+      addresses.each do |address|
+        address = get_address(address)
+        _socket = @socket_address[address]?
+        if _socket
+          data = @blockchain.wallet_info.wallet_info_impl(address).to_json
+          _socket.send(data)
+        end
+  
