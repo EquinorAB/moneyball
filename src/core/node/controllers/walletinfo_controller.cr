@@ -64,4 +64,28 @@ module ::Axentro::Core::Controllers
           data = @blockchain.wallet_info.wallet_info_impl(address).to_json
           _socket.send(data)
         end
-  
+      rescue e : Exception
+        debug "an error (#{e})"
+      end
+    end
+
+    private def get_address(maybe_address)
+      address_or_domain = maybe_address
+      address = address_or_domain
+      if address.ends_with?(".ax")
+        domain_name = address_or_domain
+        result = @blockchain.database.get_domain_map_for(domain_name)[domain_name]?
+        if result
+          address = result[:address]
+        end
+      end
+      address
+    end
+
+    def get_handler
+      WebSocketHandler.new("/wallet_info") { |socket, _| wallet_info(socket) }
+    end
+
+    include Logger
+  end
+end
