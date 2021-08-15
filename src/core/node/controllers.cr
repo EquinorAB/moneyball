@@ -58,4 +58,11 @@ module ::Axentro::Core::Controllers
       context
     end
 
-    abstract def ex
+    abstract def exec_internal_get(context, params) : HTTP::Server::Context
+    abstract def exec_internal_post(json, context, params) : HTTP::Server::Context
+
+    include NodeComponents::APIFormat
+  end
+end
+
+require "./controllers/*"
