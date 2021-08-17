@@ -9,26 +9,18 @@
 # LICENSE file.
 #
 # Removal or modification of this copyright notice is prohibited.
-require "../virtual_file_system/file_storage"
 
 module ::Axentro::Core
-  class ApiDocumentationHandler
-    include HTTP::Handler
-
-    def initialize(@path : String, @filename : String)
+  class WebSocketHandler < HTTP::WebSocketHandler
+    def initialize(@path : String, &@proc : HTTP::WebSocket, HTTP::Server::Context -> Void)
     end
 
-    def call(context)
-      if context.request.path.try &.starts_with?(@path)
-        context.response.headers["Content-Type"] = "text/html"
-        context.response << FileStorage.get(@filename).gets_to_end
+    def call(context : HTTP::Server::Context)
+      if context.request.path == @path
+        super(context)
       else
         call_next(context)
       end
-    end
-
-    def request_path(path : String) : String
-      path[@path.size..-1]
     end
   end
 end
