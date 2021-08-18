@@ -183,4 +183,48 @@
             raf(run_tasks);
         return {
             promise: new Promise(fulfill => {
-                
+                tasks.add(task = { c: callback, f: fulfill });
+            }),
+            abort() {
+                tasks.delete(task);
+            }
+        };
+    }
+
+    function append(target, node) {
+        target.appendChild(node);
+    }
+    function insert(target, node, anchor) {
+        target.insertBefore(node, anchor || null);
+    }
+    function detach(node) {
+        node.parentNode.removeChild(node);
+    }
+    function destroy_each(iterations, detaching) {
+        for (let i = 0; i < iterations.length; i += 1) {
+            if (iterations[i])
+                iterations[i].d(detaching);
+        }
+    }
+    function element(name) {
+        return document.createElement(name);
+    }
+    function element_is(name, is) {
+        return document.createElement(name, { is });
+    }
+    function object_without_properties(obj, exclude) {
+        const target = {};
+        for (const k in obj) {
+            if (has_prop(obj, k)
+                // @ts-ignore
+                && exclude.indexOf(k) === -1) {
+                // @ts-ignore
+                target[k] = obj[k];
+            }
+        }
+        return target;
+    }
+    function svg_element(name) {
+        return document.createElementNS('http://www.w3.org/2000/svg', name);
+    }
+    
