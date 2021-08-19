@@ -267,4 +267,39 @@
         else if (node.getAttribute(attribute) !== value)
             node.setAttribute(attribute, value);
     }
-    function set_attri
+    function set_attributes(node, attributes) {
+        // @ts-ignore
+        const descriptors = Object.getOwnPropertyDescriptors(node.__proto__);
+        for (const key in attributes) {
+            if (attributes[key] == null) {
+                node.removeAttribute(key);
+            }
+            else if (key === 'style') {
+                node.style.cssText = attributes[key];
+            }
+            else if (key === '__value' || descriptors[key] && descriptors[key].set) {
+                node[key] = attributes[key];
+            }
+            else {
+                attr(node, key, attributes[key]);
+            }
+        }
+    }
+    function set_svg_attributes(node, attributes) {
+        for (const key in attributes) {
+            attr(node, key, attributes[key]);
+        }
+    }
+    function set_custom_element_data(node, prop, value) {
+        if (prop in node) {
+            node[prop] = value;
+        }
+        else {
+            attr(node, prop, value);
+        }
+    }
+    function xlink_attr(node, attribute, value) {
+        node.setAttributeNS('http://www.w3.org/1999/xlink', attribute, value);
+    }
+    function get_binding_group_value(group) {
+    
