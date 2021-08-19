@@ -302,4 +302,38 @@
         node.setAttributeNS('http://www.w3.org/1999/xlink', attribute, value);
     }
     function get_binding_group_value(group) {
+        const value = [];
+        for (let i = 0; i < group.length; i += 1) {
+            if (group[i].checked)
+                value.push(group[i].__value);
+        }
+        return value;
+    }
+    function to_number(value) {
+        return value === '' ? undefined : +value;
+    }
+    function time_ranges_to_array(ranges) {
+        const array = [];
+        for (let i = 0; i < ranges.length; i += 1) {
+            array.push({ start: ranges.start(i), end: ranges.end(i) });
+        }
+        return array;
+    }
+    function children(element) {
+        return Array.from(element.childNodes);
+    }
+    function claim_element(nodes, name, attributes, svg) {
+        for (let i = 0; i < nodes.length; i += 1) {
+            const node = nodes[i];
+            if (node.nodeName === name) {
+                let j = 0;
+                while (j < node.attributes.length) {
+                    const attribute = node.attributes[j];
+                    if (attributes[attribute.name]) {
+                        j++;
+                    }
+                    else {
+                        node.removeAttribute(attribute.name);
+                    }
+                }
     
