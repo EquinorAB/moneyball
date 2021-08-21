@@ -336,4 +336,44 @@
                         node.removeAttribute(attribute.name);
                     }
                 }
-    
+                return nodes.splice(i, 1)[0];
+            }
+        }
+        return svg ? svg_element(name) : element(name);
+    }
+    function claim_text(nodes, data) {
+        for (let i = 0; i < nodes.length; i += 1) {
+            const node = nodes[i];
+            if (node.nodeType === 3) {
+                node.data = '' + data;
+                return nodes.splice(i, 1)[0];
+            }
+        }
+        return text(data);
+    }
+    function claim_space(nodes) {
+        return claim_text(nodes, ' ');
+    }
+    function set_data(text, data) {
+        data = '' + data;
+        if (text.data !== data)
+            text.data = data;
+    }
+    function set_input_value(input, value) {
+        if (value != null || input.value) {
+            input.value = value;
+        }
+    }
+    function set_input_type(input, type) {
+        try {
+            input.type = type;
+        }
+        catch (e) {
+            // do nothing
+        }
+    }
+    function set_style(node, key, value, important) {
+        node.style.setProperty(key, value, important ? 'important' : '');
+    }
+    function select_option(select, value) {
+        for (let i = 0; i < select.optio
