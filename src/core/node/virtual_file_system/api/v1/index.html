@@ -502,4 +502,35 @@
             : anim => anim.indexOf('__svelte') === -1 // remove all Svelte animations
         );
         const deleted = previous.length - next.length;
-     
+        if (deleted) {
+            node.style.animation = next.join(', ');
+            active -= deleted;
+            if (!active)
+                clear_rules();
+        }
+    }
+    function clear_rules() {
+        raf(() => {
+            if (active)
+                return;
+            active_docs.forEach(doc => {
+                const stylesheet = doc.__svelte_stylesheet;
+                let i = stylesheet.cssRules.length;
+                while (i--)
+                    stylesheet.deleteRule(i);
+                doc.__svelte_rules = {};
+            });
+            active_docs.clear();
+        });
+    }
+
+    function create_animation(node, from, fn, params) {
+        if (!from)
+            return noop;
+        const to = node.getBoundingClientRect();
+        if (from.left === to.left && from.right === to.right && from.top === to.top && from.bottom === to.bottom)
+            return noop;
+        const { delay = 0, duration = 300, easing = identity, 
+        // @ts-ignore todo: should this be separated from destructuring? Or start/end added to public api and documentation?
+        start: start_time = now() + delay, 
+        
