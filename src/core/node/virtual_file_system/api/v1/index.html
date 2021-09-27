@@ -1177,4 +1177,53 @@
                 for (const key in n) {
                     if (!accounted_for[key]) {
                         update[key] = n[key];
-                        accounted_for[k
+                        accounted_for[key] = 1;
+                    }
+                }
+                levels[i] = n;
+            }
+            else {
+                for (const key in o) {
+                    accounted_for[key] = 1;
+                }
+            }
+        }
+        for (const key in to_null_out) {
+            if (!(key in update))
+                update[key] = undefined;
+        }
+        return update;
+    }
+    function get_spread_object(spread_props) {
+        return typeof spread_props === 'object' && spread_props !== null ? spread_props : {};
+    }
+
+    // source: https://html.spec.whatwg.org/multipage/indices.html
+    const boolean_attributes = new Set([
+        'allowfullscreen',
+        'allowpaymentrequest',
+        'async',
+        'autofocus',
+        'autoplay',
+        'checked',
+        'controls',
+        'default',
+        'defer',
+        'disabled',
+        'formnovalidate',
+        'hidden',
+        'ismap',
+        'loop',
+        'multiple',
+        'muted',
+        'nomodule',
+        'novalidate',
+        'open',
+        'playsinline',
+        'readonly',
+        'required',
+        'reversed',
+        'selected'
+    ]);
+
+    
