@@ -1246,4 +1246,40 @@
             const value = attributes[name];
             if (value === true)
                 str += " " + name;
-            else if (boolean_attributes.has(name.
+            else if (boolean_attributes.has(name.toLowerCase())) {
+                if (value)
+                    str += " " + name;
+            }
+            else if (value != null) {
+                str += ` ${name}="${String(value).replace(/"/g, '&#34;').replace(/'/g, '&#39;')}"`;
+            }
+        });
+        return str;
+    }
+    const escaped = {
+        '"': '&quot;',
+        "'": '&#39;',
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;'
+    };
+    function escape$1(html) {
+        return String(html).replace(/["'&<>]/g, match => escaped[match]);
+    }
+    function each(items, fn) {
+        let str = '';
+        for (let i = 0; i < items.length; i += 1) {
+            str += fn(items[i], i);
+        }
+        return str;
+    }
+    const missing_component = {
+        $$render: () => ''
+    };
+    function validate_component(component, name) {
+        if (!component || !component.$$render) {
+            if (name === 'svelte:component')
+                name += ' this={...}';
+            throw new Error(`<${name}> is not a valid SSR component. You may need to review your build config to ensure that dependencies are compiled, rather than imported as pre-compiled modules`);
+        }
+        re
