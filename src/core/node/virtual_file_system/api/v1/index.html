@@ -1282,4 +1282,33 @@
                 name += ' this={...}';
             throw new Error(`<${name}> is not a valid SSR component. You may need to review your build config to ensure that dependencies are compiled, rather than imported as pre-compiled modules`);
         }
-        re
+        return component;
+    }
+    function debug(file, line, column, values) {
+        console.log(`{@debug} ${file ? file + ' ' : ''}(${line}:${column})`); // eslint-disable-line no-console
+        console.log(values); // eslint-disable-line no-console
+        return '';
+    }
+    let on_destroy;
+    function create_ssr_component(fn) {
+        function $$render(result, props, bindings, slots) {
+            const parent_component = current_component;
+            const $$ = {
+                on_destroy,
+                context: new Map(parent_component ? parent_component.$$.context : []),
+                // these will be immediately discarded
+                on_mount: [],
+                before_update: [],
+                after_update: [],
+                callbacks: blank_object()
+            };
+            set_current_component({ $$ });
+            const html = fn(result, props, bindings, slots);
+            set_current_component(parent_component);
+            return html;
+        }
+        return {
+            render: (props = {}, options = {}) => {
+                on_destroy = [];
+                const result = { title: '', head: '', css: new Set() };
+              
