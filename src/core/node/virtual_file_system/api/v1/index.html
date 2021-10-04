@@ -1437,3 +1437,34 @@
             }
             if (options.intro)
                 transition_in(component.$$.fragment);
+            mount_component(component, options.target, options.anchor);
+            flush();
+        }
+        set_current_component(parent_component);
+    }
+    let SvelteElement;
+    if (typeof HTMLElement === 'function') {
+        SvelteElement = class extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+            }
+            connectedCallback() {
+                // @ts-ignore todo: improve typings
+                for (const key in this.$$.slotted) {
+                    // @ts-ignore todo: improve typings
+                    this.appendChild(this.$$.slotted[key]);
+                }
+            }
+            attributeChangedCallback(attr, _oldValue, newValue) {
+                this[attr] = newValue;
+            }
+            $destroy() {
+                destroy_component(this, 1);
+                this.$destroy = noop;
+            }
+            $on(type, callback) {
+                // TODO should this delegate to addEventListener?
+                const callbacks = (this.$$.callbacks[type] || (this.$$.callbacks[type] = []));
+                callbacks.push(callback);
+                return 
