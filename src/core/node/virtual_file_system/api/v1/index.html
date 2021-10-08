@@ -1502,4 +1502,36 @@
     }
     function append_dev(target, node) {
         dispatch_dev("SvelteDOMInsert", { target, node });
-        append(target, nod
+        append(target, node);
+    }
+    function insert_dev(target, node, anchor) {
+        dispatch_dev("SvelteDOMInsert", { target, node, anchor });
+        insert(target, node, anchor);
+    }
+    function detach_dev(node) {
+        dispatch_dev("SvelteDOMRemove", { node });
+        detach(node);
+    }
+    function detach_between_dev(before, after) {
+        while (before.nextSibling && before.nextSibling !== after) {
+            detach_dev(before.nextSibling);
+        }
+    }
+    function detach_before_dev(after) {
+        while (after.previousSibling) {
+            detach_dev(after.previousSibling);
+        }
+    }
+    function detach_after_dev(before) {
+        while (before.nextSibling) {
+            detach_dev(before.nextSibling);
+        }
+    }
+    function listen_dev(node, event, handler, options, has_prevent_default, has_stop_propagation) {
+        const modifiers = options === true ? ["capture"] : options ? Array.from(Object.keys(options)) : [];
+        if (has_prevent_default)
+            modifiers.push('preventDefault');
+        if (has_stop_propagation)
+            modifiers.push('stopPropagation');
+        dispatch_dev("SvelteDOMAddEventListener", { node, event, handler, modifiers });
+        const dispose =
