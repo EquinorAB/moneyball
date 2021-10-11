@@ -1629,3 +1629,52 @@
     var singleMatcher = new RegExp(token, 'gi');
     var multiMatcher = new RegExp('(' + token + ')+', 'gi');
 
+    function decodeComponents(components, split) {
+    	try {
+    		// Try to decode the entire string first
+    		return decodeURIComponent(components.join(''));
+    	} catch (err) {
+    		// Do nothing
+    	}
+
+    	if (components.length === 1) {
+    		return components;
+    	}
+
+    	split = split || 1;
+
+    	// Split the array in 2 parts
+    	var left = components.slice(0, split);
+    	var right = components.slice(split);
+
+    	return Array.prototype.concat.call([], decodeComponents(left), decodeComponents(right));
+    }
+
+    function decode(input) {
+    	try {
+    		return decodeURIComponent(input);
+    	} catch (err) {
+    		var tokens = input.match(singleMatcher);
+
+    		for (var i = 1; i < tokens.length; i++) {
+    			input = decodeComponents(tokens, i).join('');
+
+    			tokens = input.match(singleMatcher);
+    		}
+
+    		return input;
+    	}
+    }
+
+    function customDecodeURIComponent(input) {
+    	// Keep track of all the replacements and prefill the map with the `BOM`
+    	var replaceMap = {
+    		'%FE%FF': '\uFFFD\uFFFD',
+    		'%FF%FE': '\uFFFD\uFFFD'
+    	};
+
+    	var match = multiMatcher.exec(input);
+    	while (match) {
+    		try {
+    			// Decode as big chunks as possible
+ 
