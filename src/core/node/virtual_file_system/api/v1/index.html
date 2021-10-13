@@ -1853,4 +1853,51 @@
     		case 'separator':
     			return (key, value, accumulator) => {
     				const isArray = typeof value === 'string' && value.split('').indexOf(options.arrayFormatSeparator) > -1;
-    				const newValue = isArray ? value.split(options.arrayFormatSepara
+    				const newValue = isArray ? value.split(options.arrayFormatSeparator).map(item => decode(item, options)) : value === null ? value : decode(value, options);
+    				accumulator[key] = newValue;
+    			};
+
+    		default:
+    			return (key, value, accumulator) => {
+    				if (accumulator[key] === undefined) {
+    					accumulator[key] = value;
+    					return;
+    				}
+
+    				accumulator[key] = [].concat(accumulator[key], value);
+    			};
+    	}
+    }
+
+    function validateArrayFormatSeparator(value) {
+    	if (typeof value !== 'string' || value.length !== 1) {
+    		throw new TypeError('arrayFormatSeparator must be single character string');
+    	}
+    }
+
+    function encode(value, options) {
+    	if (options.encode) {
+    		return options.strict ? strictUriEncode(value) : encodeURIComponent(value);
+    	}
+
+    	return value;
+    }
+
+    function decode(value, options) {
+    	if (options.decode) {
+    		return decodeUriComponent(value);
+    	}
+
+    	return value;
+    }
+
+    function keysSorter(input) {
+    	if (Array.isArray(input)) {
+    		return input.sort();
+    	}
+
+    	if (typeof input === 'object') {
+    		return keysSorter(Object.keys(input))
+    			.sort((a, b) => Number(a) - Number(b))
+    			.map(key => input[key]);
+  
