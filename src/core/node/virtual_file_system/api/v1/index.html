@@ -1767,4 +1767,46 @@
     				];
     			};
 
-    	
+    		case 'bracket':
+    			return key => (result, value) => {
+    				if (value === undefined || (options.skipNull && value === null)) {
+    					return result;
+    				}
+
+    				if (value === null) {
+    					return [...result, [encode(key, options), '[]'].join('')];
+    				}
+
+    				return [...result, [encode(key, options), '[]=', encode(value, options)].join('')];
+    			};
+
+    		case 'comma':
+    		case 'separator':
+    			return key => (result, value) => {
+    				if (value === null || value === undefined || value.length === 0) {
+    					return result;
+    				}
+
+    				if (result.length === 0) {
+    					return [[encode(key, options), '=', encode(value, options)].join('')];
+    				}
+
+    				return [[result, encode(value, options)].join(options.arrayFormatSeparator)];
+    			};
+
+    		default:
+    			return key => (result, value) => {
+    				if (value === undefined || (options.skipNull && value === null)) {
+    					return result;
+    				}
+
+    				if (value === null) {
+    					return [...result, encode(key, options)];
+    				}
+
+    				return [...result, [encode(key, options), '=', encode(value, options)].join('')];
+    			};
+    	}
+    }
+
+    func
