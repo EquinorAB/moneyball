@@ -1721,4 +1721,50 @@
 
     'use strict';
 
-   
+    var splitOnFirst = (string, separator) => {
+    	if (!(typeof string === 'string' && typeof separator === 'string')) {
+    		throw new TypeError('Expected the arguments to be of type `string`');
+    	}
+
+    	if (separator === '') {
+    		return [string];
+    	}
+
+    	const separatorIndex = string.indexOf(separator);
+
+    	if (separatorIndex === -1) {
+    		return [string];
+    	}
+
+    	return [
+    		string.slice(0, separatorIndex),
+    		string.slice(separatorIndex + separator.length)
+    	];
+    };
+
+    var queryString = createCommonjsModule(function (module, exports) {
+    'use strict';
+
+
+
+
+    function encoderForArrayFormat(options) {
+    	switch (options.arrayFormat) {
+    		case 'index':
+    			return key => (result, value) => {
+    				const index = result.length;
+    				if (value === undefined || (options.skipNull && value === null)) {
+    					return result;
+    				}
+
+    				if (value === null) {
+    					return [...result, [encode(key, options), '[', index, ']'].join('')];
+    				}
+
+    				return [
+    					...result,
+    					[encode(key, options), '[', encode(index, options), ']=', encode(value, options)].join('')
+    				];
+    			};
+
+    	
