@@ -1900,4 +1900,54 @@
     		return keysSorter(Object.keys(input))
     			.sort((a, b) => Number(a) - Number(b))
     			.map(key => input[key]);
-  
+    	}
+
+    	return input;
+    }
+
+    function removeHash(input) {
+    	const hashStart = input.indexOf('#');
+    	if (hashStart !== -1) {
+    		input = input.slice(0, hashStart);
+    	}
+
+    	return input;
+    }
+
+    function getHash(url) {
+    	let hash = '';
+    	const hashStart = url.indexOf('#');
+    	if (hashStart !== -1) {
+    		hash = url.slice(hashStart);
+    	}
+
+    	return hash;
+    }
+
+    function extract(input) {
+    	input = removeHash(input);
+    	const queryStart = input.indexOf('?');
+    	if (queryStart === -1) {
+    		return '';
+    	}
+
+    	return input.slice(queryStart + 1);
+    }
+
+    function parseValue(value, options) {
+    	if (options.parseNumbers && !Number.isNaN(Number(value)) && (typeof value === 'string' && value.trim() !== '')) {
+    		value = Number(value);
+    	} else if (options.parseBooleans && value !== null && (value.toLowerCase() === 'true' || value.toLowerCase() === 'false')) {
+    		value = value.toLowerCase() === 'true';
+    	}
+
+    	return value;
+    }
+
+    function parse(input, options) {
+    	options = Object.assign({
+    		decode: true,
+    		sort: true,
+    		arrayFormat: 'none',
+    		arrayFormatSeparator: ',',
+    		parseNumbers: f
