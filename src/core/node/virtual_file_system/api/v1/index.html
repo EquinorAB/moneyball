@@ -1991,4 +1991,49 @@
     		}
     	}
 
-    	if (options.sort === fal
+    	if (options.sort === false) {
+    		return ret;
+    	}
+
+    	return (options.sort === true ? Object.keys(ret).sort() : Object.keys(ret).sort(options.sort)).reduce((result, key) => {
+    		const value = ret[key];
+    		if (Boolean(value) && typeof value === 'object' && !Array.isArray(value)) {
+    			// Sort object keys, not values
+    			result[key] = keysSorter(value);
+    		} else {
+    			result[key] = value;
+    		}
+
+    		return result;
+    	}, Object.create(null));
+    }
+
+    exports.extract = extract;
+    exports.parse = parse;
+
+    exports.stringify = (object, options) => {
+    	if (!object) {
+    		return '';
+    	}
+
+    	options = Object.assign({
+    		encode: true,
+    		strict: true,
+    		arrayFormat: 'none',
+    		arrayFormatSeparator: ','
+    	}, options);
+
+    	validateArrayFormatSeparator(options.arrayFormatSeparator);
+
+    	const formatter = encoderForArrayFormat(options);
+
+    	const objectCopy = Object.assign({}, object);
+    	if (options.skipNull) {
+    		for (const key of Object.keys(objectCopy)) {
+    			if (objectCopy[key] === undefined || objectCopy[key] === null) {
+    				delete objectCopy[key];
+    			}
+    		}
+    	}
+
+  
