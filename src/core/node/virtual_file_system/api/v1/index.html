@@ -1950,4 +1950,45 @@
     		sort: true,
     		arrayFormat: 'none',
     		arrayFormatSeparator: ',',
-    		parseNumbers: f
+    		parseNumbers: false,
+    		parseBooleans: false
+    	}, options);
+
+    	validateArrayFormatSeparator(options.arrayFormatSeparator);
+
+    	const formatter = parserForArrayFormat(options);
+
+    	// Create an object with no prototype
+    	const ret = Object.create(null);
+
+    	if (typeof input !== 'string') {
+    		return ret;
+    	}
+
+    	input = input.trim().replace(/^[?#&]/, '');
+
+    	if (!input) {
+    		return ret;
+    	}
+
+    	for (const param of input.split('&')) {
+    		let [key, value] = splitOnFirst(options.decode ? param.replace(/\+/g, ' ') : param, '=');
+
+    		// Missing `=` should be `null`:
+    		// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+    		value = value === undefined ? null : options.arrayFormat === 'comma' ? value : decode(value, options);
+    		formatter(decode(key, options), value, ret);
+    	}
+
+    	for (const key of Object.keys(ret)) {
+    		const value = ret[key];
+    		if (typeof value === 'object' && value !== null) {
+    			for (const k of Object.keys(value)) {
+    				value[k] = parseValue(value[k], options);
+    			}
+    		} else {
+    			ret[key] = parseValue(value, options);
+    		}
+    	}
+
+    	if (options.sort === fal
