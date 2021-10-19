@@ -2150,3 +2150,45 @@
         };
       }
       var PathMatcher = function PathMatcher(path, parent) {
+        var ref = buildMatcher(path, parent);
+        var keys = ref.keys;
+        var regex = ref.regex;
+        var _depth = ref._depth;
+        var _isSplat = ref._isSplat;
+        return {
+          _isSplat: _isSplat,
+          _depth: _depth,
+          match: function (value) {
+            var matches = value.match(regex);
+
+            if (matches) {
+              return keys.reduce(function (prev, cur, i) {
+                prev[cur] = typeof matches[i + 1] === 'string' ? decodeURIComponent(matches[i + 1]) : null;
+                return prev;
+              }, {});
+            }
+          }
+        };
+      };
+
+      PathMatcher.push = function push (key, prev, leaf, parent) {
+        var root = prev[key] || (prev[key] = {});
+
+        if (!root.pattern) {
+          root.pattern = new PathMatcher(key, parent);
+          root.route = (leaf || '').replace(/\/$/, '') || '/';
+        }
+
+        prev.keys = prev.keys || [];
+
+        if (!prev.keys.includes(key)) {
+          prev.keys.push(key);
+          PathMatcher.sort(prev);
+        }
+
+        return root;
+      };
+
+      PathMatcher.sort = function sort (root) {
+        root.keys.sort(function (a, b) {
+          return root[a].pattern._depth - root[b].pat
