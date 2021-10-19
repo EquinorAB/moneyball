@@ -2081,4 +2081,31 @@
     		queryString = `?${queryString}`;
     	}
 
-    	return `${url}${queryStri
+    	return `${url}${queryString}${hash}`;
+    };
+    });
+    var queryString_1 = queryString.extract;
+    var queryString_2 = queryString.parse;
+    var queryString_3 = queryString.stringify;
+    var queryString_4 = queryString.parseUrl;
+    var queryString_5 = queryString.stringifyUrl;
+
+    var index_umd = createCommonjsModule(function (module, exports) {
+    (function (global, factory) {
+      'object' === 'object' && 'object' !== 'undefined' ? module.exports = factory() :
+      typeof undefined === 'function' && undefined.amd ? undefined(factory) :
+      (global = global || self, global.AbstractNestedRouter = factory());
+    }(commonjsGlobal, function () { 'use strict';
+
+      var defaultExport = /*@__PURE__*/(function (Error) {
+        function defaultExport(route, path) {
+          var message = "Unreachable '" + route + "', segment '" + path + "' is not defined";
+          Error.call(this, message);
+          this.message = message;
+        }
+
+        if ( Error ) defaultExport.__proto__ = Error;
+        defaultExport.prototype = Object.create( Error && Error.prototype );
+        defaultExport.prototype.constructor = defaultExport;
+
+    
