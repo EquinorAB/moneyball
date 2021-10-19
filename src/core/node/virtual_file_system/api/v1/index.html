@@ -2036,4 +2036,49 @@
     		}
     	}
 
-  
+    	const keys = Object.keys(objectCopy);
+
+    	if (options.sort !== false) {
+    		keys.sort(options.sort);
+    	}
+
+    	return keys.map(key => {
+    		const value = object[key];
+
+    		if (value === undefined) {
+    			return '';
+    		}
+
+    		if (value === null) {
+    			return encode(key, options);
+    		}
+
+    		if (Array.isArray(value)) {
+    			return value
+    				.reduce(formatter(key), [])
+    				.join('&');
+    		}
+
+    		return encode(key, options) + '=' + encode(value, options);
+    	}).filter(x => x.length > 0).join('&');
+    };
+
+    exports.parseUrl = (input, options) => {
+    	return {
+    		url: removeHash(input).split('?')[0] || '',
+    		query: parse(extract(input), options)
+    	};
+    };
+
+    exports.stringifyUrl = (input, options) => {
+    	const url = removeHash(input.url).split('?')[0] || '';
+    	const queryFromUrl = exports.extract(input.url);
+    	const parsedQueryFromUrl = exports.parse(queryFromUrl);
+    	const hash = getHash(input.url);
+    	const query = Object.assign(parsedQueryFromUrl, input.query);
+    	let queryString = exports.stringify(query, options);
+    	if (queryString) {
+    		queryString = `?${queryString}`;
+    	}
+
+    	return `${url}${queryStri
