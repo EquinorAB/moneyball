@@ -2108,4 +2108,45 @@
         defaultExport.prototype = Object.create( Error && Error.prototype );
         defaultExport.prototype.constructor = defaultExport;
 
-    
+        return defaultExport;
+      }(Error));
+
+      function buildMatcher(path, parent) {
+        var regex;
+
+        var _isSplat;
+
+        var _priority = -100;
+
+        var keys = [];
+        regex = path.replace(/[-$.]/g, '\\$&').replace(/\(/g, '(?:').replace(/\)/g, ')?').replace(/([:*]\w+)(?:<([^<>]+?)>)?/g, function (_, key, expr) {
+          keys.push(key.substr(1));
+
+          if (key.charAt() === ':') {
+            _priority += 100;
+            return ("((?!#)" + (expr || '[^#/]+?') + ")");
+          }
+
+          _isSplat = true;
+          _priority += 500;
+          return ("((?!#)" + (expr || '[^#]+?') + ")");
+        });
+
+        try {
+          regex = new RegExp(("^" + regex + "$"));
+        } catch (e) {
+          throw new TypeError(("Invalid route expression, given '" + parent + "'"));
+        }
+
+        var _hashed = path.includes('#') ? 0.5 : 1;
+
+        var _depth = path.length * _priority * _hashed;
+
+        return {
+          keys: keys,
+          regex: regex,
+          _depth: _depth,
+          _isSplat: _isSplat
+        };
+      }
+      var PathMatcher = function PathMatcher(path, parent) {
