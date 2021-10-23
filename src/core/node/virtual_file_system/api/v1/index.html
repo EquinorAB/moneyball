@@ -2191,4 +2191,45 @@
 
       PathMatcher.sort = function sort (root) {
         root.keys.sort(function (a, b) {
-          return root[a].pattern._depth - root[b].pat
+          return root[a].pattern._depth - root[b].pattern._depth;
+        });
+      };
+
+      function merge(path, parent) {
+        return ("" + (parent && parent !== '/' ? parent : '') + (path || ''));
+      }
+      function walk(path, cb) {
+        var matches = path.match(/<[^<>]*\/[^<>]*>/);
+
+        if (matches) {
+          throw new TypeError(("RegExp cannot contain slashes, given '" + matches + "'"));
+        }
+
+        var parts = path.split(/(?=\/|#)/);
+        var root = [];
+
+        if (parts[0] !== '/') {
+          parts.unshift('/');
+        }
+
+        parts.some(function (x, i) {
+          var parent = root.slice(1).concat(x).join('') || null;
+          var segment = parts.slice(i + 1).join('') || null;
+          var retval = cb(x, parent, segment ? ("" + (x !== '/' ? x : '') + segment) : null);
+          root.push(x);
+          return retval;
+        });
+      }
+      function reduce(key, root, _seen) {
+        var params = {};
+        var out = [];
+        var splat;
+        walk(key, function (x, leaf, extra) {
+          var found;
+
+          if (!root.keys) {
+            throw new defaultExport(key, x);
+          }
+
+          root.keys.some(function (k) {
+            if (_seen.includes(k)) { re
