@@ -2232,4 +2232,42 @@
           }
 
           root.keys.some(function (k) {
-            if (_seen.includes(k)) { re
+            if (_seen.includes(k)) { return false; }
+            var ref = root[k].pattern;
+            var match = ref.match;
+            var _isSplat = ref._isSplat;
+            var matches = match(_isSplat ? extra || x : x);
+
+            if (matches) {
+              Object.assign(params, matches);
+
+              if (root[k].route) {
+                var routeInfo = Object.assign({}, root[k].info); // properly handle exact-routes!
+
+                var hasMatch = false;
+
+                if (routeInfo.exact) {
+                  hasMatch = extra === null;
+                } else {
+                  hasMatch = !(x && leaf === null) || x === leaf || _isSplat || !extra;
+                }
+
+                routeInfo.matches = hasMatch;
+                routeInfo.params = Object.assign({}, params);
+                routeInfo.route = root[k].route;
+                routeInfo.path = _isSplat && extra || leaf || x;
+                out.push(routeInfo);
+              }
+
+              if (extra === null && !root[k].keys) {
+                return true;
+              }
+
+              if (k !== '/') { _seen.push(k); }
+              splat = _isSplat;
+              root = root[k];
+              found = true;
+              return true;
+            }
+
+            return false
