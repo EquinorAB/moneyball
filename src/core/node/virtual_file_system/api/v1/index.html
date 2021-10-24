@@ -2270,4 +2270,53 @@
               return true;
             }
 
-            return false
+            return false;
+          });
+
+          if (!(found || root.keys.some(function (k) { return root[k].pattern.match(x); }))) {
+            throw new defaultExport(key, x);
+          }
+
+          return splat || !found;
+        });
+        return out;
+      }
+      function find(path, routes, retries) {
+        var get = reduce.bind(null, path, routes);
+        var set = [];
+
+        while (retries > 0) {
+          retries -= 1;
+
+          try {
+            return get(set);
+          } catch (e) {
+            if (retries > 0) {
+              return get(set);
+            }
+
+            throw e;
+          }
+        }
+      }
+      function add(path, routes, parent, routeInfo) {
+        var fullpath = merge(path, parent);
+        var root = routes;
+        var key;
+
+        if (routeInfo && routeInfo.nested !== true) {
+          key = routeInfo.key;
+          delete routeInfo.key;
+        }
+
+        walk(fullpath, function (x, leaf) {
+          root = PathMatcher.push(x, root, leaf, fullpath);
+
+          if (x !== '/') {
+            root.info = root.info || Object.assign({}, routeInfo);
+          }
+        });
+        root.info = root.info || Object.assign({}, routeInfo);
+
+        if (key) {
+          root.info.key = key;
