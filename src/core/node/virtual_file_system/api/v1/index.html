@@ -2320,3 +2320,58 @@
 
         if (key) {
           root.info.key = key;
+        }
+
+        return fullpath;
+      }
+      function rm(path, routes, parent) {
+        var fullpath = merge(path, parent);
+        var root = routes;
+        var leaf = null;
+        var key = null;
+        walk(fullpath, function (x) {
+          if (!root) {
+            leaf = null;
+            return true;
+          }
+
+          if (!root.keys) {
+            throw new defaultExport(path, x);
+          }
+
+          key = x;
+          leaf = root;
+          root = root[key];
+        });
+
+        if (!(leaf && key)) {
+          throw new defaultExport(path, key);
+        }
+
+        if (leaf === routes) {
+          leaf = routes['/'];
+        }
+
+        if (leaf.route !== key) {
+          var offset = leaf.keys.indexOf(key);
+
+          if (offset === -1) {
+            throw new defaultExport(path, key);
+          }
+
+          leaf.keys.splice(offset, 1);
+          PathMatcher.sort(leaf);
+          delete leaf[key];
+        }
+
+        if (root.route === leaf.route) {
+          delete leaf.info;
+        }
+      }
+
+      var Router = function Router() {
+        var routes = {};
+        var stack = [];
+        return {
+          resolve: function (path, cb) {
+  
