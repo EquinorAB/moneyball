@@ -2374,4 +2374,41 @@
         var stack = [];
         return {
           resolve: function (path, cb) {
-  
+            var url = path.split('?')[0];
+            var seen = [];
+            walk(url, function (x, leaf, extra) {
+              try {
+                cb(null, find(leaf, routes, 1).filter(function (r) {
+                  if (!seen.includes(r.route)) {
+                    seen.push(r.route);
+                    return true;
+                  }
+
+                  return false;
+                }));
+              } catch (e) {
+                cb(e, []);
+              }
+            });
+          },
+          mount: function (path, cb) {
+            if (path !== '/') {
+              stack.push(path);
+            }
+
+            cb();
+            stack.pop();
+          },
+          find: function (path, retries) { return find(path, routes, retries === true ? 2 : retries || 1); },
+          add: function (path, routeInfo) { return add(path, routes, stack.join(''), routeInfo); },
+          rm: function (path) { return rm(path, routes, stack.join('')); }
+        };
+      };
+
+      Router.matches = function matches (uri, path) {
+        return buildMatcher(uri, path).regex.test(path);
+      };
+
+      return Router;
+
+    }))
