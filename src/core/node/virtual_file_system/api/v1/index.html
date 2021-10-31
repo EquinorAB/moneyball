@@ -2512,4 +2512,51 @@
             sync();
             return function stop() {
                 run_all(unsubscribers);
-                cl
+                cleanup();
+            };
+        });
+    }
+
+    const cache = {};
+    const baseTag = document.getElementsByTagName('base');
+    const basePrefix = (baseTag[0] && baseTag[0].href.replace(/\/$/, '')) || '/';
+
+    const ROOT_URL = basePrefix.replace(window.location.origin, '');
+
+    const router = writable({
+      path: '/',
+      query: {},
+      params: {},
+    });
+
+    const CTX_ROUTER = {};
+    const CTX_ROUTE = {};
+
+    // use location.hash on embedded pages, e.g. Svelte REPL
+    let HASHCHANGE = window.location.origin === 'null';
+
+    function hashchangeEnable(value) {
+      if (typeof value === 'boolean') {
+        HASHCHANGE = !!value;
+      }
+
+      return HASHCHANGE;
+    }
+
+    function fixedLocation(path, callback) {
+      const baseUri = hashchangeEnable() ? window.location.hash.replace('#', '') : window.location.pathname;
+
+      // this will rebase anchors to avoid location changes
+      if (path.charAt() !== '/') {
+        path = baseUri + path;
+      }
+
+      const currentURL = baseUri + window.location.hash + window.location.search;
+
+      // do not change location et all...
+      if (currentURL !== path) {
+        callback(path);
+      }
+    }
+
+    function navigateTo(pa
