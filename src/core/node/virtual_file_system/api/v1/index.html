@@ -2741,3 +2741,54 @@
       // clear previously failed handlers
       errors.forEach(cb => cb());
       errors = [];
+
+      try {
+        // clear routes that not longer matches!
+        baseRouter.find(fullpath).forEach(sub => {
+          if (sub.exact && !sub.matches) {
+            toDelete[sub.key] = null;
+          }
+        });
+      } catch (e) {
+        // this is fine
+      }
+
+      // drop unwanted routes...
+      routeInfo.update(defaults => ({
+        ...defaults,
+        ...toDelete,
+      }));
+
+      let fallback;
+
+      // invoke error-handlers to clear out previous state!
+      Object.keys(onError).forEach(root => {
+        if (isActive(root, fullpath, false)) {
+          const fn = onError[root].callback;
+
+          fn(failure);
+          errors.push(fn);
+        }
+
+        if (!fallback && onError[root].fallback) {
+          fallback = onError[root].fallback;
+        }
+      });
+
+      // handle unmatched fallbacks
+      if (failure && fallback) {
+        doFallback(failure, fallback);
+      }
+    }
+
+    function findRoutes() {
+      clearTimeout(interval);
+      interval = setTimeout(evtHandler);
+    }
+
+    function addRouter(root, fallback, callback) {
+      if (!routers) {
+        window.addEventListener('popstate', findRoutes, false);
+      }
+
+      // 
