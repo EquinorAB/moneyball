@@ -2648,4 +2648,49 @@
     let routers = 0;
     let interval;
 
-    // ta
+    // take snapshot from current state...
+    router.subscribe(value => { shared.router = value; });
+    routeInfo.subscribe(value => { shared.routeInfo = value; });
+
+    function doFallback(failure, fallback) {
+      routeInfo.update(defaults => ({
+        ...defaults,
+        [fallback]: {
+          ...shared.router,
+          failure,
+        },
+      }));
+    }
+
+    function handleRoutes(map, params) {
+      const keys = [];
+
+      map.some(x => {
+        if (x.key && x.matches && !x.fallback && !shared.routeInfo[x.key]) {
+          if (x.redirect && (x.condition === null || x.condition(shared.router) !== true)) {
+            if (x.exact && shared.router.path !== x.path) return false;
+            navigateTo(x.redirect);
+            return true;
+          }
+
+          if (x.exact) {
+            keys.push(x.key);
+          }
+
+          // extend shared params...
+          Object.assign(params, x.params);
+
+          // upgrade matching routes!
+          routeInfo.update(defaults => ({
+            ...defaults,
+            [x.key]: {
+              ...shared.router,
+              ...x,
+            },
+          }));
+        }
+
+        return false;
+      });
+
+      return
