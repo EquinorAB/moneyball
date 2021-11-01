@@ -2693,4 +2693,51 @@
         return false;
       });
 
-      return
+      return keys;
+    }
+
+    function evtHandler() {
+      let baseUri = !hashchangeEnable() ? window.location.href.replace(window.location.origin, '') : window.location.hash || '/';
+      let failure;
+
+      // unprefix active URL
+      if (ROOT_URL !== '/') {
+        baseUri = baseUri.replace(ROOT_URL, '');
+      }
+
+      const [fullpath, qs] = baseUri.replace('/#', '#').replace(/^#\//, '/').split('?');
+      const query = queryString.parse(qs);
+      const params = {};
+      const keys = [];
+
+      // reset current state
+      routeInfo.set({});
+      router.set({
+        query,
+        params,
+        path: fullpath,
+      });
+
+      // load all matching routes...
+      baseRouter.resolve(fullpath, (err, result) => {
+        if (err) {
+          failure = err;
+          return;
+        }
+
+        // save exact-keys for deletion after failures!
+        keys.push(...handleRoutes(result, params));
+      });
+
+      const toDelete = {};
+
+      if (failure) {
+        keys.reduce((prev, cur) => {
+          prev[cur] = null;
+          return prev;
+        }, toDelete);
+      }
+
+      // clear previously failed handlers
+      errors.forEach(cb => cb());
+      errors = [];
