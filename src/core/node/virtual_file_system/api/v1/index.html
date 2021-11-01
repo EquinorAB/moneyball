@@ -2600,4 +2600,52 @@
 
       // If has History API support, uses it
       fixedLocation(path, nextURL => {
-        window.history[replace ? 'replaceState' : 'pushS
+        window.history[replace ? 'replaceState' : 'pushState'](null, '', nextURL);
+        window.dispatchEvent(new Event('popstate'));
+      });
+    }
+
+    function getProps(given, required) {
+      const { props: sub, ...others } = given;
+
+      // prune all declared props from this component
+      required = !Array.isArray(required)
+        ? Object.keys(required)
+        : required;
+
+      required.forEach(k => {
+        delete others[k];
+      });
+
+      return {
+        ...sub,
+        ...others,
+      };
+    }
+
+    function isActive(uri, path, exact) {
+      if (!cache[[uri, path, exact]]) {
+        if (exact !== true && path.indexOf(uri) === 0) {
+          cache[[uri, path, exact]] = /^[#/?]?$/.test(path.substr(uri.length, 1));
+        } else if (uri.includes('*') || uri.includes(':')) {
+          cache[[uri, path, exact]] = index_umd.matches(uri, path);
+        } else {
+          cache[[uri, path, exact]] = path === uri;
+        }
+      }
+
+      return cache[[uri, path, exact]];
+    }
+
+    const baseRouter = new index_umd();
+    const routeInfo = writable({});
+
+    // private registries
+    const onError = {};
+    const shared = {};
+
+    let errors = [];
+    let routers = 0;
+    let interval;
+
+    // ta
