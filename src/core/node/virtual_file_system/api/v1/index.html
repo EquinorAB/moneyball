@@ -2833,4 +2833,48 @@
     		},
     		p(ctx, dirty) {
     			if (default_slot) {
-    				if (default_sl
+    				if (default_slot.p && dirty & /*$$scope*/ 16384) {
+    					default_slot.p(get_slot_context(default_slot_template, ctx, /*$$scope*/ ctx[14], null), get_slot_changes(default_slot_template, /*$$scope*/ ctx[14], dirty, null));
+    				}
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(default_slot, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (default_slot) default_slot.d(detaching);
+    		}
+    	};
+    }
+
+    // (103:0) {#if failure && !fallback && !nofallback}
+    function create_if_block(ctx) {
+    	let fieldset;
+    	let legend;
+    	let t0;
+    	let t1;
+    	let t2;
+    	let pre;
+    	let t3;
+
+    	return {
+    		c() {
+    			fieldset = element("fieldset");
+    			legend = element("legend");
+    			t0 = text("Router failure: ");
+    			t1 = text(/*path*/ ctx[1]);
+    			t2 = space();
+    			pre = element("pre");
+    			t3 = text(/*failure*/ ctx[3]);
+    			attr(fieldset, "data-failure", "");
+    			attr(fieldset, "class", "svelte-kx2cky");
+    		},
+    		m(target, anchor) {
+    			insert(target, fieldset, anchor);
+    			a
