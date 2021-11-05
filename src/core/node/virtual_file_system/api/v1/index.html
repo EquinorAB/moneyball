@@ -2960,4 +2960,40 @@
     		},
     		d(detaching) {
     			if (if_block0) if_block0.d(detaching);
-    			if (detaching) de
+    			if (detaching) detach(t);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach(if_block1_anchor);
+    		}
+    	};
+    }
+
+    function unassignRoute(route) {
+    	baseRouter.rm(route);
+    	findRoutes();
+    }
+
+    function instance($$self, $$props, $$invalidate) {
+    	let $basePath;
+    	let $router;
+    	component_subscribe($$self, router, $$value => $$invalidate(9, $router = $$value));
+    	let cleanup;
+    	let failure;
+    	let fallback;
+    	let { path = "/" } = $$props;
+    	let { disabled = false } = $$props;
+    	let { condition = null } = $$props;
+    	let { nofallback = false } = $$props;
+    	const routerContext = getContext(CTX_ROUTER);
+    	const basePath = routerContext ? routerContext.basePath : writable(path);
+    	component_subscribe($$self, basePath, value => $$invalidate(8, $basePath = value));
+
+    	const fixedRoot = $basePath !== path && $basePath !== "/"
+    	? `${$basePath}${path !== "/" ? path : ""}`
+    	: path;
+
+    	try {
+    		if (condition !== null && typeof condition !== "function") {
+    			throw new TypeError(`Expecting condition to be a function, given '${condition}'`);
+    		}
+
+    		if (path.charAt() !== "#" && path.charAt() !
