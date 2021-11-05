@@ -2877,4 +2877,43 @@
     		},
     		m(target, anchor) {
     			insert(target, fieldset, anchor);
-    			a
+    			append(fieldset, legend);
+    			append(legend, t0);
+    			append(legend, t1);
+    			append(fieldset, t2);
+    			append(fieldset, pre);
+    			append(pre, t3);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*path*/ 2) set_data(t1, /*path*/ ctx[1]);
+    			if (dirty & /*failure*/ 8) set_data(t3, /*failure*/ ctx[3]);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(fieldset);
+    		}
+    	};
+    }
+
+    function create_fragment(ctx) {
+    	let t;
+    	let if_block1_anchor;
+    	let current;
+    	let if_block0 = !/*disabled*/ ctx[0] && create_if_block_1(ctx);
+    	let if_block1 = /*failure*/ ctx[3] && !/*fallback*/ ctx[4] && !/*nofallback*/ ctx[2] && create_if_block(ctx);
+
+    	return {
+    		c() {
+    			if (if_block0) if_block0.c();
+    			t = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
+    			current = true;
+    		},
+    		p(ctx, [dirty]) {
+    			if (!/*disabled*/ ctx[0]
