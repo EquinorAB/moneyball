@@ -2996,4 +2996,49 @@
     			throw new TypeError(`Expecting condition to be a function, given '${condition}'`);
     		}
 
-    		if (path.charAt() !== "#" && path.charAt() !
+    		if (path.charAt() !== "#" && path.charAt() !== "/") {
+    			throw new TypeError(`Expecting a leading slash or hash, given '${path}'`);
+    		}
+    	} catch(e) {
+    		failure = e;
+    	}
+
+    	function assignRoute(key, route, detail) {
+    		key = key || Math.random().toString(36).substr(2);
+
+    		// consider as nested routes if they does not have any segment
+    		const nested = !route.substr(1).includes("/");
+
+    		const handler = { key, nested, ...detail };
+    		let fullpath;
+
+    		baseRouter.mount(fixedRoot, () => {
+    			fullpath = baseRouter.add(route, handler);
+    			$$invalidate(4, fallback = handler.fallback && key || fallback);
+    		});
+
+    		findRoutes();
+    		return [key, fullpath];
+    	}
+
+    	function onError(err) {
+    		$$invalidate(3, failure = err);
+
+    		if (failure && fallback) {
+    			doFallback(failure, fallback);
+    		}
+    	}
+
+    	onMount(() => {
+    		cleanup = addRouter(fixedRoot, fallback, onError);
+    	});
+
+    	onDestroy(() => {
+    		if (cleanup) cleanup();
+    	});
+
+    	setContext(CTX_ROUTER, { basePath, assignRoute, unassignRoute });
+    	let { $$slots = {}, $$scope } = $$props;
+
+    	$$self.$set = $$props => {
+    		if ("path" in $$props) $$inv
