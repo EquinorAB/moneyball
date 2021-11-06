@@ -3041,4 +3041,53 @@
     	let { $$slots = {}, $$scope } = $$props;
 
     	$$self.$set = $$props => {
-    		if ("path" in $$props) $$inv
+    		if ("path" in $$props) $$invalidate(1, path = $$props.path);
+    		if ("disabled" in $$props) $$invalidate(0, disabled = $$props.disabled);
+    		if ("condition" in $$props) $$invalidate(6, condition = $$props.condition);
+    		if ("nofallback" in $$props) $$invalidate(2, nofallback = $$props.nofallback);
+    		if ("$$scope" in $$props) $$invalidate(14, $$scope = $$props.$$scope);
+    	};
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*condition, $router*/ 576) {
+    			 if (condition) {
+    				$$invalidate(0, disabled = !condition($router));
+    			}
+    		}
+    	};
+
+    	return [
+    		disabled,
+    		path,
+    		nofallback,
+    		failure,
+    		fallback,
+    		basePath,
+    		condition,
+    		cleanup,
+    		$basePath,
+    		$router,
+    		routerContext,
+    		fixedRoot,
+    		assignRoute,
+    		onError,
+    		$$scope,
+    		$$slots
+    	];
+    }
+
+    class Router extends SvelteComponent {
+    	constructor(options) {
+    		super();
+    		if (!document.getElementById("svelte-kx2cky-style")) add_css();
+
+    		init(this, options, instance, create_fragment, safe_not_equal, {
+    			path: 1,
+    			disabled: 0,
+    			condition: 6,
+    			nofallback: 2
+    		});
+    	}
+    }
+
+    /* Users/kings/.nvm/versions/node/v12.16.1/lib/node_modules/sno
