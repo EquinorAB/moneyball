@@ -3252,4 +3252,40 @@
     		let switch_instance_props = {};
 
     		for (let i = 0; i < switch_instance_spread_levels.length; i += 1) {
-    			swi
+    			switch_instance_props = assign(switch_instance_props, switch_instance_spread_levels[i]);
+    		}
+
+    		return { props: switch_instance_props };
+    	}
+
+    	if (switch_value) {
+    		var switch_instance = new switch_value(switch_props(ctx));
+    	}
+
+    	return {
+    		c() {
+    			if (switch_instance) create_component(switch_instance.$$.fragment);
+    			switch_instance_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (switch_instance) {
+    				mount_component(switch_instance, target, anchor);
+    			}
+
+    			insert(target, switch_instance_anchor, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const switch_instance_changes = (dirty & /*activeRouter, activeProps*/ 6)
+    			? get_spread_update(switch_instance_spread_levels, [
+    					dirty & /*activeRouter*/ 2 && { router: /*activeRouter*/ ctx[1] },
+    					dirty & /*activeProps*/ 4 && get_spread_object(/*activeProps*/ ctx[2])
+    				])
+    			: {};
+
+    			if (switch_value !== (switch_value = /*component*/ ctx[0])) {
+    				if (switch_instance) {
+    					group_outros();
+    					const old_component = switch_instance;
+
+    					trans
