@@ -3214,4 +3214,42 @@
     		},
     		m(target, anchor) {
     			if (default_slot) {
-    				defa
+    				default_slot.m(target, anchor);
+    			}
+
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			if (default_slot) {
+    				if (default_slot.p && dirty & /*$$scope, activeRouter, activeProps*/ 2097158) {
+    					default_slot.p(get_slot_context(default_slot_template, ctx, /*$$scope*/ ctx[21], get_default_slot_context), get_slot_changes(default_slot_template, /*$$scope*/ ctx[21], dirty, get_default_slot_changes));
+    				}
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(default_slot, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (default_slot) default_slot.d(detaching);
+    		}
+    	};
+    }
+
+    // (87:2) {#if component}
+    function create_if_block_1$1(ctx) {
+    	let switch_instance_anchor;
+    	let current;
+    	const switch_instance_spread_levels = [{ router: /*activeRouter*/ ctx[1] }, /*activeProps*/ ctx[2]];
+    	var switch_value = /*component*/ ctx[0];
+
+    	function switch_props(ctx) {
+    		let switch_instance_props = {};
+
+    		for (let i = 0; i < switch_instance_spread_levels.length; i += 1) {
+    			swi
