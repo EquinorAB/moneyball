@@ -3326,4 +3326,44 @@
     function create_fragment$1(ctx) {
     	let t;
     	let if_block1_anchor;
-    	let curr
+    	let current;
+    	let if_block0 = /*failure*/ ctx[3] && create_if_block_2(ctx);
+    	let if_block1 = /*activeRouter*/ ctx[1] && create_if_block$1(ctx);
+
+    	return {
+    		c() {
+    			if (if_block0) if_block0.c();
+    			t = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
+    			current = true;
+    		},
+    		p(ctx, [dirty]) {
+    			if (/*failure*/ ctx[3]) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_2(ctx);
+    					if_block0.c();
+    					if_block0.m(t.parentNode, t);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (/*activeRouter*/ ctx[1]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    					transition_in(if_block1, 1);
+    				} else {
+    					if_block1 = create_if_block$1(ctx);
+    					if_block1.c();
+    					transition_in(if_block1, 1);
+    					if_block1.m
