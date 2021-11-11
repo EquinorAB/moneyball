@@ -3366,4 +3366,46 @@
     					if_block1 = create_if_block$1(ctx);
     					if_block1.c();
     					transition_in(if_block1, 1);
-    					if_block1.m
+    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    				}
+    			} else if (if_block1) {
+    				group_outros();
+
+    				transition_out(if_block1, 1, 1, () => {
+    					if_block1 = null;
+    				});
+
+    				check_outros();
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(if_block1);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(if_block1);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (if_block0) if_block0.d(detaching);
+    			if (detaching) detach(t);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach(if_block1_anchor);
+    		}
+    	};
+    }
+
+    function instance$1($$self, $$props, $$invalidate) {
+    	let $routePath;
+    	let $routeInfo;
+    	component_subscribe($$self, routeInfo, $$value => $$invalidate(14, $routeInfo = $$value));
+    	let { key = null } = $$props;
+    	let { path = "/" } = $$props;
+    	let { exact = null } = $$props;
+    	let { disabled = false } = $$props;
+    	let { fallback = null } = $$props;
+    	let { component = null } = $$props;
+    	let { condition = null } = $$props;
+    	let { redirect = null } = $$props;
+    	const routeContext = getC
