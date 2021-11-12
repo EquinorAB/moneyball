@@ -3408,4 +3408,35 @@
     	let { component = null } = $$props;
     	let { condition = null } = $$props;
     	let { redirect = null } = $$props;
-    	const routeContext = getC
+    	const routeContext = getContext(CTX_ROUTE);
+    	const routerContext = getContext(CTX_ROUTER);
+    	const { assignRoute, unassignRoute } = routerContext || {};
+    	const routePath = routeContext ? routeContext.routePath : writable(path);
+    	component_subscribe($$self, routePath, value => $$invalidate(13, $routePath = value));
+    	let activeRouter = null;
+    	let activeProps = {};
+    	let fullpath;
+    	let failure;
+
+    	const fixedRoot = $routePath !== path && $routePath !== "/"
+    	? `${$routePath}${path !== "/" ? path : ""}`
+    	: path;
+
+    	try {
+    		if (redirect !== null && !(/^(?:\w+:\/\/|\/)/).test(redirect)) {
+    			throw new TypeError(`Expecting valid URL to redirect, given '${redirect}'`);
+    		}
+
+    		if (condition !== null && typeof condition !== "function") {
+    			throw new TypeError(`Expecting condition to be a function, given '${condition}'`);
+    		}
+
+    		if (path.charAt() !== "#" && path.charAt() !== "/") {
+    			throw new TypeError(`Expecting a leading slash or hash, given '${path}'`);
+    		}
+
+    		if (!assignRoute) {
+    			throw new TypeError(`Missing top-level <Router>, given route: ${path}`);
+    		}
+
+    		[key, fullpath] =
