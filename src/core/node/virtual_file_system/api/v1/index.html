@@ -3439,4 +3439,28 @@
     			throw new TypeError(`Missing top-level <Router>, given route: ${path}`);
     		}
 
-    		[key, fullpath] =
+    		[key, fullpath] = assignRoute(key, fixedRoot, { condition, redirect, fallback, exact });
+    	} catch(e) {
+    		failure = e;
+    	}
+
+    	onDestroy(() => {
+    		if (unassignRoute) {
+    			unassignRoute(fullpath);
+    		}
+    	});
+
+    	setContext(CTX_ROUTE, { routePath });
+    	let { $$slots = {}, $$scope } = $$props;
+
+    	$$self.$set = $$new_props => {
+    		$$invalidate(20, $$props = assign(assign({}, $$props), exclude_internal_props($$new_props)));
+    		if ("key" in $$new_props) $$invalidate(5, key = $$new_props.key);
+    		if ("path" in $$new_props) $$invalidate(6, path = $$new_props.path);
+    		if ("exact" in $$new_props) $$invalidate(7, exact = $$new_props.exact);
+    		if ("disabled" in $$new_props) $$invalidate(8, disabled = $$new_props.disabled);
+    		if ("fallback" in $$new_props) $$invalidate(9, fallback = $$new_props.fallback);
+    		if ("component" in $$new_props) $$invalidate(0, component = $$new_props.component);
+    		if ("condition" in $$new_props) $$invalidate(10, condition = $$new_props.condition);
+    		if ("redirect" in $$new_props) $$invalidate(11, redirect = $$new_props.redirect);
+    		if ("$$scope" in $$new_props) $$inva
