@@ -3463,4 +3463,63 @@
     		if ("component" in $$new_props) $$invalidate(0, component = $$new_props.component);
     		if ("condition" in $$new_props) $$invalidate(10, condition = $$new_props.condition);
     		if ("redirect" in $$new_props) $$invalidate(11, redirect = $$new_props.redirect);
-    		if ("$$scope" in $$new_props) $$inva
+    		if ("$$scope" in $$new_props) $$invalidate(21, $$scope = $$new_props.$$scope);
+    	};
+
+    	$$self.$$.update = () => {
+    		 if (key) {
+    			/* global arguments */
+    			$$invalidate(1, activeRouter = !disabled && $routeInfo[key]);
+
+    			$$invalidate(2, activeProps = getProps($$props, arguments[0].$$.props));
+    		}
+    	};
+
+    	$$props = exclude_internal_props($$props);
+
+    	return [
+    		component,
+    		activeRouter,
+    		activeProps,
+    		failure,
+    		routePath,
+    		key,
+    		path,
+    		exact,
+    		disabled,
+    		fallback,
+    		condition,
+    		redirect,
+    		fullpath,
+    		$routePath,
+    		$routeInfo,
+    		routeContext,
+    		routerContext,
+    		assignRoute,
+    		unassignRoute,
+    		fixedRoot,
+    		$$props,
+    		$$scope,
+    		$$slots
+    	];
+    }
+
+    class Route extends SvelteComponent {
+    	constructor(options) {
+    		super();
+    		if (!document.getElementById("svelte-7lze0z-style")) add_css$1();
+
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
+    			key: 5,
+    			path: 6,
+    			exact: 7,
+    			disabled: 8,
+    			fallback: 9,
+    			component: 0,
+    			condition: 10,
+    			redirect: 11
+    		});
+    	}
+    }
+
+    /* Users/kings/.nvm/versions/nod
