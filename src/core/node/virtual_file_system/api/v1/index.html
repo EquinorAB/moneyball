@@ -3562,4 +3562,41 @@
     			if (remount) dispose();
     			dispose = listen(a, "click", prevent_default(/*onClick*/ ctx[6]));
     		},
-    		p(ctx, dirt
+    		p(ctx, dirty) {
+    			if (default_slot) {
+    				if (default_slot.p && dirty & /*$$scope*/ 131072) {
+    					default_slot.p(get_slot_context(default_slot_template, ctx, /*$$scope*/ ctx[17], null), get_slot_changes(default_slot_template, /*$$scope*/ ctx[17], dirty, null));
+    				}
+    			}
+
+    			set_attributes(a, get_spread_update(a_levels, [
+    				dirty & /*fixedProps*/ 32 && /*fixedProps*/ ctx[5],
+    				dirty & /*fixedHref*/ 16 && { href: /*fixedHref*/ ctx[4] },
+    				dirty & /*className*/ 1 && { class: /*className*/ ctx[0] },
+    				dirty & /*title*/ 2 && { title: /*title*/ ctx[1] }
+    			]));
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(default_slot, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(a);
+    			if (default_slot) default_slot.d(detaching);
+    			/*a_binding*/ ctx[20](null);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (73:0) {#if button}
+    function create_if_block$2(ctx) {
+    	let button_1;
+    	let current;
+    	let dispose;
+    	const default_slot_te
