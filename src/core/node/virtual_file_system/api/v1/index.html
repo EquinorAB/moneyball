@@ -3599,4 +3599,40 @@
     	let button_1;
     	let current;
     	let dispose;
-    	const default_slot_te
+    	const default_slot_template = /*$$slots*/ ctx[18].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[17], null);
+
+    	let button_1_levels = [
+    		/*fixedProps*/ ctx[5],
+    		{ class: /*className*/ ctx[0] },
+    		{ title: /*title*/ ctx[1] }
+    	];
+
+    	let button_1_data = {};
+
+    	for (let i = 0; i < button_1_levels.length; i += 1) {
+    		button_1_data = assign(button_1_data, button_1_levels[i]);
+    	}
+
+    	return {
+    		c() {
+    			button_1 = element("button");
+    			if (default_slot) default_slot.c();
+    			set_attributes(button_1, button_1_data);
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, button_1, anchor);
+
+    			if (default_slot) {
+    				default_slot.m(button_1, null);
+    			}
+
+    			/*button_1_binding*/ ctx[19](button_1);
+    			current = true;
+    			if (remount) dispose();
+    			dispose = listen(button_1, "click", prevent_default(/*onClick*/ ctx[6]));
+    		},
+    		p(ctx, dirty) {
+    			if (default_slot) {
+    				if (default_slot.p && dirty & /*$$scope*/ 131072) {
+    					default_slot.p(get_slot_context(default_slot_template, ctx, /*$$scope*/ ctx[17], null), get_slot_changes(default_slot_template, /*$$scope*/ ctx[17], dir
