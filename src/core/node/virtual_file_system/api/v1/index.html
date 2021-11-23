@@ -3755,4 +3755,35 @@
     	// this will enable `<Link on:click={...} />` calls
     	function onClick(e) {
     		if (typeof go === "string" && window.history.length > 1) {
-    			if (go === "b
+    			if (go === "back") window.history.back(); else if (go === "fwd") window.history.forward(); else window.history.go(parseInt(go, 10));
+    			return;
+    		}
+
+    		fixedLocation(href, nextURL => {
+    			navigateTo(nextURL, { reload, replace });
+    			dispatch("click", e);
+    		});
+    	}
+
+    	let { $$slots = {}, $$scope } = $$props;
+
+    	function button_1_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			$$invalidate(3, ref = $$value);
+    		});
+    	}
+
+    	function a_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			$$invalidate(3, ref = $$value);
+    		});
+    	}
+
+    	$$self.$set = $$new_props => {
+    		$$invalidate(16, $$props = assign(assign({}, $$props), exclude_internal_props($$new_props)));
+    		if ("class" in $$new_props) $$invalidate(7, cssClass = $$new_props.class);
+    		if ("go" in $$new_props) $$invalidate(8, go = $$new_props.go);
+    		if ("href" in $$new_props) $$invalidate(9, href = $$new_props.href);
+    		if ("title" in $$new_props) $$invalidate(1, title = $$new_props.title);
+    		if ("button" in $$new_props) $$invalidate(2, button = $$new_props.button);
+    		if ("ex
