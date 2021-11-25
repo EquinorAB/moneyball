@@ -3786,4 +3786,35 @@
     		if ("href" in $$new_props) $$invalidate(9, href = $$new_props.href);
     		if ("title" in $$new_props) $$invalidate(1, title = $$new_props.title);
     		if ("button" in $$new_props) $$invalidate(2, button = $$new_props.button);
-    		if ("ex
+    		if ("exact" in $$new_props) $$invalidate(10, exact = $$new_props.exact);
+    		if ("reload" in $$new_props) $$invalidate(11, reload = $$new_props.reload);
+    		if ("replace" in $$new_props) $$invalidate(12, replace = $$new_props.replace);
+    		if ("className" in $$new_props) $$invalidate(0, className = $$new_props.className);
+    		if ("$$scope" in $$new_props) $$invalidate(17, $$scope = $$new_props.$$scope);
+    	};
+
+    	let fixedProps;
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*href*/ 512) {
+    			// rebase active URL
+    			 if (ROOT_URL !== "/") {
+    				$$invalidate(4, fixedHref = ROOT_URL + href);
+    			} else {
+    				$$invalidate(4, fixedHref = href);
+    			}
+    		}
+
+    		if ($$self.$$.dirty & /*ref, $router, href, exact, active, button*/ 26124) {
+    			 if (ref && $router.path) {
+    				if (isActive(href, $router.path, exact)) {
+    					if (!active) {
+    						$$invalidate(13, active = true);
+    						ref.setAttribute("aria-current", "page");
+
+    						if (button) {
+    							ref.setAttribute("disabled", true);
+    						}
+    					}
+    				} else if (active) {
+    					$$invalidate(13, active = fa
