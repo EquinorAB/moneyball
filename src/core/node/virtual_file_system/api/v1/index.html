@@ -3973,4 +3973,44 @@
 
           //
           // Edge cases where we actually want to encode the value to an empty
-          // string instead of the stringified va
+          // string instead of the stringified value.
+          //
+          if (!value && (value === null || value === undef || isNaN(value))) {
+            value = '';
+          }
+
+          key = encodeURIComponent(key);
+          value = encodeURIComponent(value);
+
+          //
+          // If we failed to encode the strings, we should bail out as we don't
+          // want to add invalid strings to the query.
+          //
+          if (key === null || value === null) continue;
+          pairs.push(key +'='+ value);
+        }
+      }
+
+      return pairs.length ? prefix + pairs.join('&') : '';
+    }
+
+    //
+    // Expose the module.
+    //
+    var stringify = querystringify;
+    var parse = querystring;
+
+    var querystringify_1 = {
+    	stringify: stringify,
+    	parse: parse
+    };
+
+    var prism = createCommonjsModule(function (module) {
+    /* **********************************************
+         Begin prism-core.js
+    ********************************************** */
+
+    var _self = (typeof window !== 'undefined')
+    	? window   // if in browser
+    	: (
+    		(typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGloba
