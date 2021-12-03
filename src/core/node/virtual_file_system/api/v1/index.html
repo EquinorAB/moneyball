@@ -3876,4 +3876,58 @@
 
     Object.defineProperty(Router, 'hashchange', {
       set: value => hashchangeEnable(value),
-      get: () => has
+      get: () => hashchangeEnable(),
+      configurable: false,
+      enumerable: false,
+    });
+
+    'use strict';
+
+    var has = Object.prototype.hasOwnProperty
+      , undef;
+
+    /**
+     * Decode a URI encoded string.
+     *
+     * @param {String} input The URI encoded string.
+     * @returns {String|Null} The decoded string.
+     * @api private
+     */
+    function decode$1(input) {
+      try {
+        return decodeURIComponent(input.replace(/\+/g, ' '));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    /**
+     * Attempts to encode a given input.
+     *
+     * @param {String} input The string that needs to be encoded.
+     * @returns {String|Null} The encoded string.
+     * @api private
+     */
+    function encode(input) {
+      try {
+        return encodeURIComponent(input);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    /**
+     * Simple query string parser.
+     *
+     * @param {String} query The query string that needs to be parsed.
+     * @returns {Object}
+     * @api public
+     */
+    function querystring(query) {
+      var parser = /([^=?&]+)=?([^&]*)/g
+        , result = {}
+        , part;
+
+      while (part = parser.exec(query)) {
+        var key = decode$1(part[1])
+          , value = decode$1(part[2]
