@@ -3930,4 +3930,47 @@
 
       while (part = parser.exec(query)) {
         var key = decode$1(part[1])
-          , value = decode$1(part[2]
+          , value = decode$1(part[2]);
+
+        //
+        // Prevent overriding of existing properties. This ensures that build-in
+        // methods like `toString` or __proto__ are not overriden by malicious
+        // querystrings.
+        //
+        // In the case if failed decoding, we want to omit the key/value pairs
+        // from the result.
+        //
+        if (key === null || value === null || key in result) continue;
+        result[key] = value;
+      }
+
+      return result;
+    }
+
+    /**
+     * Transform a query string to an object.
+     *
+     * @param {Object} obj Object that should be transformed.
+     * @param {String} prefix Optional prefix.
+     * @returns {String}
+     * @api public
+     */
+    function querystringify(obj, prefix) {
+      prefix = prefix || '';
+
+      var pairs = []
+        , value
+        , key;
+
+      //
+      // Optionally prefix with a '?' if needed
+      //
+      if ('string' !== typeof prefix) prefix = '?';
+
+      for (key in obj) {
+        if (has.call(obj, key)) {
+          value = obj[key];
+
+          //
+          // Edge cases where we actually want to encode the value to an empty
+          // string instead of the stringified va
