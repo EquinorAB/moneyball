@@ -3817,4 +3817,63 @@
     						}
     					}
     				} else if (active) {
-    					$$invalidate(13, active = fa
+    					$$invalidate(13, active = false);
+    					ref.removeAttribute("disabled");
+    					ref.removeAttribute("aria-current");
+    				}
+    			}
+    		}
+
+    		// extract additional props
+    		/* global arguments */
+    		 $$invalidate(5, fixedProps = getProps($$props, arguments[0].$$.props));
+    	};
+
+    	$$props = exclude_internal_props($$props);
+
+    	return [
+    		className,
+    		title,
+    		button,
+    		ref,
+    		fixedHref,
+    		fixedProps,
+    		onClick,
+    		cssClass,
+    		go,
+    		href,
+    		exact,
+    		reload,
+    		replace,
+    		active,
+    		$router,
+    		dispatch,
+    		$$props,
+    		$$scope,
+    		$$slots,
+    		button_1_binding,
+    		a_binding
+    	];
+    }
+
+    class Link extends SvelteComponent {
+    	constructor(options) {
+    		super();
+
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
+    			class: 7,
+    			go: 8,
+    			href: 9,
+    			title: 1,
+    			button: 2,
+    			exact: 10,
+    			reload: 11,
+    			replace: 12,
+    			className: 0
+    		});
+    	}
+    }
+
+    Object.defineProperty(Router, 'hashchange', {
+      set: value => hashchangeEnable(value),
+      get: () => has
