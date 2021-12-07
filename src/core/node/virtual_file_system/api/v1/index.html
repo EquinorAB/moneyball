@@ -4056,4 +4056,51 @@
     			return obj['__id'];
     		},
 
- 
+    		// Deep clone a language definition (e.g. to extend it)
+    		clone: function deepClone(o, visited) {
+    			var clone, id, type = _.util.type(o);
+    			visited = visited || {};
+
+    			switch (type) {
+    				case 'Object':
+    					id = _.util.objId(o);
+    					if (visited[id]) {
+    						return visited[id];
+    					}
+    					clone = {};
+    					visited[id] = clone;
+
+    					for (var key in o) {
+    						if (o.hasOwnProperty(key)) {
+    							clone[key] = deepClone(o[key], visited);
+    						}
+    					}
+
+    					return clone;
+
+    				case 'Array':
+    					id = _.util.objId(o);
+    					if (visited[id]) {
+    						return visited[id];
+    					}
+    					clone = [];
+    					visited[id] = clone;
+
+    					o.forEach(function (v, i) {
+    						clone[i] = deepClone(v, visited);
+    					});
+
+    					return clone;
+
+    				default:
+    					return o;
+    			}
+    		},
+
+    		/**
+    		 * Returns the Prism language of the given element set by a `language-xxxx` or `lang-xxxx` class.
+    		 *
+    		 * If no language is set for the element or the element is `null` or `undefined`, `none` will be returned.
+    		 *
+    		 * @param {Element} element
+    		 * @returns {
