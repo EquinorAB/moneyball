@@ -4103,4 +4103,42 @@
     		 * If no language is set for the element or the element is `null` or `undefined`, `none` will be returned.
     		 *
     		 * @param {Element} element
-    		 * @returns {
+    		 * @returns {string}
+    		 */
+    		getLanguage: function (element) {
+    			while (element && !lang.test(element.className)) {
+    				element = element.parentElement;
+    			}
+    			if (element) {
+    				return (element.className.match(lang) || [, 'none'])[1].toLowerCase();
+    			}
+    			return 'none';
+    		},
+
+    		/**
+    		 * Returns the script element that is currently executing.
+    		 *
+    		 * This does __not__ work for line script element.
+    		 *
+    		 * @returns {HTMLScriptElement | null}
+    		 */
+    		currentScript: function () {
+    			if (typeof document === 'undefined') {
+    				return null;
+    			}
+    			if ('currentScript' in document) {
+    				return document.currentScript;
+    			}
+
+    			// IE11 workaround
+    			// we'll get the src of the current script by parsing IE11's error stack trace
+    			// this will not work for inline scripts
+
+    			try {
+    				throw new Error();
+    			} catch (err) {
+    				// Get file src url from stack. Specifically works with the format of stack traces in IE.
+    				// A stack will look like this:
+    				//
+    				// Error
+    				//    at _.util.currentScript
