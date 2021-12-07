@@ -4141,4 +4141,39 @@
     				// A stack will look like this:
     				//
     				// Error
-    				//    at _.util.currentScript
+    				//    at _.util.currentScript (http://localhost/components/prism-core.js:119:5)
+    				//    at Global code (http://localhost/components/prism-core.js:606:1)
+
+    				var src = (/at [^(\r\n]*\((.*):.+:.+\)$/i.exec(err.stack) || [])[1];
+    				if (src) {
+    					var scripts = document.getElementsByTagName('script');
+    					for (var i in scripts) {
+    						if (scripts[i].src == src) {
+    							return scripts[i];
+    						}
+    					}
+    				}
+    				return null;
+    			}
+    		}
+    	},
+
+    	languages: {
+    		extend: function (id, redef) {
+    			var lang = _.util.clone(_.languages[id]);
+
+    			for (var key in redef) {
+    				lang[key] = redef[key];
+    			}
+
+    			return lang;
+    		},
+
+    		/**
+    		 * Insert a token before another token in a language literal
+    		 * As this needs to recreate the object (we cannot actually insert before keys in object literals),
+    		 * we cannot just provide an object, we need an object and a key.
+    		 * @param inside The key (or language id) of the parent
+    		 * @param before The key to insert before.
+    		 * @param insert Object with the key/value pairs to insert
+    		 * @param root The object that contains `inside`. If equal to Pris
