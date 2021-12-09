@@ -4176,4 +4176,49 @@
     		 * @param inside The key (or language id) of the parent
     		 * @param before The key to insert before.
     		 * @param insert Object with the key/value pairs to insert
-    		 * @param root The object that contains `inside`. If equal to Pris
+    		 * @param root The object that contains `inside`. If equal to Prism.languages, it can be omitted.
+    		 */
+    		insertBefore: function (inside, before, insert, root) {
+    			root = root || _.languages;
+    			var grammar = root[inside];
+    			var ret = {};
+
+    			for (var token in grammar) {
+    				if (grammar.hasOwnProperty(token)) {
+
+    					if (token == before) {
+    						for (var newToken in insert) {
+    							if (insert.hasOwnProperty(newToken)) {
+    								ret[newToken] = insert[newToken];
+    							}
+    						}
+    					}
+
+    					// Do not insert token which also occur in insert. See #1525
+    					if (!insert.hasOwnProperty(token)) {
+    						ret[token] = grammar[token];
+    					}
+    				}
+    			}
+
+    			var old = root[inside];
+    			root[inside] = ret;
+
+    			// Update references in other language definitions
+    			_.languages.DFS(_.languages, function(key, value) {
+    				if (value === old && key != inside) {
+    					this[key] = ret;
+    				}
+    			});
+
+    			return ret;
+    		},
+
+    		// Traverse a language definition with Depth First Search
+    		DFS: function DFS(o, callback, type, visited) {
+    			visited = visited || {};
+
+    			var objId = _.util.objId;
+
+    			for (var i in o) {
+    				i
