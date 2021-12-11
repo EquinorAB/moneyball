@@ -4375,4 +4375,43 @@
     				// Don’t cache length as it changes during the loop
     				for (var i = index, pos = startPos; i < strarr.length; pos += strarr[i].length, ++i) {
 
-    					var str = strarr[i]
+    					var str = strarr[i];
+
+    					if (strarr.length > text.length) {
+    						// Something went terribly wrong, ABORT, ABORT!
+    						return;
+    					}
+
+    					if (str instanceof Token) {
+    						continue;
+    					}
+
+    					if (greedy && i != strarr.length - 1) {
+    						pattern.lastIndex = pos;
+    						var match = pattern.exec(text);
+    						if (!match) {
+    							break;
+    						}
+
+    						var from = match.index + (lookbehind && match[1] ? match[1].length : 0),
+    						    to = match.index + match[0].length,
+    						    k = i,
+    						    p = pos;
+
+    						for (var len = strarr.length; k < len && (p < to || (!strarr[k].type && !strarr[k - 1].greedy)); ++k) {
+    							p += strarr[k].length;
+    							// Move the index i to the element in strarr that is closest to from
+    							if (from >= p) {
+    								++i;
+    								pos = p;
+    							}
+    						}
+
+    						// If strarr[i] is a Token, then the match starts inside another Token, which is invalid
+    						if (strarr[i] instanceof Token) {
+    							continue;
+    						}
+
+    						// Number of tokens to delete and replace with the new match
+    						delNum = k - i;
+   
