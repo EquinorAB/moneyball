@@ -4341,4 +4341,38 @@
     		env.tokens = _.tokenize(env.code, env.grammar);
     		_.hooks.run('after-tokenize', env);
     		return Token.stringify(_.util.encode(env.tokens), env.language);
-    	
+    	},
+
+    	matchGrammar: function (text, strarr, grammar, index, startPos, oneshot, target) {
+    		for (var token in grammar) {
+    			if (!grammar.hasOwnProperty(token) || !grammar[token]) {
+    				continue;
+    			}
+
+    			var patterns = grammar[token];
+    			patterns = Array.isArray(patterns) ? patterns : [patterns];
+
+    			for (var j = 0; j < patterns.length; ++j) {
+    				if (target && target == token + ',' + j) {
+    					return;
+    				}
+
+    				var pattern = patterns[j],
+    					inside = pattern.inside,
+    					lookbehind = !!pattern.lookbehind,
+    					greedy = !!pattern.greedy,
+    					lookbehindLength = 0,
+    					alias = pattern.alias;
+
+    				if (greedy && !pattern.pattern.global) {
+    					// Without the global flag, lastIndex won't work
+    					var flags = pattern.pattern.toString().match(/[imsuy]*$/)[0];
+    					pattern.pattern = RegExp(pattern.pattern.source, flags + 'g');
+    				}
+
+    				pattern = pattern.pattern || pattern;
+
+    				// Don’t cache length as it changes during the loop
+    				for (var i = index, pos = startPos; i < strarr.length; pos += strarr[i].length, ++i) {
+
+    					var str = strarr[i]
