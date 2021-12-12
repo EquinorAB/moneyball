@@ -4469,4 +4469,62 @@
     		}
     	},
 
-    	tokeni
+    	tokenize: function(text, grammar) {
+    		var strarr = [text];
+
+    		var rest = grammar.rest;
+
+    		if (rest) {
+    			for (var token in rest) {
+    				grammar[token] = rest[token];
+    			}
+
+    			delete grammar.rest;
+    		}
+
+    		_.matchGrammar(text, strarr, grammar, 0, 0, false);
+
+    		return strarr;
+    	},
+
+    	hooks: {
+    		all: {},
+
+    		add: function (name, callback) {
+    			var hooks = _.hooks.all;
+
+    			hooks[name] = hooks[name] || [];
+
+    			hooks[name].push(callback);
+    		},
+
+    		run: function (name, env) {
+    			var callbacks = _.hooks.all[name];
+
+    			if (!callbacks || !callbacks.length) {
+    				return;
+    			}
+
+    			for (var i=0, callback; callback = callbacks[i++];) {
+    				callback(env);
+    			}
+    		}
+    	},
+
+    	Token: Token
+    };
+
+    _self.Prism = _;
+
+    function Token(type, content, alias, matchedStr, greedy) {
+    	this.type = type;
+    	this.content = content;
+    	this.alias = alias;
+    	// Copy of the full string this token was created from
+    	this.length = (matchedStr || '').length|0;
+    	this.greedy = !!greedy;
+    }
+
+    Token.stringify = function(o, language) {
+    	if (typeof o == 'string') {
+    		return o;
