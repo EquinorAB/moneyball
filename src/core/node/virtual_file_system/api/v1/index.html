@@ -4726,4 +4726,44 @@
 
     		var def = {};
     		def[tagName] = {
-    			pattern: RegExp(/(<__[\s\S]*?>)(?:<
+    			pattern: RegExp(/(<__[\s\S]*?>)(?:<!\[CDATA\[[\s\S]*?\]\]>\s*|[\s\S])*?(?=<\/__>)/.source.replace(/__/g, tagName), 'i'),
+    			lookbehind: true,
+    			greedy: true,
+    			inside: inside
+    		};
+
+    		Prism.languages.insertBefore('markup', 'cdata', def);
+    	}
+    });
+
+    Prism.languages.xml = Prism.languages.extend('markup', {});
+    Prism.languages.html = Prism.languages.markup;
+    Prism.languages.mathml = Prism.languages.markup;
+    Prism.languages.svg = Prism.languages.markup;
+
+
+    /* **********************************************
+         Begin prism-css.js
+    ********************************************** */
+
+    (function (Prism) {
+
+    	var string = /("|')(?:\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/;
+
+    	Prism.languages.css = {
+    		'comment': /\/\*[\s\S]*?\*\//,
+    		'atrule': {
+    			pattern: /@[\w-]+[\s\S]*?(?:;|(?=\s*\{))/,
+    			inside: {
+    				'rule': /@[\w-]+/
+    				// See rest below
+    			}
+    		},
+    		'url': {
+    			pattern: RegExp('url\\((?:' + string.source + '|[^\n\r()]*)\\)', 'i'),
+    			inside: {
+    				'function': /^url/i,
+    				'punctuation': /^\(|\)$/
+    			}
+    		},
+    		'selector': RegExp('[^{}\\s](?:[^{};"\']|' + string.source + '
