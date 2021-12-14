@@ -4570,4 +4570,40 @@
     		_self.addEventListener('message', function (evt) {
     			var message = JSON.parse(evt.data),
     				lang = message.language,
-    				code = m
+    				code = message.code,
+    				immediateClose = message.immediateClose;
+
+    			_self.postMessage(_.highlight(code, _.languages[lang], lang));
+    			if (immediateClose) {
+    				_self.close();
+    			}
+    		}, false);
+    	}
+
+    	return _;
+    }
+
+    //Get current script and highlight
+    var script = _.util.currentScript();
+
+    if (script) {
+    	_.filename = script.src;
+
+    	if (script.hasAttribute('data-manual')) {
+    		_.manual = true;
+    	}
+    }
+
+    if (!_.manual) {
+    	function highlightAutomaticallyCallback() {
+    		if (!_.manual) {
+    			_.highlightAll();
+    		}
+    	}
+
+    	// If the document state is "loading", then we'll use DOMContentLoaded.
+    	// If the document state is "interactive" and the prism.js script is deferred, then we'll also use the
+    	// DOMContentLoaded event because there might be some plugins or languages which have also been deferred and they
+    	// might take longer one animation frame to execute which can create a race condition where only some plugins have
+    	// been loaded when Prism.highlightAll() is executed, depending on how fast resources are loaded.
+    	// See https://github.com/PrismJS/prism/issues
