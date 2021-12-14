@@ -4606,4 +4606,40 @@
     	// DOMContentLoaded event because there might be some plugins or languages which have also been deferred and they
     	// might take longer one animation frame to execute which can create a race condition where only some plugins have
     	// been loaded when Prism.highlightAll() is executed, depending on how fast resources are loaded.
-    	// See https://github.com/PrismJS/prism/issues
+    	// See https://github.com/PrismJS/prism/issues/2102
+    	var readyState = document.readyState;
+    	if (readyState === 'loading' || readyState === 'interactive' && script && script.defer) {
+    		document.addEventListener('DOMContentLoaded', highlightAutomaticallyCallback);
+    	} else {
+    		if (window.requestAnimationFrame) {
+    			window.requestAnimationFrame(highlightAutomaticallyCallback);
+    		} else {
+    			window.setTimeout(highlightAutomaticallyCallback, 16);
+    		}
+    	}
+    }
+
+    return _;
+
+    })(_self);
+
+    if ('object' !== 'undefined' && module.exports) {
+    	module.exports = Prism;
+    }
+
+    // hack for components to work correctly in node.js
+    if (typeof commonjsGlobal !== 'undefined') {
+    	commonjsGlobal.Prism = Prism;
+    }
+
+
+    /* **********************************************
+         Begin prism-markup.js
+    ********************************************** */
+
+    Prism.languages.markup = {
+    	'comment': /<!--[\s\S]*?-->/,
+    	'prolog': /<\?[\s\S]+?\?>/,
+    	'doctype': {
+    		pattern: /<!DOCTYPE(?:[^>"'[\]]|"[^"]*"|'[^']*')+(?:\[(?:(?!<!--)[^"'\]]|"[^"]*"|'[^']*'|<!--[\s\S]*?-->)*\]\s*)?>/i,
+  
