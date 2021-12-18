@@ -4917,4 +4917,52 @@
     			},
     			'interpolation': {
     				pattern: /((?:^|[^\\])(?:\\{2})*)\${(?:[^{}]|{(?:[^{}]|{[^}]*})*})+}/,
-    		
+    				lookbehind: true,
+    				inside: {
+    					'interpolation-punctuation': {
+    						pattern: /^\${|}$/,
+    						alias: 'punctuation'
+    					},
+    					rest: Prism.languages.javascript
+    				}
+    			},
+    			'string': /[\s\S]+/
+    		}
+    	}
+    });
+
+    if (Prism.languages.markup) {
+    	Prism.languages.markup.tag.addInlined('script', 'javascript');
+    }
+
+    Prism.languages.js = Prism.languages.javascript;
+
+
+    /* **********************************************
+         Begin prism-file-highlight.js
+    ********************************************** */
+
+    (function () {
+    	if (typeof self === 'undefined' || !self.Prism || !self.document || !document.querySelector) {
+    		return;
+    	}
+
+    	/**
+    	 * @param {Element} [container=document]
+    	 */
+    	self.Prism.fileHighlight = function(container) {
+    		container = container || document;
+
+    		var Extensions = {
+    			'js': 'javascript',
+    			'py': 'python',
+    			'rb': 'ruby',
+    			'ps1': 'powershell',
+    			'psm1': 'powershell',
+    			'sh': 'bash',
+    			'bat': 'batch',
+    			'h': 'c',
+    			'tex': 'latex'
+    		};
+
+    		Array.prototype.slice.call(container
