@@ -4965,4 +4965,47 @@
     			'tex': 'latex'
     		};
 
-    		Array.prototype.slice.call(container
+    		Array.prototype.slice.call(container.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+    			// ignore if already loaded
+    			if (pre.hasAttribute('data-src-loaded')) {
+    				return;
+    			}
+
+    			// load current
+    			var src = pre.getAttribute('data-src');
+
+    			var language, parent = pre;
+    			var lang = /\blang(?:uage)?-([\w-]+)\b/i;
+    			while (parent && !lang.test(parent.className)) {
+    				parent = parent.parentNode;
+    			}
+
+    			if (parent) {
+    				language = (pre.className.match(lang) || [, ''])[1];
+    			}
+
+    			if (!language) {
+    				var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+    				language = Extensions[extension] || extension;
+    			}
+
+    			var code = document.createElement('code');
+    			code.className = 'language-' + language;
+
+    			pre.textContent = '';
+
+    			code.textContent = 'Loading…';
+
+    			pre.appendChild(code);
+
+    			var xhr = new XMLHttpRequest();
+
+    			xhr.open('GET', src, true);
+
+    			xhr.onreadystatechange = function () {
+    				if (xhr.readyState == 4) {
+
+    					if (xhr.status < 400 && xhr.responseText) {
+    						code.textContent = xhr.responseText;
+
+    						Prism.highlightElement(cod
