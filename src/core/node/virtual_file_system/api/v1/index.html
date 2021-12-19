@@ -5008,4 +5008,48 @@
     					if (xhr.status < 400 && xhr.responseText) {
     						code.textContent = xhr.responseText;
 
-    						Prism.highlightElement(cod
+    						Prism.highlightElement(code);
+    						// mark as loaded
+    						pre.setAttribute('data-src-loaded', '');
+    					}
+    					else if (xhr.status >= 400) {
+    						code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+    					}
+    					else {
+    						code.textContent = '✖ Error: File does not exist or is empty';
+    					}
+    				}
+    			};
+
+    			xhr.send(null);
+    		});
+    	};
+
+    	document.addEventListener('DOMContentLoaded', function () {
+    		// execute inside handler, for dropping Event as argument
+    		self.Prism.fileHighlight();
+    	});
+
+    })();
+    });
+
+    var marked = createCommonjsModule(function (module, exports) {
+    /**
+     * marked - a markdown parser
+     * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
+     * https://github.com/markedjs/marked
+     */
+
+    ;(function(root) {
+    'use strict';
+
+    /**
+     * Block-Level Grammar
+     */
+
+    var block = {
+      newline: /^\n+/,
+      code: /^( {4}[^\n]+\n*)+/,
+      fences: /^ {0,3}(`{3,}|~{3,})([^`~\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
+      hr: /^ {0,3}((?:- *){3,}|(?:_ *){3,}|(?:\* *){3,})(?:\n+|$)/,
+      heading: /
