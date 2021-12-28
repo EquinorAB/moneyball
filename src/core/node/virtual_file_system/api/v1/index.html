@@ -5210,3 +5210,51 @@
         .replace(/\u2424/g, '\n');
 
       return this.token(src, true);
+    };
+
+    /**
+     * Lexing
+     */
+
+    Lexer.prototype.token = function(src, top) {
+      src = src.replace(/^ +$/gm, '');
+      var next,
+          loose,
+          cap,
+          bull,
+          b,
+          item,
+          listStart,
+          listItems,
+          t,
+          space,
+          i,
+          tag,
+          l,
+          isordered,
+          istask,
+          ischecked;
+
+      while (src) {
+        // newline
+        if (cap = this.rules.newline.exec(src)) {
+          src = src.substring(cap[0].length);
+          if (cap[0].length > 1) {
+            this.tokens.push({
+              type: 'space'
+            });
+          }
+        }
+
+        // code
+        if (cap = this.rules.code.exec(src)) {
+          var lastToken = this.tokens[this.tokens.length - 1];
+          src = src.substring(cap[0].length);
+          // An indented code block cannot interrupt a paragraph.
+          if (lastToken && lastToken.type === 'paragraph') {
+            lastToken.text += '\n' + cap[0].trimRight();
+          } else {
+            cap = cap[0].replace(/^ {4}/gm, '');
+            this.tokens.push({
+              type: 'code',
+              codeBlockStyl
