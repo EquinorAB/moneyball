@@ -5257,4 +5257,44 @@
             cap = cap[0].replace(/^ {4}/gm, '');
             this.tokens.push({
               type: 'code',
-              codeBlockStyl
+              codeBlockStyle: 'indented',
+              text: !this.options.pedantic
+                ? rtrim(cap, '\n')
+                : cap
+            });
+          }
+          continue;
+        }
+
+        // fences
+        if (cap = this.rules.fences.exec(src)) {
+          src = src.substring(cap[0].length);
+          this.tokens.push({
+            type: 'code',
+            lang: cap[2] ? cap[2].trim() : cap[2],
+            text: cap[3] || ''
+          });
+          continue;
+        }
+
+        // heading
+        if (cap = this.rules.heading.exec(src)) {
+          src = src.substring(cap[0].length);
+          this.tokens.push({
+            type: 'heading',
+            depth: cap[1].length,
+            text: cap[2]
+          });
+          continue;
+        }
+
+        // table no leading pipe (gfm)
+        if (cap = this.rules.nptable.exec(src)) {
+          item = {
+            type: 'table',
+            header: splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
+            align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
+            cells: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
+          };
+
+          if (item.header.length === item.align.le
