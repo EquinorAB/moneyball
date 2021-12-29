@@ -5341,4 +5341,50 @@
 
           cap = cap[0].replace(/^ *> ?/gm, '');
 
-          // Pass `top` to keep th
+          // Pass `top` to keep the current
+          // "toplevel" state. This is exactly
+          // how markdown.pl works.
+          this.token(cap, top);
+
+          this.tokens.push({
+            type: 'blockquote_end'
+          });
+
+          continue;
+        }
+
+        // list
+        if (cap = this.rules.list.exec(src)) {
+          src = src.substring(cap[0].length);
+          bull = cap[2];
+          isordered = bull.length > 1;
+
+          listStart = {
+            type: 'list_start',
+            ordered: isordered,
+            start: isordered ? +bull : '',
+            loose: false
+          };
+
+          this.tokens.push(listStart);
+
+          // Get each top-level item.
+          cap = cap[0].match(this.rules.item);
+
+          listItems = [];
+          next = false;
+          l = cap.length;
+          i = 0;
+
+          for (; i < l; i++) {
+            item = cap[i];
+
+            // Remove the list item's bullet
+            // so it is seen as the next token.
+            space = item.length;
+            item = item.replace(/^ *([*+-]|\d+\.) */, '');
+
+            // Outdent whatever the
+            // list item contains. Hacky.
+            if (~item.indexOf('\n ')) {
+       
