@@ -5387,4 +5387,38 @@
             // Outdent whatever the
             // list item contains. Hacky.
             if (~item.indexOf('\n ')) {
-       
+              space -= item.length;
+              item = !this.options.pedantic
+                ? item.replace(new RegExp('^ {1,' + space + '}', 'gm'), '')
+                : item.replace(/^ {1,4}/gm, '');
+            }
+
+            // Determine whether the next list item belongs here.
+            // Backpedal if it does not belong in this list.
+            if (i !== l - 1) {
+              b = block.bullet.exec(cap[i + 1])[0];
+              if (bull.length > 1 ? b.length === 1
+                : (b.length > 1 || (this.options.smartLists && b !== bull))) {
+                src = cap.slice(i + 1).join('\n') + src;
+                i = l - 1;
+              }
+            }
+
+            // Determine whether item is loose or not.
+            // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
+            // for discount behavior.
+            loose = next || /\n\n(?!\s*$)/.test(item);
+            if (i !== l - 1) {
+              next = item.charAt(item.length - 1) === '\n';
+              if (!loose) loose = next;
+            }
+
+            if (loose) {
+              listStart.loose = true;
+            }
+
+            // Check for task list items
+            istask = /^\[[ xX]\] /.test(item);
+            ischecked = undefined;
+            if (istask) {
+              ischecked = item
