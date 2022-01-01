@@ -5538,4 +5538,43 @@
           src = src.substring(cap[0].length);
           this.tokens.push({
             type: 'paragraph',
-            
+            text: cap[1].charAt(cap[1].length - 1) === '\n'
+              ? cap[1].slice(0, -1)
+              : cap[1]
+          });
+          continue;
+        }
+
+        // text
+        if (cap = this.rules.text.exec(src)) {
+          // Top-level should never reach here.
+          src = src.substring(cap[0].length);
+          this.tokens.push({
+            type: 'text',
+            text: cap[0]
+          });
+          continue;
+        }
+
+        if (src) {
+          throw new Error('Infinite loop on byte: ' + src.charCodeAt(0));
+        }
+      }
+
+      return this.tokens;
+    };
+
+    /**
+     * Inline-Level Grammar
+     */
+
+    var inline = {
+      escape: /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/,
+      autolink: /^<(scheme:[^\s\x00-\x1f<>]*|email)>/,
+      url: noop,
+      tag: '^comment'
+        + '|^</[a-zA-Z][\\w:-]*\\s*>' // self-closing tag
+        + '|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>' // open tag
+        + '|^<\\?[\\s\\S]*?\\?>' // processing instruction, e.g. <?php ?>
+        + '|^<![a-zA-Z]+\\s[\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
+        + '|^<!\\[CDATA\\[[\\s\\S]*?\
