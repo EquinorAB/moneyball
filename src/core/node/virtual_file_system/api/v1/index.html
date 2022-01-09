@@ -5658,4 +5658,55 @@
       text: /^(`+|[^`])(?:[\s\S]*?(?:(?=[\\<!\[`*~]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@))|(?= {2,}\n|[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@))/
     });
 
-    inline.gfm.url = edit(i
+    inline.gfm.url = edit(inline.gfm.url, 'i')
+      .replace('email', inline.gfm._extended_email)
+      .getRegex();
+    /**
+     * GFM + Line Breaks Inline Grammar
+     */
+
+    inline.breaks = merge({}, inline.gfm, {
+      br: edit(inline.br).replace('{2,}', '*').getRegex(),
+      text: edit(inline.gfm.text)
+        .replace('\\b_', '\\b_| {2,}\\n')
+        .replace(/\{2,\}/g, '*')
+        .getRegex()
+    });
+
+    /**
+     * Inline Lexer & Compiler
+     */
+
+    function InlineLexer(links, options) {
+      this.options = options || marked.defaults;
+      this.links = links;
+      this.rules = inline.normal;
+      this.renderer = this.options.renderer || new Renderer();
+      this.renderer.options = this.options;
+
+      if (!this.links) {
+        throw new Error('Tokens array requires a `links` property.');
+      }
+
+      if (this.options.pedantic) {
+        this.rules = inline.pedantic;
+      } else if (this.options.gfm) {
+        if (this.options.breaks) {
+          this.rules = inline.breaks;
+        } else {
+          this.rules = inline.gfm;
+        }
+      }
+    }
+
+    /**
+     * Expose Inline Rules
+     */
+
+    InlineLexer.rules = inline;
+
+    /**
+     * Static Lexing/Compiling Method
+     */
+
+  
