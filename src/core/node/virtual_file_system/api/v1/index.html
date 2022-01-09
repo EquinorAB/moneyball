@@ -5633,3 +5633,29 @@
     /**
      * Pedantic Inline Grammar
      */
+
+    inline.pedantic = merge({}, inline.normal, {
+      strong: /^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)/,
+      em: /^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)/,
+      link: edit(/^!?\[(label)\]\((.*?)\)/)
+        .replace('label', inline._label)
+        .getRegex(),
+      reflink: edit(/^!?\[(label)\]\s*\[([^\]]*)\]/)
+        .replace('label', inline._label)
+        .getRegex()
+    });
+
+    /**
+     * GFM Inline Grammar
+     */
+
+    inline.gfm = merge({}, inline.normal, {
+      escape: edit(inline.escape).replace('])', '~|])').getRegex(),
+      _extended_email: /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/,
+      url: /^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/,
+      _backpedal: /(?:[^?!.,:;*_~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_~)]+(?!$))+/,
+      del: /^~+(?=\S)([\s\S]*?\S)~+/,
+      text: /^(`+|[^`])(?:[\s\S]*?(?:(?=[\\<!\[`*~]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@))|(?= {2,}\n|[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@))/
+    });
+
+    inline.gfm.url = edit(i
