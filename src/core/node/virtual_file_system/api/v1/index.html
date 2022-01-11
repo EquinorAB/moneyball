@@ -5749,4 +5749,39 @@
           }
 
           src = src.substring(cap[0].length);
-          out += this.options.san
+          out += this.options.sanitize
+            ? this.options.sanitizer
+              ? this.options.sanitizer(cap[0])
+              : escape(cap[0])
+            : cap[0];
+          continue;
+        }
+
+        // link
+        if (cap = this.rules.link.exec(src)) {
+          var lastParenIndex = findClosingBracket(cap[2], '()');
+          if (lastParenIndex > -1) {
+            var linkLen = 4 + cap[1].length + lastParenIndex;
+            cap[2] = cap[2].substring(0, lastParenIndex);
+            cap[0] = cap[0].substring(0, linkLen).trim();
+            cap[3] = '';
+          }
+          src = src.substring(cap[0].length);
+          this.inLink = true;
+          href = cap[2];
+          if (this.options.pedantic) {
+            link = /^([^'"]*[^\s])\s+(['"])(.*)\2/.exec(href);
+
+            if (link) {
+              href = link[1];
+              title = link[3];
+            } else {
+              title = '';
+            }
+          } else {
+            title = cap[3] ? cap[3].slice(1, -1) : '';
+          }
+          href = href.trim().replace(/^<([\s\S]*)>$/, '$1');
+          out += this.outputLink(cap, {
+            href: InlineLexer.escapes(href),
+    
