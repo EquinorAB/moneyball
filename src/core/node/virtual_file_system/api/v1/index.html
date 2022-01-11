@@ -5709,4 +5709,44 @@
      * Static Lexing/Compiling Method
      */
 
-  
+    InlineLexer.output = function(src, links, options) {
+      var inline = new InlineLexer(links, options);
+      return inline.output(src);
+    };
+
+    /**
+     * Lexing/Compiling
+     */
+
+    InlineLexer.prototype.output = function(src) {
+      var out = '',
+          link,
+          text,
+          href,
+          title,
+          cap,
+          prevCapZero;
+
+      while (src) {
+        // escape
+        if (cap = this.rules.escape.exec(src)) {
+          src = src.substring(cap[0].length);
+          out += escape(cap[1]);
+          continue;
+        }
+
+        // tag
+        if (cap = this.rules.tag.exec(src)) {
+          if (!this.inLink && /^<a /i.test(cap[0])) {
+            this.inLink = true;
+          } else if (this.inLink && /^<\/a>/i.test(cap[0])) {
+            this.inLink = false;
+          }
+          if (!this.inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+            this.inRawBlock = true;
+          } else if (this.inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+            this.inRawBlock = false;
+          }
+
+          src = src.substring(cap[0].length);
+          out += this.options.san
