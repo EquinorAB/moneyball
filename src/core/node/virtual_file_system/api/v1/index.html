@@ -5822,4 +5822,42 @@
         }
 
         // code
-   
+        if (cap = this.rules.code.exec(src)) {
+          src = src.substring(cap[0].length);
+          out += this.renderer.codespan(escape(cap[2].trim(), true));
+          continue;
+        }
+
+        // br
+        if (cap = this.rules.br.exec(src)) {
+          src = src.substring(cap[0].length);
+          out += this.renderer.br();
+          continue;
+        }
+
+        // del (gfm)
+        if (cap = this.rules.del.exec(src)) {
+          src = src.substring(cap[0].length);
+          out += this.renderer.del(this.output(cap[1]));
+          continue;
+        }
+
+        // autolink
+        if (cap = this.rules.autolink.exec(src)) {
+          src = src.substring(cap[0].length);
+          if (cap[2] === '@') {
+            text = escape(this.mangle(cap[1]));
+            href = 'mailto:' + text;
+          } else {
+            text = escape(cap[1]);
+            href = text;
+          }
+          out += this.renderer.link(href, null, text);
+          continue;
+        }
+
+        // url (gfm)
+        if (!this.inLink && (cap = this.rules.url.exec(src))) {
+          if (cap[2] === '@') {
+            text = escape(cap[0]);
+  
