@@ -5992,4 +5992,46 @@
         + '</code></pre>\n';
     };
 
-   
+    Renderer.prototype.blockquote = function(quote) {
+      return '<blockquote>\n' + quote + '</blockquote>\n';
+    };
+
+    Renderer.prototype.html = function(html) {
+      return html;
+    };
+
+    Renderer.prototype.heading = function(text, level, raw, slugger) {
+      if (this.options.headerIds) {
+        return '<h'
+          + level
+          + ' id="'
+          + this.options.headerPrefix
+          + slugger.slug(raw)
+          + '">'
+          + text
+          + '</h'
+          + level
+          + '>\n';
+      }
+      // ignore IDs
+      return '<h' + level + '>' + text + '</h' + level + '>\n';
+    };
+
+    Renderer.prototype.hr = function() {
+      return this.options.xhtml ? '<hr/>\n' : '<hr>\n';
+    };
+
+    Renderer.prototype.list = function(body, ordered, start) {
+      var type = ordered ? 'ol' : 'ul',
+          startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
+      return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
+    };
+
+    Renderer.prototype.listitem = function(text) {
+      return '<li>' + text + '</li>\n';
+    };
+
+    Renderer.prototype.checkbox = function(checked) {
+      return '<input '
+        + (checked ? 'checked="" ' : '')
+        + 'disa
