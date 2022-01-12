@@ -5860,4 +5860,42 @@
         if (!this.inLink && (cap = this.rules.url.exec(src))) {
           if (cap[2] === '@') {
             text = escape(cap[0]);
-  
+            href = 'mailto:' + text;
+          } else {
+            // do extended autolink path validation
+            do {
+              prevCapZero = cap[0];
+              cap[0] = this.rules._backpedal.exec(cap[0])[0];
+            } while (prevCapZero !== cap[0]);
+            text = escape(cap[0]);
+            if (cap[1] === 'www.') {
+              href = 'http://' + text;
+            } else {
+              href = text;
+            }
+          }
+          src = src.substring(cap[0].length);
+          out += this.renderer.link(href, null, text);
+          continue;
+        }
+
+        // text
+        if (cap = this.rules.text.exec(src)) {
+          src = src.substring(cap[0].length);
+          if (this.inRawBlock) {
+            out += this.renderer.text(this.options.sanitize ? (this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0])) : cap[0]);
+          } else {
+            out += this.renderer.text(escape(this.smartypants(cap[0])));
+          }
+          continue;
+        }
+
+        if (src) {
+          throw new Error('Infinite loop on byte: ' + src.charCodeAt(0));
+        }
+      }
+
+      return out;
+    };
+
+    InlineLexer.escape
