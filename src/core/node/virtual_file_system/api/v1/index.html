@@ -5940,4 +5940,56 @@
 
     /**
      * Mangle Links
- 
+     */
+
+    InlineLexer.prototype.mangle = function(text) {
+      if (!this.options.mangle) return text;
+      var out = '',
+          l = text.length,
+          i = 0,
+          ch;
+
+      for (; i < l; i++) {
+        ch = text.charCodeAt(i);
+        if (Math.random() > 0.5) {
+          ch = 'x' + ch.toString(16);
+        }
+        out += '&#' + ch + ';';
+      }
+
+      return out;
+    };
+
+    /**
+     * Renderer
+     */
+
+    function Renderer(options) {
+      this.options = options || marked.defaults;
+    }
+
+    Renderer.prototype.code = function(code, infostring, escaped) {
+      var lang = (infostring || '').match(/\S*/)[0];
+      if (this.options.highlight) {
+        var out = this.options.highlight(code, lang);
+        if (out != null && out !== code) {
+          escaped = true;
+          code = out;
+        }
+      }
+
+      if (!lang) {
+        return '<pre><code>'
+          + (escaped ? code : escape(code, true))
+          + '</code></pre>';
+      }
+
+      return '<pre><code class="'
+        + this.options.langPrefix
+        + escape(lang, true)
+        + '">'
+        + (escaped ? code : escape(code, true))
+        + '</code></pre>\n';
+    };
+
+   
