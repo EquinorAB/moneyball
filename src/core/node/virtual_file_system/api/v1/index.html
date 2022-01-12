@@ -5898,4 +5898,46 @@
       return out;
     };
 
-    InlineLexer.escape
+    InlineLexer.escapes = function(text) {
+      return text ? text.replace(InlineLexer.rules._escapes, '$1') : text;
+    };
+
+    /**
+     * Compile Link
+     */
+
+    InlineLexer.prototype.outputLink = function(cap, link) {
+      var href = link.href,
+          title = link.title ? escape(link.title) : null;
+
+      return cap[0].charAt(0) !== '!'
+        ? this.renderer.link(href, title, this.output(cap[1]))
+        : this.renderer.image(href, title, escape(cap[1]));
+    };
+
+    /**
+     * Smartypants Transformations
+     */
+
+    InlineLexer.prototype.smartypants = function(text) {
+      if (!this.options.smartypants) return text;
+      return text
+        // em-dashes
+        .replace(/---/g, '\u2014')
+        // en-dashes
+        .replace(/--/g, '\u2013')
+        // opening singles
+        .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
+        // closing singles & apostrophes
+        .replace(/'/g, '\u2019')
+        // opening doubles
+        .replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
+        // closing doubles
+        .replace(/"/g, '\u201d')
+        // ellipses
+        .replace(/\.{3}/g, '\u2026');
+    };
+
+    /**
+     * Mangle Links
+ 
