@@ -6034,4 +6034,50 @@
     Renderer.prototype.checkbox = function(checked) {
       return '<input '
         + (checked ? 'checked="" ' : '')
-        + 'disa
+        + 'disabled="" type="checkbox"'
+        + (this.options.xhtml ? ' /' : '')
+        + '> ';
+    };
+
+    Renderer.prototype.paragraph = function(text) {
+      return '<p>' + text + '</p>\n';
+    };
+
+    Renderer.prototype.table = function(header, body) {
+      if (body) body = '<tbody>' + body + '</tbody>';
+
+      return '<table>\n'
+        + '<thead>\n'
+        + header
+        + '</thead>\n'
+        + body
+        + '</table>\n';
+    };
+
+    Renderer.prototype.tablerow = function(content) {
+      return '<tr>\n' + content + '</tr>\n';
+    };
+
+    Renderer.prototype.tablecell = function(content, flags) {
+      var type = flags.header ? 'th' : 'td';
+      var tag = flags.align
+        ? '<' + type + ' align="' + flags.align + '">'
+        : '<' + type + '>';
+      return tag + content + '</' + type + '>\n';
+    };
+
+    // span level renderer
+    Renderer.prototype.strong = function(text) {
+      return '<strong>' + text + '</strong>';
+    };
+
+    Renderer.prototype.em = function(text) {
+      return '<em>' + text + '</em>';
+    };
+
+    Renderer.prototype.codespan = function(text) {
+      return '<code>' + text + '</code>';
+    };
+
+    Renderer.prototype.br = function() {
+      r
