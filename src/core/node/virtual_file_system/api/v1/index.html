@@ -6080,4 +6080,51 @@
     };
 
     Renderer.prototype.br = function() {
-      r
+      return this.options.xhtml ? '<br/>' : '<br>';
+    };
+
+    Renderer.prototype.del = function(text) {
+      return '<del>' + text + '</del>';
+    };
+
+    Renderer.prototype.link = function(href, title, text) {
+      href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+      if (href === null) {
+        return text;
+      }
+      var out = '<a href="' + escape(href) + '"';
+      if (title) {
+        out += ' title="' + title + '"';
+      }
+      out += '>' + text + '</a>';
+      return out;
+    };
+
+    Renderer.prototype.image = function(href, title, text) {
+      href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+      if (href === null) {
+        return text;
+      }
+
+      var out = '<img src="' + href + '" alt="' + text + '"';
+      if (title) {
+        out += ' title="' + title + '"';
+      }
+      out += this.options.xhtml ? '/>' : '>';
+      return out;
+    };
+
+    Renderer.prototype.text = function(text) {
+      return text;
+    };
+
+    /**
+     * TextRenderer
+     * returns only the textual part of the token
+     */
+
+    function TextRenderer() {}
+
+    // no need for block level renderers
+
+    TextRenderer.prototype
