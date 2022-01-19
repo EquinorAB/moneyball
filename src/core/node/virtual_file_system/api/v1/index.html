@@ -6274,3 +6274,45 @@
 
             body += this.renderer.tablerow(cell);
           }
+          return this.renderer.table(header, body);
+        }
+        case 'blockquote_start': {
+          body = '';
+
+          while (this.next().type !== 'blockquote_end') {
+            body += this.tok();
+          }
+
+          return this.renderer.blockquote(body);
+        }
+        case 'list_start': {
+          body = '';
+          var ordered = this.token.ordered,
+              start = this.token.start;
+
+          while (this.next().type !== 'list_end') {
+            body += this.tok();
+          }
+
+          return this.renderer.list(body, ordered, start);
+        }
+        case 'list_item_start': {
+          body = '';
+          var loose = this.token.loose;
+          var checked = this.token.checked;
+          var task = this.token.task;
+
+          if (this.token.task) {
+            body += this.renderer.checkbox(checked);
+          }
+
+          while (this.next().type !== 'list_item_end') {
+            body += !loose && this.token.type === 'text'
+              ? this.parseText()
+              : this.tok();
+          }
+          return this.renderer.listitem(body, task, checked);
+        }
+        case 'html': {
+          // TODO parse inline content if parameter markdown=1
+          return this.renderer
