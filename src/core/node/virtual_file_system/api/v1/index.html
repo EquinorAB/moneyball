@@ -6174,4 +6174,64 @@
     Parser.prototype.parse = function(src) {
       this.inline = new InlineLexer(src.links, this.options);
       // use an InlineLexer with a TextRenderer to extract pure text
-      this.inli
+      this.inlineText = new InlineLexer(
+        src.links,
+        merge({}, this.options, { renderer: new TextRenderer() })
+      );
+      this.tokens = src.reverse();
+
+      var out = '';
+      while (this.next()) {
+        out += this.tok();
+      }
+
+      return out;
+    };
+
+    /**
+     * Next Token
+     */
+
+    Parser.prototype.next = function() {
+      this.token = this.tokens.pop();
+      return this.token;
+    };
+
+    /**
+     * Preview Next Token
+     */
+
+    Parser.prototype.peek = function() {
+      return this.tokens[this.tokens.length - 1] || 0;
+    };
+
+    /**
+     * Parse Text Tokens
+     */
+
+    Parser.prototype.parseText = function() {
+      var body = this.token.text;
+
+      while (this.peek().type === 'text') {
+        body += '\n' + this.next().text;
+      }
+
+      return this.inline.output(body);
+    };
+
+    /**
+     * Parse Current Token
+     */
+
+    Parser.prototype.tok = function() {
+      switch (this.token.type) {
+        case 'space': {
+          return '';
+        }
+        case 'hr': {
+          return this.renderer.hr();
+        }
+        case 'heading': {
+          return this.renderer.heading(
+            this.inline.output(this.token.text),
+            this.t
