@@ -6315,4 +6315,47 @@
         }
         case 'html': {
           // TODO parse inline content if parameter markdown=1
-          return this.renderer
+          return this.renderer.html(this.token.text);
+        }
+        case 'paragraph': {
+          return this.renderer.paragraph(this.inline.output(this.token.text));
+        }
+        case 'text': {
+          return this.renderer.paragraph(this.parseText());
+        }
+        default: {
+          var errMsg = 'Token with "' + this.token.type + '" type was not found.';
+          if (this.options.silent) {
+            console.log(errMsg);
+          } else {
+            throw new Error(errMsg);
+          }
+        }
+      }
+    };
+
+    /**
+     * Slugger generates header id
+     */
+
+    function Slugger() {
+      this.seen = {};
+    }
+
+    /**
+     * Convert string to unique id
+     */
+
+    Slugger.prototype.slug = function(value) {
+      var slug = value
+        .toLowerCase()
+        .trim()
+        .replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
+        .replace(/\s/g, '-');
+
+      if (this.seen.hasOwnProperty(slug)) {
+        var originalSlug = slug;
+        do {
+          this.seen[originalSlug]++;
+          slug = originalSlug + '-' + this.seen[originalSlug];
+        } wh
