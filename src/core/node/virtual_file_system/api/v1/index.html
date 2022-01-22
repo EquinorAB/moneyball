@@ -6401,4 +6401,43 @@
       return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig, function(_, n) {
         n = n.toLowerCase();
         if (n === 'colon') return ':';
-        if (n.charAt(0) === '#
+        if (n.charAt(0) === '#') {
+          return n.charAt(1) === 'x'
+            ? String.fromCharCode(parseInt(n.substring(2), 16))
+            : String.fromCharCode(+n.substring(1));
+        }
+        return '';
+      });
+    }
+
+    function edit(regex, opt) {
+      regex = regex.source || regex;
+      opt = opt || '';
+      return {
+        replace: function(name, val) {
+          val = val.source || val;
+          val = val.replace(/(^|[^\[])\^/g, '$1');
+          regex = regex.replace(name, val);
+          return this;
+        },
+        getRegex: function() {
+          return new RegExp(regex, opt);
+        }
+      };
+    }
+
+    function cleanUrl(sanitize, base, href) {
+      if (sanitize) {
+        try {
+          var prot = decodeURIComponent(unescape(href))
+            .replace(/[^\w:]/g, '')
+            .toLowerCase();
+        } catch (e) {
+          return null;
+        }
+        if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
+          return null;
+        }
+      }
+      if (base && !originIndependentUrl.test(href)) {
+        href = r
