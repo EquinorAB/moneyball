@@ -6440,4 +6440,49 @@
         }
       }
       if (base && !originIndependentUrl.test(href)) {
-        href = r
+        href = resolveUrl(base, href);
+      }
+      try {
+        href = encodeURI(href).replace(/%25/g, '%');
+      } catch (e) {
+        return null;
+      }
+      return href;
+    }
+
+    function resolveUrl(base, href) {
+      if (!baseUrls[' ' + base]) {
+        // we can ignore everything in base after the last slash of its path component,
+        // but we might need to add _that_
+        // https://tools.ietf.org/html/rfc3986#section-3
+        if (/^[^:]+:\/*[^/]*$/.test(base)) {
+          baseUrls[' ' + base] = base + '/';
+        } else {
+          baseUrls[' ' + base] = rtrim(base, '/', true);
+        }
+      }
+      base = baseUrls[' ' + base];
+
+      if (href.slice(0, 2) === '//') {
+        return base.replace(/:[\s\S]*/, ':') + href;
+      } else if (href.charAt(0) === '/') {
+        return base.replace(/(:\/*[^/]*)[\s\S]*/, '$1') + href;
+      } else {
+        return base + href;
+      }
+    }
+    var baseUrls = {};
+    var originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
+
+    function noop() {}
+    noop.exec = noop;
+
+    function merge(obj) {
+      var i = 1,
+          target,
+          key;
+
+      for (; i < arguments.length; i++) {
+        target = arguments[i];
+        for (key in target) {
+          if (Object.prototype.h
