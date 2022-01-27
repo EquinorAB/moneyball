@@ -6526,4 +6526,43 @@
       return cells;
     }
 
-    // Remove trailing 'c's. E
+    // Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
+    // /c*$/ is vulnerable to REDOS.
+    // invert: Remove suffix of non-c chars instead. Default falsey.
+    function rtrim(str, c, invert) {
+      if (str.length === 0) {
+        return '';
+      }
+
+      // Length of suffix matching the invert condition.
+      var suffLen = 0;
+
+      // Step left until we fail to match the invert condition.
+      while (suffLen < str.length) {
+        var currChar = str.charAt(str.length - suffLen - 1);
+        if (currChar === c && !invert) {
+          suffLen++;
+        } else if (currChar !== c && invert) {
+          suffLen++;
+        } else {
+          break;
+        }
+      }
+
+      return str.substr(0, str.length - suffLen);
+    }
+
+    function findClosingBracket(str, b) {
+      if (str.indexOf(b[1]) === -1) {
+        return -1;
+      }
+      var level = 0;
+      for (var i = 0; i < str.length; i++) {
+        if (str[i] === '\\') {
+          i++;
+        } else if (str[i] === b[0]) {
+          level++;
+        } else if (str[i] === b[1]) {
+          level--;
+          if (level < 0) {
+            return i
