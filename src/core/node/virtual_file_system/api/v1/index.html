@@ -6697,3 +6697,55 @@
         highlight: null,
         langPrefix: 'language-',
         mangle: true,
+        pedantic: false,
+        renderer: new Renderer(),
+        sanitize: false,
+        sanitizer: null,
+        silent: false,
+        smartLists: false,
+        smartypants: false,
+        xhtml: false
+      };
+    };
+
+    marked.defaults = marked.getDefaults();
+
+    /**
+     * Expose
+     */
+
+    marked.Parser = Parser;
+    marked.parser = Parser.parse;
+
+    marked.Renderer = Renderer;
+    marked.TextRenderer = TextRenderer;
+
+    marked.Lexer = Lexer;
+    marked.lexer = Lexer.lex;
+
+    marked.InlineLexer = InlineLexer;
+    marked.inlineLexer = InlineLexer.output;
+
+    marked.Slugger = Slugger;
+
+    marked.parse = marked;
+
+    if ('object' !== 'undefined' && 'object' === 'object') {
+      module.exports = marked;
+    } else if (typeof undefined === 'function' && undefined.amd) {
+      undefined(function() { return marked; });
+    } else {
+      root.marked = marked;
+    }
+    })(commonjsGlobal || (typeof window !== 'undefined' ? window : commonjsGlobal));
+    });
+
+    var speakingurl = createCommonjsModule(function (module) {
+    (function (root) {
+        'use strict';
+
+        /**
+         * charMap
+         * @type {Object}
+         */
+       
