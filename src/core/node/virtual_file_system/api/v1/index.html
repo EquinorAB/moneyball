@@ -7579,4 +7579,50 @@
             '円': 'YEN',
             '﷼': 'IRR',
             '₠': 'EWE',
-            
+            '฿': 'THB',
+            '₨': 'INR',
+            '₹': 'INR',
+            '₰': 'PF',
+            '₺': 'TRY',
+            '؋': 'AFN',
+            '₼': 'AZN',
+            'лв': 'BGN',
+            '៛': 'KHR',
+            '₡': 'CRC',
+            '₸': 'KZT',
+            'ден': 'MKD',
+            'zł': 'PLN',
+            '₽': 'RUB',
+            '₾': 'GEL'
+
+        };
+
+        /**
+         * special look ahead character array
+         * These characters form with consonants to become 'single'/consonant combo
+         * @type [Array]
+         */
+        var lookAheadCharArray = [
+            // burmese
+            '်',
+
+            // Dhivehi
+            'ް'
+        ];
+
+        /**
+         * diatricMap for languages where transliteration changes entirely as more diatrics are added
+         * @type {Object}
+         */
+        var diatricMap = {
+            // Burmese
+            // dependent vowels
+            'ာ': 'a',
+            'ါ': 'a',
+            'ေ': 'e',
+            'ဲ': 'e',
+            'ိ': 'i',
+            'ီ': 'i',
+            'ို': 'o',
+            'ု': 'u',
+    
