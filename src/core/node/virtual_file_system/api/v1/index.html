@@ -8164,4 +8164,42 @@
         /**
          * getSlug
          * @param  {string} input input string
-     
+         * @param  {object|string} opts config object or separator string/char
+         * @api    public
+         * @return {string}  sluggified string
+         */
+        var getSlug = function getSlug(input, opts) {
+            var separator = '-';
+            var result = '';
+            var diatricString = '';
+            var convertSymbols = true;
+            var customReplacements = {};
+            var maintainCase;
+            var titleCase;
+            var truncate;
+            var uricFlag;
+            var uricNoSlashFlag;
+            var markFlag;
+            var symbol;
+            var langChar;
+            var lucky;
+            var i;
+            var ch;
+            var l;
+            var lastCharWasSymbol;
+            var lastCharWasDiatric;
+            var allowedChars = '';
+
+            if (typeof input !== 'string') {
+                return '';
+            }
+
+            if (typeof opts === 'string') {
+                separator = opts;
+            }
+
+            symbol = symbolMap.en;
+            langChar = langCharMap.en;
+
+            if (typeof opts === 'object') {
+                maintainCase = o
