@@ -8290,4 +8290,29 @@
 
                     lastCharWasSymbol = false;
                 } else if (ch in charMap) {
- 
+                    // the transliteration changes entirely when some special characters are added
+                    if (i + 1 < l && lookAheadCharArray.indexOf(input[i + 1]) >= 0) {
+                        diatricString += ch;
+                        ch = '';
+                    } else if (lastCharWasDiatric === true) {
+                        ch = diatricMap[diatricString] + charMap[ch];
+                        diatricString = '';
+                    } else {
+                        // process diactrics chars
+                        ch = lastCharWasSymbol && charMap[ch].match(/[A-Za-z0-9]/) ? ' ' + charMap[ch] : charMap[ch];
+                    }
+
+                    lastCharWasSymbol = false;
+                    lastCharWasDiatric = false;
+                } else if (ch in diatricMap) {
+                    diatricString += ch;
+                    ch = '';
+                    // end of string, put the whole meaningful word
+                    if (i === l - 1) {
+                        ch = diatricMap[diatricString];
+                    }
+                    lastCharWasDiatric = true;
+                } else if (
+                    // process symbol chars
+                    symbol[ch] && !(uricFlag && uricChars
+                     
