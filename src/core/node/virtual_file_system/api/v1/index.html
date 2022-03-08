@@ -8315,4 +8315,27 @@
                 } else if (
                     // process symbol chars
                     symbol[ch] && !(uricFlag && uricChars
-                     
+                        .indexOf(ch) !== -1) && !(uricNoSlashFlag && uricNoSlashChars
+                        // .indexOf(ch) !== -1) && !(markFlag && markChars
+                        .indexOf(ch) !== -1)) {
+                    ch = lastCharWasSymbol || result.substr(-1).match(/[A-Za-z0-9]/) ? separator + symbol[ch] : symbol[ch];
+                    ch += input[i + 1] !== void 0 && input[i + 1].match(/[A-Za-z0-9]/) ? separator : '';
+
+                    lastCharWasSymbol = true;
+                } else {
+                    if (lastCharWasDiatric === true) {
+                        ch = diatricMap[diatricString] + ch;
+                        diatricString = '';
+                        lastCharWasDiatric = false;
+                    } else if (lastCharWasSymbol && (/[A-Za-z0-9]/.test(ch) || result.substr(-1).match(/A-Za-z0-9]/))) {
+                        // process latin chars
+                        ch = ' ' + ch;
+                    }
+                    lastCharWasSymbol = false;
+                }
+
+                // add allowed chars
+                result += ch.replace(new RegExp('[^\\w\\s' + allowedChars + '_-]', 'g'), separator);
+            }
+
+            if (titleCase)
