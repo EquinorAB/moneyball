@@ -8230,4 +8230,29 @@
                     langCharMap[opts.lang] :
                     opts.lang === false || opts.lang === true ? {} : langCharMap.en;
 
-     
+                // if titleCase config is an Array, rewrite to object format
+                if (opts.titleCase && typeof opts.titleCase.length === 'number' && Array.prototype.toString.call(opts.titleCase)) {
+                    opts.titleCase.forEach(function (v) {
+                        customReplacements[v + ''] = v + '';
+                    });
+
+                    titleCase = true;
+                } else {
+                    titleCase = !!opts.titleCase;
+                }
+
+                // if custom config is an Array, rewrite to object format
+                if (opts.custom && typeof opts.custom.length === 'number' && Array.prototype.toString.call(opts.custom)) {
+                    opts.custom.forEach(function (v) {
+                        customReplacements[v + ''] = v + '';
+                    });
+                }
+
+                // custom replacements
+                Object.keys(customReplacements).forEach(function (v) {
+                    var r;
+
+                    if (v.length > 1) {
+                        r = new RegExp('\\b' + escapeChars(v) + '\\b', 'gi');
+                    } else {
+                        r = new RegExp(escapeChars(v), 'gi')
