@@ -8370,4 +8370,42 @@
 
         /**
          * createSlug curried(opts)(input)
-         * @param   {object|strin
+         * @param   {object|string} opts config object or input string
+         * @return  {Function} function getSlugWithConfig()
+         **/
+        var createSlug = function createSlug(opts) {
+
+            /**
+             * getSlugWithConfig
+             * @param   {string} input string
+             * @return  {string} slug string
+             */
+            return function getSlugWithConfig(input) {
+                return getSlug(input, opts);
+            };
+        };
+
+        /**
+         * escape Chars
+         * @param   {string} input string
+         */
+        var escapeChars = function escapeChars(input) {
+            return input.replace(/[-\\^$*+?.()|[\]{}\/]/g, '\\$&');
+        };
+
+        /**
+         * check if the char is an already converted char from custom list
+         * @param   {char} ch character to check
+         * @param   {object} customReplacements custom translation map
+         */
+        var isReplacedCustomChar = function (ch, customReplacements) {
+            for (var c in customReplacements) {
+                if (customReplacements[c] === ch) {
+                    return true;
+                }
+            }
+        };
+
+        if ('object' !== 'undefined' && module.exports) {
+
+            // export fu
