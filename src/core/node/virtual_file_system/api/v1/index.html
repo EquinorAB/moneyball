@@ -8338,4 +8338,36 @@
                 result += ch.replace(new RegExp('[^\\w\\s' + allowedChars + '_-]', 'g'), separator);
             }
 
-            if (titleCase)
+            if (titleCase) {
+                result = result.replace(/(\w)(\S*)/g, function (_, i, r) {
+                    var j = i.toUpperCase() + (r !== null ? r : '');
+                    return (Object.keys(customReplacements).indexOf(j.toLowerCase()) < 0) ? j : j.toLowerCase();
+                });
+            }
+
+            // eliminate duplicate separators
+            // add separator
+            // trim separators from start and end
+            result = result.replace(/\s+/g, separator)
+                .replace(new RegExp('\\' + separator + '+', 'g'), separator)
+                .replace(new RegExp('(^\\' + separator + '+|\\' + separator + '+$)', 'g'), '');
+
+            if (truncate && result.length > truncate) {
+                lucky = result.charAt(truncate) === separator;
+                result = result.slice(0, truncate);
+
+                if (!lucky) {
+                    result = result.slice(0, result.lastIndexOf(separator));
+                }
+            }
+
+            if (!maintainCase && !titleCase) {
+                result = result.toLowerCase();
+            }
+
+            return result;
+        };
+
+        /**
+         * createSlug curried(opts)(input)
+         * @param   {object|strin
