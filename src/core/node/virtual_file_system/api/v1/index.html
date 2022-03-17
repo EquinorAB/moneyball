@@ -8408,4 +8408,38 @@
 
         if ('object' !== 'undefined' && module.exports) {
 
-            // export fu
+            // export functions for use in Node
+            module.exports = getSlug;
+            module.exports.createSlug = createSlug;
+        } else if (typeof undefined !== 'undefined' && undefined.amd) {
+
+            // export function for use in AMD
+            undefined([], function () {
+                return getSlug;
+            });
+        } else {
+
+            // don't overwrite global if exists
+            try {
+                if (root.getSlug || root.createSlug) {
+                    throw 'speakingurl: globals exists /(getSlug|createSlug)/';
+                } else {
+                    root.getSlug = getSlug;
+                    root.createSlug = createSlug;
+                }
+            } catch (e) {}
+        }
+    })(commonjsGlobal);
+    });
+    var speakingurl_1 = speakingurl.createSlug;
+
+    var speakingurl$1 = speakingurl;
+
+    var urlJoin = createCommonjsModule(function (module) {
+    (function (name, context, definition) {
+      if ('object' !== 'undefined' && module.exports) module.exports = definition();
+      else if (typeof undefined === 'function' && undefined.amd) undefined(definition);
+      else context[name] = definition();
+    })('urljoin', commonjsGlobal, function () {
+
+      functi
