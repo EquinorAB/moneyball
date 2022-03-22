@@ -8641,4 +8641,39 @@
 
     var charHelper = (function () {
 
-        function isAlpha (c
+        function isAlpha (chr) {
+            return (chr >= 'a' && chr <= 'z') || ((chr >= 'A' && chr <= 'Z'));
+        }
+
+        function isDigit (chr) {
+            return chr >= '0' && chr <= '9';
+        }
+
+        function isHexDigit (chr) {
+            return isDigit(chr) || (chr >= 'a' && chr <= 'f') || (chr >= 'A' && chr <= 'F');
+        }
+
+        return {
+            isAlpha: isAlpha,
+            isDigit: isDigit,
+            isHexDigit: isHexDigit
+        };
+    }());
+
+    var pctEncoder = (function () {
+        var utf8 = {
+            encode: function (chr) {
+                // see http://ecmanaut.blogspot.de/2006/07/encoding-decoding-utf8-in-javascript.html
+                return unescape(encodeURIComponent(chr));
+            },
+            numBytes: function (firstCharCode) {
+                if (firstCharCode <= 0x7F) {
+                    return 1;
+                }
+                else if (0xC2 <= firstCharCode && firstCharCode <= 0xDF) {
+                    return 2;
+                }
+                else if (0xE0 <= firstCharCode && firstCharCode <= 0xEF) {
+                    return 3;
+                }
+                else if (0xF0 <= firstCharCode && firstCharCode <= 0xF4) 
