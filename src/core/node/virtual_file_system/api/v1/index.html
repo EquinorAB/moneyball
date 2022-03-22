@@ -8516,4 +8516,46 @@
     });
     });
 
-    var uritemplate = createCommonj
+    var uritemplate = createCommonjsModule(function (module) {
+    /*global unescape, module, define, window, global*/
+
+    /*
+     UriTemplate Copyright (c) 2012-2013 Franz Antesberger. All Rights Reserved.
+     Available via the MIT license.
+    */
+
+    (function (exportCallback) {
+        "use strict";
+
+    var UriTemplateError = (function () {
+
+        function UriTemplateError (options) {
+            this.options = options;
+        }
+
+        UriTemplateError.prototype.toString = function () {
+            if (JSON && JSON.stringify) {
+                return JSON.stringify(this.options);
+            }
+            else {
+                return this.options;
+            }
+        };
+
+        return UriTemplateError;
+    }());
+
+    var objectHelper = (function () {
+        function isArray (value) {
+            return Object.prototype.toString.apply(value) === '[object Array]';
+        }
+
+        function isString (value) {
+            return Object.prototype.toString.apply(value) === '[object String]';
+        }
+        
+        function isNumber (value) {
+            return Object.prototype.toString.apply(value) === '[object Number]';
+        }
+        
+        function isBoolean (valu
