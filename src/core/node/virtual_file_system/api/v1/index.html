@@ -8601,4 +8601,44 @@
             return result;
         }
 
-  
+        function deepFreezeUsingObjectFreeze (object) {
+            if (typeof object !== "object" || object === null) {
+                return object;
+            }
+            Object.freeze(object);
+            var property, propertyName;
+            for (propertyName in object) {
+                if (object.hasOwnProperty(propertyName)) {
+                    property = object[propertyName];
+                    // be aware, arrays are 'object', too
+                    if (typeof property === "object") {
+                        deepFreeze(property);
+                    }
+                }
+            }
+            return object;
+        }
+
+        function deepFreeze (object) {
+            if (typeof Object.freeze === 'function') {
+                return deepFreezeUsingObjectFreeze(object);
+            }
+            return object;
+        }
+
+
+        return {
+            isArray: isArray,
+            isString: isString,
+            isNumber: isNumber,
+            isBoolean: isBoolean,
+            join: join,
+            map: map,
+            filter: filter,
+            deepFreeze: deepFreeze
+        };
+    }());
+
+    var charHelper = (function () {
+
+        function isAlpha (c
