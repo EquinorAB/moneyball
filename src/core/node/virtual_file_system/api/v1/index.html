@@ -8712,4 +8712,40 @@
          * @return {boolean|*|*}
          */
         function isPercentDigitDigit (text, start) {
-            return text.charAt(start) === '%' && charHelper.isHexDigit(text.charAt(sta
+            return text.charAt(start) === '%' && charHelper.isHexDigit(text.charAt(start + 1)) && charHelper.isHexDigit(text.charAt(start + 2));
+        }
+
+        /**
+         * Parses a hex number from start with length 2.
+         * @param text a string
+         * @param start the start index of the 2-digit hex number
+         * @return {Number}
+         */
+        function parseHex2 (text, start) {
+            return parseInt(text.substr(start, 2), 16);
+        }
+
+        /**
+         * Returns whether or not the given char sequence is a correctly pct-encoded sequence.
+         * @param chr
+         * @return {boolean}
+         */
+        function isPctEncoded (chr) {
+            if (!isPercentDigitDigit(chr, 0)) {
+                return false;
+            }
+            var firstCharCode = parseHex2(chr, 1);
+            var numBytes = utf8.numBytes(firstCharCode);
+            if (numBytes === 0) {
+                return false;
+            }
+            for (var byteNumber = 1; byteNumber < numBytes; byteNumber += 1) {
+                if (!isPercentDigitDigit(chr, 3*byteNumber) || !utf8.isValidFollowingCharCode(parseHex2(chr, 3*byteNumber + 1))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Reads as much as n
