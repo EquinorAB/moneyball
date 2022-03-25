@@ -8676,4 +8676,40 @@
                 else if (0xE0 <= firstCharCode && firstCharCode <= 0xEF) {
                     return 3;
                 }
-                else if (0xF0 <= firstCharCode && firstCharCode <= 0xF4) 
+                else if (0xF0 <= firstCharCode && firstCharCode <= 0xF4) {
+                    return 4;
+                }
+                // no valid first octet
+                return 0;
+            },
+            isValidFollowingCharCode: function (charCode) {
+                return 0x80 <= charCode && charCode <= 0xBF;
+            }
+        };
+
+        /**
+         * encodes a character, if needed or not.
+         * @param chr
+         * @return pct-encoded character
+         */
+        function encodeCharacter (chr) {
+            var
+                result = '',
+                octets = utf8.encode(chr),
+                octet,
+                index;
+            for (index = 0; index < octets.length; index += 1) {
+                octet = octets.charCodeAt(index);
+                result += '%' + (octet < 0x10 ? '0' : '') + octet.toString(16).toUpperCase();
+            }
+            return result;
+        }
+
+        /**
+         * Returns, whether the given text at start is in the form 'percent hex-digit hex-digit', like '%3F'
+         * @param text
+         * @param start
+         * @return {boolean|*|*}
+         */
+        function isPercentDigitDigit (text, start) {
+            return text.charAt(start) === '%' && charHelper.isHexDigit(text.charAt(sta
