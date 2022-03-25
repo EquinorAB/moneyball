@@ -8748,4 +8748,36 @@
         }
 
         /**
-         * Reads as much as n
+         * Reads as much as needed from the text, e.g. '%20' or '%C3%B6'. It does not decode!
+         * @param text
+         * @param startIndex
+         * @return the character or pct-string of the text at startIndex
+         */
+        function pctCharAt(text, startIndex) {
+            var chr = text.charAt(startIndex);
+            if (!isPercentDigitDigit(text, startIndex)) {
+                return chr;
+            }
+            var utf8CharCode = parseHex2(text, startIndex + 1);
+            var numBytes = utf8.numBytes(utf8CharCode);
+            if (numBytes === 0) {
+                return chr;
+            }
+            for (var byteNumber = 1; byteNumber < numBytes; byteNumber += 1) {
+                if (!isPercentDigitDigit(text, startIndex + 3 * byteNumber) || !utf8.isValidFollowingCharCode(parseHex2(text, startIndex + 3 * byteNumber + 1))) {
+                    return chr;
+                }
+            }
+            return text.substr(startIndex, 3 * numBytes);
+        }
+
+        return {
+            encodeCharacter: encodeCharacter,
+            isPctEncoded: isPctEncoded,
+            pctCharAt: pctCharAt
+        };
+    }());
+
+    var rfcCharHelper = (function () {
+
+  
