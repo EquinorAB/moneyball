@@ -8806,4 +8806,44 @@
          */
         function isReserved (chr) {
             return chr === ':' || chr === '/' || chr === '?' || chr === '#' || chr === '[' || chr === ']' || chr === '@' || chr === '!' || chr === '$' || chr === '&' || chr === '(' ||
-                chr === ')' || chr === '*' || chr === '+' || chr === ',' || chr === ';' || chr 
+                chr === ')' || chr === '*' || chr === '+' || chr === ',' || chr === ';' || chr === '=' || chr === "'";
+        }
+
+        return {
+            isVarchar: isVarchar,
+            isUnreserved: isUnreserved,
+            isReserved: isReserved
+        };
+
+    }());
+
+    /**
+     * encoding of rfc 6570
+     */
+    var encodingHelper = (function () {
+
+        function encode (text, passReserved) {
+            var
+                result = '',
+                index,
+                chr = '';
+            if (typeof text === "number" || typeof text === "boolean") {
+                text = text.toString();
+            }
+            for (index = 0; index < text.length; index += chr.length) {
+                chr = text.charAt(index);
+                result += rfcCharHelper.isUnreserved(chr) || (passReserved && rfcCharHelper.isReserved(chr)) ? chr : pctEncoder.encodeCharacter(chr);
+            }
+            return result;
+        }
+
+        function encodePassReserved (text) {
+            return encode(text, true);
+        }
+
+        function encodeLiteralCharacter (literal, index) {
+            var chr = pctEncoder.pctCharAt(literal, index);
+            if (chr.length > 1) {
+                return chr;
+            }
+            el
