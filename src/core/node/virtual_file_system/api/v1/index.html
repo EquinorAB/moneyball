@@ -8947,4 +8947,41 @@
         // else Object
         for (propertyName in object) {
             if (object.hasOwnProperty(propertyName) && isDefined(object[propertyName])) {
-                return
+                return true;
+            }
+        }
+        return false;
+    }
+
+    var LiteralExpression = (function () {
+        function LiteralExpression (literal) {
+            this.literal = encodingHelper.encodeLiteral(literal);
+        }
+
+        LiteralExpression.prototype.expand = function () {
+            return this.literal;
+        };
+
+        LiteralExpression.prototype.toString = LiteralExpression.prototype.expand;
+
+        return LiteralExpression;
+    }());
+
+    var parse = (function () {
+
+        function parseExpression (expressionText) {
+            var
+                operator,
+                varspecs = [],
+                varspec = null,
+                varnameStart = null,
+                maxLengthStart = null,
+                index,
+                chr = '';
+
+            function closeVarname () {
+                var varname = expressionText.substring(varnameStart, index);
+                if (varname.length === 0) {
+                    throw new UriTemplateError({expressionText: expressionText, message: "a varname must be specified", position: index});
+                }
+                varspec = {varname: varname, explod
