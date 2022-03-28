@@ -8984,4 +8984,28 @@
                 if (varname.length === 0) {
                     throw new UriTemplateError({expressionText: expressionText, message: "a varname must be specified", position: index});
                 }
-                varspec = {varname: varname, explod
+                varspec = {varname: varname, exploded: false, maxLength: null};
+                varnameStart = null;
+            }
+
+            function closeMaxLength () {
+                if (maxLengthStart === index) {
+                    throw new UriTemplateError({expressionText: expressionText, message: "after a ':' you have to specify the length", position: index});
+                }
+                varspec.maxLength = parseInt(expressionText.substring(maxLengthStart, index), 10);
+                maxLengthStart = null;
+            }
+
+            operator = (function (operatorText) {
+                var op = operators.valueOf(operatorText);
+                if (op === null) {
+                    throw new UriTemplateError({expressionText: expressionText, message: "illegal use of reserved operator", position: index, operator: operatorText});
+                }
+                return op;
+            }(expressionText.charAt(0)));
+            index = operator.symbol.length;
+
+            varnameStart = index;
+
+            for (; index < expressionText.length; index += chr.length) {
+                chr = pctEncoder.pctCharAt(expressionText, index)
