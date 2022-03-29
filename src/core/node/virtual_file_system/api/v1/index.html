@@ -9079,4 +9079,32 @@
         }
 
         function parse (uriTemplateText) {
-            // assert filled strin
+            // assert filled string
+            var
+                index,
+                chr,
+                expressions = [],
+                braceOpenIndex = null,
+                literalStart = 0;
+            for (index = 0; index < uriTemplateText.length; index += 1) {
+                chr = uriTemplateText.charAt(index);
+                if (literalStart !== null) {
+                    if (chr === '}') {
+                        throw new UriTemplateError({templateText: uriTemplateText, message: "unopened brace closed", position: index});
+                    }
+                    if (chr === '{') {
+                        if (literalStart < index) {
+                            expressions.push(new LiteralExpression(uriTemplateText.substring(literalStart, index)));
+                        }
+                        literalStart = null;
+                        braceOpenIndex = index;
+                    }
+                    continue;
+                }
+
+                if (braceOpenIndex !== null) {
+                    // here just { is forbidden
+                    if (chr === '{') {
+                        throw new UriTemplateError({templateText: uriTemplateText, message: "brace already opened", position: index});
+                    }
+  
