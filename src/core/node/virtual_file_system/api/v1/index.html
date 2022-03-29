@@ -9053,4 +9053,30 @@
                     if (varspec.exploded) {
                         throw new UriTemplateError({expressionText: expressionText, message: "exploded twice", position: index});
                     }
-    
+                    if (varspec.maxLength) {
+                        throw new UriTemplateError({expressionText: expressionText, message: "an explode (*) MUST NOT follow to a prefix", position: index});
+                    }
+                    varspec.exploded = true;
+                    continue;
+                }
+                // the only legal character now is the comma
+                if (chr === ',') {
+                    varspecs.push(varspec);
+                    varspec = null;
+                    varnameStart = index + 1;
+                    continue;
+                }
+                throw new UriTemplateError({expressionText: expressionText, message: "illegal character", character: chr, position: index});
+            } // for chr
+            if (varnameStart !== null) {
+                closeVarname();
+            }
+            if (maxLengthStart !== null) {
+                closeMaxLength();
+            }
+            varspecs.push(varspec);
+            return new VariableExpression(expressionText, operator, varspecs);
+        }
+
+        function parse (uriTemplateText) {
+            // assert filled strin
