@@ -9030,4 +9030,27 @@
                     }
                     if (charHelper.isDigit(chr)) {
                         if (index - maxLengthStart >= 4) {
-                            throw new UriTemplateError({expressionText: expressionText, mess
+                            throw new UriTemplateError({expressionText: expressionText, message: "A :prefix must have max 4 digits", position: index});
+                        }
+                        continue;
+                    }
+                    closeMaxLength();
+                }
+                if (chr === ':') {
+                    if (varspec.maxLength !== null) {
+                        throw new UriTemplateError({expressionText: expressionText, message: "only one :maxLength is allowed per varspec", position: index});
+                    }
+                    if (varspec.exploded) {
+                        throw new UriTemplateError({expressionText: expressionText, message: "an exploeded varspec MUST NOT be varspeced", position: index});
+                    }
+                    maxLengthStart = index + 1;
+                    continue;
+                }
+                if (chr === '*') {
+                    if (varspec === null) {
+                        throw new UriTemplateError({expressionText: expressionText, message: "exploded without varspec", position: index});
+                    }
+                    if (varspec.exploded) {
+                        throw new UriTemplateError({expressionText: expressionText, message: "exploded twice", position: index});
+                    }
+    
