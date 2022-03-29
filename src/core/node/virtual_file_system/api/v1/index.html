@@ -9008,4 +9008,26 @@
             varnameStart = index;
 
             for (; index < expressionText.length; index += chr.length) {
-                chr = pctEncoder.pctCharAt(expressionText, index)
+                chr = pctEncoder.pctCharAt(expressionText, index);
+
+                if (varnameStart !== null) {
+                    // the spec says: varname =  varchar *( ["."] varchar )
+                    // so a dot is allowed except for the first char
+                    if (chr === '.') {
+                        if (varnameStart === index) {
+                            throw new UriTemplateError({expressionText: expressionText, message: "a varname MUST NOT start with a dot", position: index});
+                        }
+                        continue;
+                    }
+                    if (rfcCharHelper.isVarchar(chr)) {
+                        continue;
+                    }
+                    closeVarname();
+                }
+                if (maxLengthStart !== null) {
+                    if (index === maxLengthStart && chr === '0') {
+                        throw new UriTemplateError({expressionText: expressionText, message: "A :prefix must not start with digit 0", position: index});
+                    }
+                    if (charHelper.isDigit(chr)) {
+                        if (index - maxLengthStart >= 4) {
+                            throw new UriTemplateError({expressionText: expressionText, mess
