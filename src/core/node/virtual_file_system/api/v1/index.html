@@ -9198,4 +9198,36 @@
                     return result;
                 }
                 result += '=';
-          
+            }
+            if (varspec.maxLength !== null) {
+                value = value.substr(0, varspec.maxLength);
+            }
+            result += operator.encode(value);
+            return result;
+        }
+
+        function valueDefined (nameValue) {
+            return isDefined(nameValue.value);
+        }
+
+        function expandNotExploded(varspec, operator, value) {
+            var
+                arr = [],
+                result = '';
+            if (operator.named) {
+                result += encodingHelper.encodeLiteral(varspec.varname);
+                if (isEmpty(value)) {
+                    result += operator.ifEmpty;
+                    return result;
+                }
+                result += '=';
+            }
+            if (objectHelper.isArray(value)) {
+                arr = value;
+                arr = objectHelper.filter(arr, isDefined);
+                arr = objectHelper.map(arr, operator.encode);
+                result += objectHelper.join(arr, ',');
+            }
+            else {
+                arr = propertyArray(value);
+                arr = objectHelper.filter(arr, valueDefined);
