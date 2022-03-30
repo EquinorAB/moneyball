@@ -9107,4 +9107,25 @@
                     if (chr === '{') {
                         throw new UriTemplateError({templateText: uriTemplateText, message: "brace already opened", position: index});
                     }
-  
+                    if (chr === '}') {
+                        if (braceOpenIndex + 1 === index) {
+                            throw new UriTemplateError({templateText: uriTemplateText, message: "empty braces", position: braceOpenIndex});
+                        }
+                        try {
+                            expressions.push(parseExpression(uriTemplateText.substring(braceOpenIndex + 1, index)));
+                        }
+                        catch (error) {
+                            if (error.prototype === UriTemplateError.prototype) {
+                                throw new UriTemplateError({templateText: uriTemplateText, message: error.options.message, position: braceOpenIndex + error.options.position, details: error.options});
+                            }
+                            throw error;
+                        }
+                        braceOpenIndex = null;
+                        literalStart = index + 1;
+                    }
+                    continue;
+                }
+                throw new Error('reached unreachable code');
+            }
+            if (braceOpenIndex !== null) {
+                throw new UriTemplateError({templateText: uriTe
