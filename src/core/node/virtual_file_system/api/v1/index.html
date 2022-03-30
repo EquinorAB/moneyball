@@ -9160,4 +9160,42 @@
             }
             for (var propertyName in value) {
                 if (value.hasOwnProperty(propertyName)) {
-           
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function propertyArray (object) {
+            var
+                result = [],
+                propertyName;
+            for (propertyName in object) {
+                if (object.hasOwnProperty(propertyName)) {
+                    result.push({name: propertyName, value: object[propertyName]});
+                }
+            }
+            return result;
+        }
+
+        function VariableExpression (templateText, operator, varspecs) {
+            this.templateText = templateText;
+            this.operator = operator;
+            this.varspecs = varspecs;
+        }
+
+        VariableExpression.prototype.toString = function () {
+            return this.templateText;
+        };
+
+        function expandSimpleValue(varspec, operator, value) {
+            var result = '';
+            value = value.toString();
+            if (operator.named) {
+                result += encodingHelper.encodeLiteral(varspec.varname);
+                if (value === '') {
+                    result += operator.ifEmpty;
+                    return result;
+                }
+                result += '=';
+          
