@@ -9128,4 +9128,36 @@
                 throw new Error('reached unreachable code');
             }
             if (braceOpenIndex !== null) {
-                throw new UriTemplateError({templateText: uriTe
+                throw new UriTemplateError({templateText: uriTemplateText, message: "unclosed brace", position: braceOpenIndex});
+            }
+            if (literalStart < uriTemplateText.length) {
+                expressions.push(new LiteralExpression(uriTemplateText.substr(literalStart)));
+            }
+            return new UriTemplate(uriTemplateText, expressions);
+        }
+
+        return parse;
+    }());
+
+    var VariableExpression = (function () {
+        // helper function if JSON is not available
+        function prettyPrint (value) {
+            return (JSON && JSON.stringify) ? JSON.stringify(value) : value;
+        }
+
+        function isEmpty (value) {
+            if (!isDefined(value)) {
+                return true;
+            }
+            if (objectHelper.isString(value)) {
+                return value === '';
+            }
+            if (objectHelper.isNumber(value) || objectHelper.isBoolean(value)) {
+                return false;
+            }
+            if (objectHelper.isArray(value)) {
+                return value.length === 0;
+            }
+            for (var propertyName in value) {
+                if (value.hasOwnProperty(propertyName)) {
+           
