@@ -9318,4 +9318,24 @@
                     continue;
                 }
                 if (varspec.exploded) {
-                    
+                    oneExploded = true;
+                }
+                valueIsArr = objectHelper.isArray(value);
+                if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+                    expanded.push(expandSimpleValue(varspec, operator, value));
+                }
+                else if (varspec.maxLength && isDefined(value)) {
+                    // 2.4.1 of the spec says: "Prefix modifiers are not applicable to variables that have composite values."
+                    throw new Error('Prefix modifiers are not applicable to variables that have composite values. You tried to expand ' + this + " with " + prettyPrint(value));
+                }
+                else if (!varspec.exploded) {
+                    if (operator.named || !isEmpty(value)) {
+                        expanded.push(expandNotExploded(varspec, operator, value));
+                    }
+                }
+                else if (isDefined(value)) {
+                    if (operator.named) {
+                        expanded.push(expandExplodedNamed(varspec, operator, value));
+                    }
+                    else {
+                        expanded.push(ex
