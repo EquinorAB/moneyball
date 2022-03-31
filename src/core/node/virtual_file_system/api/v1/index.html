@@ -9260,4 +9260,33 @@
             else {
                 arr = propertyArray(value);
                 arr = objectHelper.filter(arr, valueDefined);
-                arr = objectHelper.map(arr, function (
+                arr = objectHelper.map(arr, function (nameValue) {
+                    var tmp = encodingHelper.encodeLiteral(nameValue.name);
+                    if (isEmpty(nameValue.value)) {
+                        tmp += operator.ifEmpty;
+                    }
+                    else {
+                        tmp += '=' + operator.encode(nameValue.value);
+                    }
+                    return tmp;
+                });
+            }
+            return objectHelper.join(arr, operator.separator);
+        }
+
+        function expandExplodedUnnamed (operator, value) {
+            var
+                arr = [],
+                result = '';
+            if (objectHelper.isArray(value)) {
+                arr = value;
+                arr = objectHelper.filter(arr, isDefined);
+                arr = objectHelper.map(arr, operator.encode);
+                result += objectHelper.join(arr, operator.separator);
+            }
+            else {
+                arr = propertyArray(value);
+                arr = objectHelper.filter(arr, function (nameValue) {
+                    return isDefined(nameValue.value);
+                });
+                arr = objectHelper.
