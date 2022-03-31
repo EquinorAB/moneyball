@@ -9231,3 +9231,33 @@
             else {
                 arr = propertyArray(value);
                 arr = objectHelper.filter(arr, valueDefined);
+                arr = objectHelper.map(arr, function (nameValue) {
+                    return operator.encode(nameValue.name) + ',' + operator.encode(nameValue.value);
+                });
+                result += objectHelper.join(arr, ',');
+            }
+            return result;
+        }
+
+        function expandExplodedNamed (varspec, operator, value) {
+            var
+                isArray = objectHelper.isArray(value),
+                arr = [];
+            if (isArray) {
+                arr = value;
+                arr = objectHelper.filter(arr, isDefined);
+                arr = objectHelper.map(arr, function (listElement) {
+                    var tmp = encodingHelper.encodeLiteral(varspec.varname);
+                    if (isEmpty(listElement)) {
+                        tmp += operator.ifEmpty;
+                    }
+                    else {
+                        tmp += '=' + operator.encode(listElement);
+                    }
+                    return tmp;
+                });
+            }
+            else {
+                arr = propertyArray(value);
+                arr = objectHelper.filter(arr, valueDefined);
+                arr = objectHelper.map(arr, function (
