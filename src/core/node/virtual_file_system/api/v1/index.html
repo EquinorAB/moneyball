@@ -9289,4 +9289,33 @@
                 arr = objectHelper.filter(arr, function (nameValue) {
                     return isDefined(nameValue.value);
                 });
-                arr = objectHelper.
+                arr = objectHelper.map(arr, function (nameValue) {
+                    return operator.encode(nameValue.name) + '=' + operator.encode(nameValue.value);
+                });
+                result += objectHelper.join(arr, operator.separator);
+            }
+            return result;
+        }
+
+
+        VariableExpression.prototype.expand = function (variables) {
+            var
+                expanded = [],
+                index,
+                varspec,
+                value,
+                valueIsArr,
+                oneExploded = false,
+                operator = this.operator;
+
+            // expand each varspec and join with operator's separator
+            for (index = 0; index < this.varspecs.length; index += 1) {
+                varspec = this.varspecs[index];
+                value = variables[varspec.varname];
+                // if (!isDefined(value)) {
+                // if (variables.hasOwnProperty(varspec.name)) {
+                if (value === null || value === undefined) {
+                    continue;
+                }
+                if (varspec.exploded) {
+                    
