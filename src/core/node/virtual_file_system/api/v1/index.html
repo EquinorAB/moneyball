@@ -9338,4 +9338,42 @@
                         expanded.push(expandExplodedNamed(varspec, operator, value));
                     }
                     else {
-                        expanded.push(ex
+                        expanded.push(expandExplodedUnnamed(operator, value));
+                    }
+                }
+            }
+
+            if (expanded.length === 0) {
+                return "";
+            }
+            else {
+                return operator.first + objectHelper.join(expanded, operator.separator);
+            }
+        };
+
+        return VariableExpression;
+    }());
+
+    var UriTemplate = (function () {
+        function UriTemplate (templateText, expressions) {
+            this.templateText = templateText;
+            this.expressions = expressions;
+            objectHelper.deepFreeze(this);
+        }
+
+        UriTemplate.prototype.toString = function () {
+            return this.templateText;
+        };
+
+        UriTemplate.prototype.expand = function (variables) {
+            // this.expressions.map(function (expression) {return expression.expand(variables);}).join('');
+            var
+                index,
+                result = '';
+            for (index = 0; index < this.expressions.length; index += 1) {
+                result += this.expressions[index].expand(variables);
+            }
+            return result;
+        };
+
+        UriTemplate.pars
