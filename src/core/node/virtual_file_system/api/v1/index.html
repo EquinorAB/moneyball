@@ -9376,4 +9376,44 @@
             return result;
         };
 
-        UriTemplate.pars
+        UriTemplate.parse = parse;
+        UriTemplate.UriTemplateError = UriTemplateError;
+        return UriTemplate;
+    }());
+
+        exportCallback(UriTemplate);
+
+    }(function (UriTemplate) {
+            "use strict";
+            // export UriTemplate, when module is present, or pass it to window or global
+            if ('object' !== "undefined") {
+                module.exports = UriTemplate;
+            }
+            else if (typeof undefined === "function") {
+                undefined([],function() {
+                    return UriTemplate;
+                });
+            }
+            else if (typeof window !== "undefined") {
+                window.UriTemplate = UriTemplate;
+            }
+            else {
+                commonjsGlobal.UriTemplate = UriTemplate;
+            }
+        }
+    ));
+    });
+
+    var store2 = createCommonjsModule(function (module) {
+    /*! store2 - v2.11.0 - 2020-03-23
+    * Copyright (c) 2020 Nathan Bubna; Licensed (MIT OR GPL-3.0) */
+    ;(function(window, define) {
+        var _ = {
+            version: "2.11.0",
+            areas: {},
+            apis: {},
+
+            // utilities
+            inherit: function(api, o) {
+                for (var p in api) {
+          
