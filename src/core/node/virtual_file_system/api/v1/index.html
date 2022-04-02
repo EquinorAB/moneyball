@@ -9416,4 +9416,33 @@
             // utilities
             inherit: function(api, o) {
                 for (var p in api) {
-          
+                    if (!o.hasOwnProperty(p)) {
+                        Object.defineProperty(o, p, Object.getOwnPropertyDescriptor(api, p));
+                    }
+                }
+                return o;
+            },
+            stringify: function(d) {
+                return d === undefined || typeof d === "function" ? d+'' : JSON.stringify(d);
+            },
+            parse: function(s, fn) {
+                // if it doesn't parse, return as is
+                try{ return JSON.parse(s,fn||_.revive); }catch(e){ return s; }
+            },
+
+            // extension hooks
+            fn: function(name, fn) {
+                _.storeAPI[name] = fn;
+                for (var api in _.apis) {
+                    _.apis[api][name] = fn;
+                }
+            },
+            get: function(area, key){ return area.getItem(key); },
+            set: function(area, key, string){ area.setItem(key, string); },
+            remove: function(area, key){ area.removeItem(key); },
+            key: function(area, i){ return area.key(i); },
+            length: function(area){ return area.length; },
+            clear: function(area){ area.clear(); },
+
+            // core functions
+            Store: f
