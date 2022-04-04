@@ -9466,4 +9466,29 @@
                     store._area = _.storage('fake');
                 }
                 store._ns = namespace || '';
-  
+                if (!_.areas[id]) {
+                    _.areas[id] = store._area;
+                }
+                if (!_.apis[store._ns+store._id]) {
+                    _.apis[store._ns+store._id] = store;
+                }
+                return store;
+            },
+            storeAPI: {
+                // admin functions
+                area: function(id, area) {
+                    var store = this[id];
+                    if (!store || !store.area) {
+                        store = _.Store(id, area, this._ns);//new area-specific api in this namespace
+                        if (!this[id]){ this[id] = store; }
+                    }
+                    return store;
+                },
+                namespace: function(namespace, singleArea) {
+                    if (!namespace){
+                        return this._ns ? this._ns.substring(0,this._ns.length-1) : '';
+                    }
+                    var ns = namespace, store = this[ns];
+                    if (!store || !store.namespace) {
+                        store = _.Store(this._id, this._area, this._ns+ns+'.');//new namespaced api
+                        if (!t
