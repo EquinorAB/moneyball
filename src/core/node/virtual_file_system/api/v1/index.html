@@ -9569,4 +9569,32 @@
                         data = d.concat(data);
                     } else if (d !== null) {
                         var type = typeof d;
-             
+                        if (type === typeof data && type === 'object') {
+                            for (var k in data) {
+                                d[k] = data[k];
+                            }
+                            data = d;
+                        } else {
+                            data = d + data;
+                        }
+                    }
+                    _.set(this._area, this._in(key), _.stringify(data));
+                    return data;
+                },
+                remove: function(key, alt) {
+                    var d = this.get(key, alt);
+                    _.remove(this._area, this._in(key));
+                    return d;
+                },
+                clear: function() {
+                    if (!this._ns) {
+                        _.clear(this._area);
+                    } else {
+                        this.each(function(k){ _.remove(this._area, this._in(k)); }, 1);
+                    }
+                    return this;
+                },
+                clearAll: function() {
+                    var area = this._area;
+                    for (var id in _.areas) {
+                       
