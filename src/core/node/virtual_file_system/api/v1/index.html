@@ -9627,4 +9627,32 @@
                 has: function(k){ return this.items.hasOwnProperty(k); },
                 key: function(i) {
                     var c = 0;
-                    for (var
+                    for (var k in this.items){
+                        if (this.has(k) && i === c++) {
+                            return k;
+                        }
+                    }
+                },
+                setItem: function(k, v) {
+                    if (!this.has(k)) {
+                        this.length++;
+                    }
+                    this.items[k] = v;
+                },
+                removeItem: function(k) {
+                    if (this.has(k)) {
+                        delete this.items[k];
+                        this.length--;
+                    }
+                },
+                getItem: function(k){ return this.has(k) ? this.items[k] : null; },
+                clear: function(){ for (var k in this.items){ this.removeItem(k); } }
+            }// end _.storageAPI
+        };
+
+        var store =
+            // safely set this up (throws error in IE10/32bit mode for local files)
+            _.Store("local", (function(){try{ return localStorage; }catch(e){}})());
+        store.local = store;// for completeness
+        store._ = _;// for extenders and debuggers...
+        // safely setup store.session (throws exception in FF for file:/// urls)
