@@ -9597,4 +9597,34 @@
                 clearAll: function() {
                     var area = this._area;
                     for (var id in _.areas) {
-                       
+                        if (_.areas.hasOwnProperty(id)) {
+                            this._area = _.areas[id];
+                            this.clear();
+                        }
+                    }
+                    this._area = area;
+                    return this;
+                },
+
+                // internal use functions
+                _in: function(k) {
+                    if (typeof k !== "string"){ k = _.stringify(k); }
+                    return this._ns ? this._ns + k : k;
+                },
+                _out: function(k) {
+                    return this._ns ?
+                        k && k.indexOf(this._ns) === 0 ?
+                            k.substring(this._ns.length) :
+                            undefined : // so each() knows to skip it
+                        k;
+                }
+            },// end _.storeAPI
+            storage: function(name) {
+                return _.inherit(_.storageAPI, { items: {}, name: name });
+            },
+            storageAPI: {
+                length: 0,
+                has: function(k){ return this.items.hasOwnProperty(k); },
+                key: function(i) {
+                    var c = 0;
+                    for (var
