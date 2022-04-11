@@ -10185,4 +10185,43 @@
      * Transform the data for a request or a response
      *
      * @param {Object|String} data The data to be transformed
-     * @param {Array}
+     * @param {Array} headers The headers for the request or response
+     * @param {Array|Function} fns A single function or Array of functions
+     * @returns {*} The resulting transformed data
+     */
+    var transformData = function transformData(data, headers, fns) {
+      /*eslint no-param-reassign:0*/
+      utils.forEach(fns, function transform(fn) {
+        data = fn(data, headers);
+      });
+
+      return data;
+    };
+
+    'use strict';
+
+    var isCancel = function isCancel(value) {
+      return !!(value && value.__CANCEL__);
+    };
+
+    'use strict';
+
+
+
+    var normalizeHeaderName = function normalizeHeaderName(headers, normalizedName) {
+      utils.forEach(headers, function processHeader(value, name) {
+        if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+          headers[normalizedName] = value;
+          delete headers[name];
+        }
+      });
+    };
+
+    'use strict';
+
+    /**
+     * Update an Error with the specified config, error code, and response.
+     *
+     * @param {Error} error The error to update.
+     * @param {Object} config The config.
+     * @param {string} [code] The error code (for example,
