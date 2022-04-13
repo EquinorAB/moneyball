@@ -10268,4 +10268,37 @@
      * Create an Error with the specified message, config, error code, request and response.
      *
      * @param {string} message The error message.
-     * @param {Object}
+     * @param {Object} config The config.
+     * @param {string} [code] The error code (for example, 'ECONNABORTED').
+     * @param {Object} [request] The request.
+     * @param {Object} [response] The response.
+     * @returns {Error} The created error.
+     */
+    var createError = function createError(message, config, code, request, response) {
+      var error = new Error(message);
+      return enhanceError(error, config, code, request, response);
+    };
+
+    'use strict';
+
+
+
+    /**
+     * Resolve or reject a Promise based on response status.
+     *
+     * @param {Function} resolve A function that resolves the promise.
+     * @param {Function} reject A function that rejects the promise.
+     * @param {object} response The response.
+     */
+    var settle = function settle(resolve, reject, response) {
+      var validateStatus = response.config.validateStatus;
+      if (!validateStatus || validateStatus(response.status)) {
+        resolve(response);
+      } else {
+        reject(createError(
+          'Request failed with status code ' + response.status,
+          response.config,
+          null,
+          response.request,
+          response
+        )
