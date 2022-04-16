@@ -10599,4 +10599,40 @@
           request = null;
         };
 
-        // H
+        // Handle browser request cancellation (as opposed to a manual cancellation)
+        request.onabort = function handleAbort() {
+          if (!request) {
+            return;
+          }
+
+          reject(createError('Request aborted', config, 'ECONNABORTED', request));
+
+          // Clean up request
+          request = null;
+        };
+
+        // Handle low level network errors
+        request.onerror = function handleError() {
+          // Real errors are hidden from us by the browser
+          // onerror should only fire if it's a network error
+          reject(createError('Network Error', config, null, request));
+
+          // Clean up request
+          request = null;
+        };
+
+        // Handle timeout
+        request.ontimeout = function handleTimeout() {
+          var timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
+          if (config.timeoutErrorMessage) {
+            timeoutErrorMessage = config.timeoutErrorMessage;
+          }
+          reject(createError(timeoutErrorMessage, config, 'ECONNABORTED',
+            request));
+
+          // Clean up request
+          request = null;
+        };
+
+        // Add xsrf header
+        // This is only done if r
