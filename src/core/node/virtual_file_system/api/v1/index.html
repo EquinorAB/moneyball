@@ -10665,4 +10665,37 @@
 
         // Add withCredentials to request if needed
         if (!utils.isUndefined(config.withCredentials)) {
-          request.withCredentials = !!conf
+          request.withCredentials = !!config.withCredentials;
+        }
+
+        // Add responseType to request if needed
+        if (config.responseType) {
+          try {
+            request.responseType = config.responseType;
+          } catch (e) {
+            // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
+            // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
+            if (config.responseType !== 'json') {
+              throw e;
+            }
+          }
+        }
+
+        // Handle progress if needed
+        if (typeof config.onDownloadProgress === 'function') {
+          request.addEventListener('progress', config.onDownloadProgress);
+        }
+
+        // Not all browsers support upload events
+        if (typeof config.onUploadProgress === 'function' && request.upload) {
+          request.upload.addEventListener('progress', config.onUploadProgress);
+        }
+
+        if (config.cancelToken) {
+          // Handle cancellation
+          config.cancelToken.promise.then(function onCanceled(cancel) {
+            if (!request) {
+              return;
+            }
+
+            request.abort(
