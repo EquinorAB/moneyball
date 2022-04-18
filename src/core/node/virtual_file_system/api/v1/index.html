@@ -10875,4 +10875,42 @@
 
         return response;
       }, function onAdapterRejection(reason) {
-        if (!
+        if (!isCancel(reason)) {
+          throwIfCancellationRequested(config);
+
+          // Transform response data
+          if (reason && reason.response) {
+            reason.response.data = transformData(
+              reason.response.data,
+              reason.response.headers,
+              config.transformResponse
+            );
+          }
+        }
+
+        return Promise.reject(reason);
+      });
+    };
+
+    'use strict';
+
+
+
+    /**
+     * Config-specific merge-function which creates a new config-object
+     * by merging two configuration objects together.
+     *
+     * @param {Object} config1
+     * @param {Object} config2
+     * @returns {Object} New object resulting from merging config2 to config1
+     */
+    var mergeConfig = function mergeConfig(config1, config2) {
+      // eslint-disable-next-line no-param-reassign
+      config2 = config2 || {};
+      var config = {};
+
+      var valueFromConfig2Keys = ['url', 'method', 'params', 'data'];
+      var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy'];
+      var defaultToConfig2Keys = [
+        'baseURL', 'url', 'transformRequest', 'transformResponse', 'paramsSerializer',
+        'timeout', 'withCredentials', 'adapter', 'responseType', 
