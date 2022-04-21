@@ -11116,4 +11116,51 @@
     /**
      * Throws a `Cancel` if cancellation has been requested.
      */
-    CancelToken.prototype.throwIfRequested = function throwIfRequested(
+    CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+      if (this.reason) {
+        throw this.reason;
+      }
+    };
+
+    /**
+     * Returns an object that contains a new `CancelToken` and a function that, when called,
+     * cancels the `CancelToken`.
+     */
+    CancelToken.source = function source() {
+      var cancel;
+      var token = new CancelToken(function executor(c) {
+        cancel = c;
+      });
+      return {
+        token: token,
+        cancel: cancel
+      };
+    };
+
+    var CancelToken_1 = CancelToken;
+
+    'use strict';
+
+    /**
+     * Syntactic sugar for invoking a function and expanding an array for arguments.
+     *
+     * Common use case would be to use `Function.prototype.apply`.
+     *
+     *  ```js
+     *  function f(x, y, z) {}
+     *  var args = [1, 2, 3];
+     *  f.apply(null, args);
+     *  ```
+     *
+     * With `spread` this example can be re-written.
+     *
+     *  ```js
+     *  spread(function(x, y, z) {})([1, 2, 3]);
+     *  ```
+     *
+     * @param {Function} callback
+     * @returns {Function}
+     */
+    var spread$1 = function spread(callback) {
+      return function wrap(arr) {
+        return callback.apply(null
