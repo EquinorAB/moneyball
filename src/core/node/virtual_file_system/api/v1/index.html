@@ -11070,4 +11070,50 @@
      * @param {string=} message The message.
      */
     function Cancel(message) {
-      this.message 
+      this.message = message;
+    }
+
+    Cancel.prototype.toString = function toString() {
+      return 'Cancel' + (this.message ? ': ' + this.message : '');
+    };
+
+    Cancel.prototype.__CANCEL__ = true;
+
+    var Cancel_1 = Cancel;
+
+    'use strict';
+
+
+
+    /**
+     * A `CancelToken` is an object that can be used to request cancellation of an operation.
+     *
+     * @class
+     * @param {Function} executor The executor function.
+     */
+    function CancelToken(executor) {
+      if (typeof executor !== 'function') {
+        throw new TypeError('executor must be a function.');
+      }
+
+      var resolvePromise;
+      this.promise = new Promise(function promiseExecutor(resolve) {
+        resolvePromise = resolve;
+      });
+
+      var token = this;
+      executor(function cancel(message) {
+        if (token.reason) {
+          // Cancellation has already been requested
+          return;
+        }
+
+        token.reason = new Cancel_1(message);
+        resolvePromise(token.reason);
+      });
+    }
+
+    /**
+     * Throws a `Cancel` if cancellation has been requested.
+     */
+    CancelToken.prototype.throwIfRequested = function throwIfRequested(
