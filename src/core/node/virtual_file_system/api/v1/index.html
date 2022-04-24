@@ -11297,4 +11297,39 @@
             mergeTarget = arrayToObject(target, options);
         }
 
-        if (isArray$1(t
+        if (isArray$1(target) && isArray$1(source)) {
+            source.forEach(function (item, i) {
+                if (has$1.call(target, i)) {
+                    var targetItem = target[i];
+                    if (targetItem && typeof targetItem === 'object' && item && typeof item === 'object') {
+                        target[i] = merge(targetItem, item, options);
+                    } else {
+                        target.push(item);
+                    }
+                } else {
+                    target[i] = item;
+                }
+            });
+            return target;
+        }
+
+        return Object.keys(source).reduce(function (acc, key) {
+            var value = source[key];
+
+            if (has$1.call(acc, key)) {
+                acc[key] = merge(acc[key], value, options);
+            } else {
+                acc[key] = value;
+            }
+            return acc;
+        }, mergeTarget);
+    };
+
+    var assign$1 = function assignSingleSource(target, source) {
+        return Object.keys(source).reduce(function (acc, key) {
+            acc[key] = source[key];
+            return acc;
+        }, target);
+    };
+
+    var decode$2 = function (str, decoder
