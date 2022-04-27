@@ -11442,4 +11442,49 @@
             return false;
         }
 
-        return !!(obj.constructor
+        return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
+    };
+
+    var combine = function combine(a, b) {
+        return [].concat(a, b);
+    };
+
+    var utils$1 = {
+        arrayToObject: arrayToObject,
+        assign: assign$1,
+        combine: combine,
+        compact: compact,
+        decode: decode$2,
+        encode: encode$2,
+        isBuffer: isBuffer$1,
+        isRegExp: isRegExp,
+        merge: merge$1
+    };
+    var utils_1$1 = utils$1.arrayToObject;
+    var utils_2$1 = utils$1.assign;
+    var utils_3$1 = utils$1.combine;
+    var utils_4$1 = utils$1.compact;
+    var utils_5$1 = utils$1.decode;
+    var utils_6$1 = utils$1.encode;
+    var utils_7$1 = utils$1.isBuffer;
+    var utils_8$1 = utils$1.isRegExp;
+    var utils_9$1 = utils$1.merge;
+
+    'use strict';
+
+    var replace = String.prototype.replace;
+    var percentTwenties = /%20/g;
+
+
+
+    var Format = {
+        RFC1738: 'RFC1738',
+        RFC3986: 'RFC3986'
+    };
+
+    var formats = utils$1.assign(
+        {
+            'default': Format.RFC3986,
+            formatters: {
+                RFC1738: function (value) {
+                    return replace.c
