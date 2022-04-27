@@ -11487,4 +11487,51 @@
             'default': Format.RFC3986,
             formatters: {
                 RFC1738: function (value) {
-                    return replace.c
+                    return replace.call(value, percentTwenties, '+');
+                },
+                RFC3986: function (value) {
+                    return String(value);
+                }
+            }
+        },
+        Format
+    );
+
+    'use strict';
+
+
+
+    var has$2 = Object.prototype.hasOwnProperty;
+
+    var arrayPrefixGenerators = {
+        brackets: function brackets(prefix) {
+            return prefix + '[]';
+        },
+        comma: 'comma',
+        indices: function indices(prefix, key) {
+            return prefix + '[' + key + ']';
+        },
+        repeat: function repeat(prefix) {
+            return prefix;
+        }
+    };
+
+    var isArray$2 = Array.isArray;
+    var push = Array.prototype.push;
+    var pushToArray = function (arr, valueOrArray) {
+        push.apply(arr, isArray$2(valueOrArray) ? valueOrArray : [valueOrArray]);
+    };
+
+    var toISO = Date.prototype.toISOString;
+
+    var defaultFormat = formats['default'];
+    var defaults$1 = {
+        addQueryPrefix: false,
+        allowDots: false,
+        charset: 'utf-8',
+        charsetSentinel: false,
+        delimiter: '&',
+        encode: true,
+        encoder: utils$1.encode,
+        encodeValuesOnly: false,
+        forma
