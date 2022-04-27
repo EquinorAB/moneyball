@@ -11400,4 +11400,46 @@
 
             i += 1;
             c = 0x10000 + (((c & 0x3FF) << 10) | (string.charCodeAt(i) & 0x3FF));
-            out += hexTable[0xF0 | (c >> 18
+            out += hexTable[0xF0 | (c >> 18)]
+                + hexTable[0x80 | ((c >> 12) & 0x3F)]
+                + hexTable[0x80 | ((c >> 6) & 0x3F)]
+                + hexTable[0x80 | (c & 0x3F)];
+        }
+
+        return out;
+    };
+
+    var compact = function compact(value) {
+        var queue = [{ obj: { o: value }, prop: 'o' }];
+        var refs = [];
+
+        for (var i = 0; i < queue.length; ++i) {
+            var item = queue[i];
+            var obj = item.obj[item.prop];
+
+            var keys = Object.keys(obj);
+            for (var j = 0; j < keys.length; ++j) {
+                var key = keys[j];
+                var val = obj[key];
+                if (typeof val === 'object' && val !== null && refs.indexOf(val) === -1) {
+                    queue.push({ obj: obj, prop: key });
+                    refs.push(val);
+                }
+            }
+        }
+
+        compactQueue(queue);
+
+        return value;
+    };
+
+    var isRegExp = function isRegExp(obj) {
+        return Object.prototype.toString.call(obj) === '[object RegExp]';
+    };
+
+    var isBuffer$1 = function isBuffer(obj) {
+        if (!obj || typeof obj !== 'object') {
+            return false;
+        }
+
+        return !!(obj.constructor
