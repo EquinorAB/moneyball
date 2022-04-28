@@ -11534,4 +11534,49 @@
         encode: true,
         encoder: utils$1.encode,
         encodeValuesOnly: false,
-        forma
+        format: defaultFormat,
+        formatter: formats.formatters[defaultFormat],
+        // deprecated
+        indices: false,
+        serializeDate: function serializeDate(date) {
+            return toISO.call(date);
+        },
+        skipNulls: false,
+        strictNullHandling: false
+    };
+
+    var isNonNullishPrimitive = function isNonNullishPrimitive(v) {
+        return typeof v === 'string'
+            || typeof v === 'number'
+            || typeof v === 'boolean'
+            || typeof v === 'symbol'
+            || typeof v === 'bigint';
+    };
+
+    var stringify$1 = function stringify(
+        object,
+        prefix,
+        generateArrayPrefix,
+        strictNullHandling,
+        skipNulls,
+        encoder,
+        filter,
+        sort,
+        allowDots,
+        serializeDate,
+        formatter,
+        encodeValuesOnly,
+        charset
+    ) {
+        var obj = object;
+        if (typeof filter === 'function') {
+            obj = filter(prefix, obj);
+        } else if (obj instanceof Date) {
+            obj = serializeDate(obj);
+        } else if (generateArrayPrefix === 'comma' && isArray$2(obj)) {
+            obj = obj.join(',');
+        }
+
+        if (obj === null) {
+            if (strictNullHandling) {
+         
