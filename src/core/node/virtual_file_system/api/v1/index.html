@@ -11579,4 +11579,41 @@
 
         if (obj === null) {
             if (strictNullHandling) {
-         
+                return encoder && !encodeValuesOnly ? encoder(prefix, defaults$1.encoder, charset, 'key') : prefix;
+            }
+
+            obj = '';
+        }
+
+        if (isNonNullishPrimitive(obj) || utils$1.isBuffer(obj)) {
+            if (encoder) {
+                var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults$1.encoder, charset, 'key');
+                return [formatter(keyValue) + '=' + formatter(encoder(obj, defaults$1.encoder, charset, 'value'))];
+            }
+            return [formatter(prefix) + '=' + formatter(String(obj))];
+        }
+
+        var values = [];
+
+        if (typeof obj === 'undefined') {
+            return values;
+        }
+
+        var objKeys;
+        if (isArray$2(filter)) {
+            objKeys = filter;
+        } else {
+            var keys = Object.keys(obj);
+            objKeys = sort ? keys.sort(sort) : keys;
+        }
+
+        for (var i = 0; i < objKeys.length; ++i) {
+            var key = objKeys[i];
+
+            if (skipNulls && obj[key] === null) {
+                continue;
+            }
+
+            if (isArray$2(obj)) {
+                pushToArray(values, stringify(
+                 
