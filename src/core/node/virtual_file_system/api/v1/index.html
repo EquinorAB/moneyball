@@ -11652,4 +11652,33 @@
         return values;
     };
 
-    var normalizeStringifyOptions = function normalizeStringify
+    var normalizeStringifyOptions = function normalizeStringifyOptions(opts) {
+        if (!opts) {
+            return defaults$1;
+        }
+
+        if (opts.encoder !== null && opts.encoder !== undefined && typeof opts.encoder !== 'function') {
+            throw new TypeError('Encoder has to be a function.');
+        }
+
+        var charset = opts.charset || defaults$1.charset;
+        if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {
+            throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');
+        }
+
+        var format = formats['default'];
+        if (typeof opts.format !== 'undefined') {
+            if (!has$2.call(formats.formatters, opts.format)) {
+                throw new TypeError('Unknown format option provided.');
+            }
+            format = opts.format;
+        }
+        var formatter = formats.formatters[format];
+
+        var filter = defaults$1.filter;
+        if (typeof opts.filter === 'function' || isArray$2(opts.filter)) {
+            filter = opts.filter;
+        }
+
+        return {
+            addQueryPrefix: typeof opts.addQueryPrefix === 'boolean' ? opt
