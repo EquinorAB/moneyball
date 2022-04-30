@@ -11681,4 +11681,17 @@
         }
 
         return {
-            addQueryPrefix: typeof opts.addQueryPrefix === 'boolean' ? opt
+            addQueryPrefix: typeof opts.addQueryPrefix === 'boolean' ? opts.addQueryPrefix : defaults$1.addQueryPrefix,
+            allowDots: typeof opts.allowDots === 'undefined' ? defaults$1.allowDots : !!opts.allowDots,
+            charset: charset,
+            charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults$1.charsetSentinel,
+            delimiter: typeof opts.delimiter === 'undefined' ? defaults$1.delimiter : opts.delimiter,
+            encode: typeof opts.encode === 'boolean' ? opts.encode : defaults$1.encode,
+            encoder: typeof opts.encoder === 'function' ? opts.encoder : defaults$1.encoder,
+            encodeValuesOnly: typeof opts.encodeValuesOnly === 'boolean' ? opts.encodeValuesOnly : defaults$1.encodeValuesOnly,
+            filter: filter,
+            formatter: formatter,
+            serializeDate: typeof opts.serializeDate === 'function' ? opts.serializeDate : defaults$1.serializeDate,
+            skipNulls: typeof opts.skipNulls === 'boolean' ? opts.skipNulls : defaults$1.skipNulls,
+            sort: typeof opts.sort === 'function' ? opts.sort : null,
+            strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults$1.strict
