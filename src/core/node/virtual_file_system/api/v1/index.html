@@ -11616,4 +11616,40 @@
 
             if (isArray$2(obj)) {
                 pushToArray(values, stringify(
-                 
+                    obj[key],
+                    typeof generateArrayPrefix === 'function' ? generateArrayPrefix(prefix, key) : prefix,
+                    generateArrayPrefix,
+                    strictNullHandling,
+                    skipNulls,
+                    encoder,
+                    filter,
+                    sort,
+                    allowDots,
+                    serializeDate,
+                    formatter,
+                    encodeValuesOnly,
+                    charset
+                ));
+            } else {
+                pushToArray(values, stringify(
+                    obj[key],
+                    prefix + (allowDots ? '.' + key : '[' + key + ']'),
+                    generateArrayPrefix,
+                    strictNullHandling,
+                    skipNulls,
+                    encoder,
+                    filter,
+                    sort,
+                    allowDots,
+                    serializeDate,
+                    formatter,
+                    encodeValuesOnly,
+                    charset
+                ));
+            }
+        }
+
+        return values;
+    };
+
+    var normalizeStringifyOptions = function normalizeStringify
