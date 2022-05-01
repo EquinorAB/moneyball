@@ -11777,4 +11777,45 @@
         return joined.length > 0 ? prefix + joined : '';
     };
 
-    '
+    'use strict';
+
+
+
+    var has$3 = Object.prototype.hasOwnProperty;
+    var isArray$3 = Array.isArray;
+
+    var defaults$2 = {
+        allowDots: false,
+        allowPrototypes: false,
+        arrayLimit: 20,
+        charset: 'utf-8',
+        charsetSentinel: false,
+        comma: false,
+        decoder: utils$1.decode,
+        delimiter: '&',
+        depth: 5,
+        ignoreQueryPrefix: false,
+        interpretNumericEntities: false,
+        parameterLimit: 1000,
+        parseArrays: true,
+        plainObjects: false,
+        strictNullHandling: false
+    };
+
+    var interpretNumericEntities = function (str) {
+        return str.replace(/&#(\d+);/g, function ($0, numberStr) {
+            return String.fromCharCode(parseInt(numberStr, 10));
+        });
+    };
+
+    var parseArrayValue = function (val, options) {
+        if (val && typeof val === 'string' && options.comma && val.indexOf(',') > -1) {
+            return val.split(',');
+        }
+
+        return val;
+    };
+
+    // This is what browsers will submit when the ✓ character occurs in an
+    // application/x-www-form-urlencoded body and the encoding of the page containing
+    // the form is iso-8859-1, or when the submitted form has an accept-chars
