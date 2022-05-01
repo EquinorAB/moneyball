@@ -11694,4 +11694,51 @@
             serializeDate: typeof opts.serializeDate === 'function' ? opts.serializeDate : defaults$1.serializeDate,
             skipNulls: typeof opts.skipNulls === 'boolean' ? opts.skipNulls : defaults$1.skipNulls,
             sort: typeof opts.sort === 'function' ? opts.sort : null,
-            strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults$1.strict
+            strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults$1.strictNullHandling
+        };
+    };
+
+    var stringify_1 = function (object, opts) {
+        var obj = object;
+        var options = normalizeStringifyOptions(opts);
+
+        var objKeys;
+        var filter;
+
+        if (typeof options.filter === 'function') {
+            filter = options.filter;
+            obj = filter('', obj);
+        } else if (isArray$2(options.filter)) {
+            filter = options.filter;
+            objKeys = filter;
+        }
+
+        var keys = [];
+
+        if (typeof obj !== 'object' || obj === null) {
+            return '';
+        }
+
+        var arrayFormat;
+        if (opts && opts.arrayFormat in arrayPrefixGenerators) {
+            arrayFormat = opts.arrayFormat;
+        } else if (opts && 'indices' in opts) {
+            arrayFormat = opts.indices ? 'indices' : 'repeat';
+        } else {
+            arrayFormat = 'indices';
+        }
+
+        var generateArrayPrefix = arrayPrefixGenerators[arrayFormat];
+
+        if (!objKeys) {
+            objKeys = Object.keys(obj);
+        }
+
+        if (options.sort) {
+            objKeys.sort(options.sort);
+        }
+
+        for (var i = 0; i < objKeys.length; ++i) {
+            var key = objKeys[i];
+
+            if (options.skipNulls 
