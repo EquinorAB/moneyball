@@ -11868,4 +11868,39 @@
             }
 
             if (val && options.interpretNumericEntities && charset === 'iso-8859-1') {
-                val = interpretNumericEn
+                val = interpretNumericEntities(val);
+            }
+
+            val = parseArrayValue(val, options);
+
+            if (part.indexOf('[]=') > -1) {
+                val = isArray$3(val) ? [val] : val;
+            }
+
+            if (has$3.call(obj, key)) {
+                obj[key] = utils$1.combine(obj[key], val);
+            } else {
+                obj[key] = val;
+            }
+        }
+
+        return obj;
+    };
+
+    var parseObject = function (chain, val, options) {
+        var leaf = parseArrayValue(val, options);
+
+        for (var i = chain.length - 1; i >= 0; --i) {
+            var obj;
+            var root = chain[i];
+
+            if (root === '[]' && options.parseArrays) {
+                obj = [].concat(leaf);
+            } else {
+                obj = options.plainObjects ? Object.create(null) : {};
+                var cleanRoot = root.charAt(0) === '[' && root.charAt(root.length - 1) === ']' ? root.slice(1, -1) : root;
+                var index = parseInt(cleanRoot, 10);
+                if (!options.parseArrays && cleanRoot === '') {
+                    obj = { 0: leaf };
+                } else if (
+                
