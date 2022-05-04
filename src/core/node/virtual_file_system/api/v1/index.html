@@ -11903,4 +11903,45 @@
                 if (!options.parseArrays && cleanRoot === '') {
                     obj = { 0: leaf };
                 } else if (
-                
+                    !isNaN(index)
+                    && root !== cleanRoot
+                    && String(index) === cleanRoot
+                    && index >= 0
+                    && (options.parseArrays && index <= options.arrayLimit)
+                ) {
+                    obj = [];
+                    obj[index] = leaf;
+                } else {
+                    obj[cleanRoot] = leaf;
+                }
+            }
+
+            leaf = obj;
+        }
+
+        return leaf;
+    };
+
+    var parseKeys = function parseQueryStringKeys(givenKey, val, options) {
+        if (!givenKey) {
+            return;
+        }
+
+        // Transform dot notation to bracket notation
+        var key = options.allowDots ? givenKey.replace(/\.([^.[]+)/g, '[$1]') : givenKey;
+
+        // The regex chunks
+
+        var brackets = /(\[[^[\]]*])/;
+        var child = /(\[[^[\]]*])/g;
+
+        // Get the parent
+
+        var segment = options.depth > 0 && brackets.exec(key);
+        var parent = segment ? key.slice(0, segment.index) : key;
+
+        // Stash the parent if it exists
+
+        var keys = [];
+        if (parent) {
+            // If we aren't using plain objects, optionally prefix keys that would overwrite object prototy
