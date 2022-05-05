@@ -11944,4 +11944,42 @@
 
         var keys = [];
         if (parent) {
-            // If we aren't using plain objects, optionally prefix keys that would overwrite object prototy
+            // If we aren't using plain objects, optionally prefix keys that would overwrite object prototype properties
+            if (!options.plainObjects && has$3.call(Object.prototype, parent)) {
+                if (!options.allowPrototypes) {
+                    return;
+                }
+            }
+
+            keys.push(parent);
+        }
+
+        // Loop through children appending to the array until we hit depth
+
+        var i = 0;
+        while (options.depth > 0 && (segment = child.exec(key)) !== null && i < options.depth) {
+            i += 1;
+            if (!options.plainObjects && has$3.call(Object.prototype, segment[1].slice(1, -1))) {
+                if (!options.allowPrototypes) {
+                    return;
+                }
+            }
+            keys.push(segment[1]);
+        }
+
+        // If there's a remainder, just add whatever is left
+
+        if (segment) {
+            keys.push('[' + key.slice(segment.index) + ']');
+        }
+
+        return parseObject(keys, val, options);
+    };
+
+    var normalizeParseOptions = function normalizeParseOptions(opts) {
+        if (!opts) {
+            return defaults$2;
+        }
+
+        if (opts.decoder !== null && opts.decoder !== undefined && typeof opts.decoder !== 'function') {
+            throw new TypeError('Decoder has to be a func
