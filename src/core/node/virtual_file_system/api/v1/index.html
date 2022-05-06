@@ -12018,4 +12018,52 @@
         }
 
         var tempObj = typeof str === 'string' ? parseValues(str, options) : str;
-        var obj = options.
+        var obj = options.plainObjects ? Object.create(null) : {};
+
+        // Iterate over the keys and setup the new object
+
+        var keys = Object.keys(tempObj);
+        for (var i = 0; i < keys.length; ++i) {
+            var key = keys[i];
+            var newObj = parseKeys(key, tempObj[key], options);
+            obj = utils$1.merge(obj, newObj, options);
+        }
+
+        return utils$1.compact(obj);
+    };
+
+    'use strict';
+
+
+
+
+
+    var lib = {
+        formats: formats,
+        parse: parse$1,
+        stringify: stringify_1
+    };
+    var lib_1 = lib.formats;
+    var lib_2 = lib.parse;
+    var lib_3 = lib.stringify;
+
+    var client = function(axios, { url, ...credentials }) {
+      const config = {
+        url,
+        method: 'post',
+        data: lib.stringify(credentials)
+      };
+
+      return () => axios(config).then(res => res.data);
+    };
+
+    function getMaxAge(res) {
+      return res.expires_in;
+    }
+
+    function headerFormatter(res) {
+      return 'Bearer ' + res.access_token;
+    }
+
+    var interceptor = function (tokenProvider, authenticate) {
+      const getToken = tokenProvider.tok
