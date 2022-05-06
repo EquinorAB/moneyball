@@ -11982,4 +11982,21 @@
         }
 
         if (opts.decoder !== null && opts.decoder !== undefined && typeof opts.decoder !== 'function') {
-            throw new TypeError('Decoder has to be a func
+            throw new TypeError('Decoder has to be a function.');
+        }
+
+        if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {
+            throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');
+        }
+        var charset = typeof opts.charset === 'undefined' ? defaults$2.charset : opts.charset;
+
+        return {
+            allowDots: typeof opts.allowDots === 'undefined' ? defaults$2.allowDots : !!opts.allowDots,
+            allowPrototypes: typeof opts.allowPrototypes === 'boolean' ? opts.allowPrototypes : defaults$2.allowPrototypes,
+            arrayLimit: typeof opts.arrayLimit === 'number' ? opts.arrayLimit : defaults$2.arrayLimit,
+            charset: charset,
+            charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults$2.charsetSentinel,
+            comma: typeof opts.comma === 'boolean' ? opts.comma : defaults$2.comma,
+            decoder: typeof opts.decoder === 'function' ? opts.decoder : defaults$2.decoder,
+            delimiter: typeof opts.delimiter === 'string' || utils$1.isRegExp(opts.delimiter) ? opts.delimiter : defaults$2.delimiter,
+            // es
