@@ -12118,4 +12118,32 @@
 
     'use strict';
 
-    var slashes = /^[A-Za-z][A
+    var slashes = /^[A-Za-z][A-Za-z0-9+-.]*:\/\//
+      , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\S\s]*)/i
+      , whitespace = '[\\x09\\x0A\\x0B\\x0C\\x0D\\x20\\xA0\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000\\u2028\\u2029\\uFEFF]'
+      , left = new RegExp('^'+ whitespace +'+');
+
+    /**
+     * Trim a given string.
+     *
+     * @param {String} str String to trim.
+     * @public
+     */
+    function trimLeft(str) {
+      return (str ? str : '').toString().replace(left, '');
+    }
+
+    /**
+     * These are the parse rules for the URL parser, it informs the parser
+     * about:
+     *
+     * 0. The char it Needs to parse, if it's a string it should be done using
+     *    indexOf, RegExp using exec and NaN means set as current value.
+     * 1. The property we should set when parsing this value.
+     * 2. Indication if it's backwards or forward parsing, when set as number it's
+     *    the value of extra chars that should be split off.
+     * 3. Inherit from location if non existing in the parser.
+     * 4. `toLowerCase` the resulting value.
+     */
+    var rules = [
+      ['#', 'ha
