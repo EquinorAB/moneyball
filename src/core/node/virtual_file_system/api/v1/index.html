@@ -12146,4 +12146,29 @@
      * 4. `toLowerCase` the resulting value.
      */
     var rules = [
-      ['#', 'ha
+      ['#', 'hash'],                        // Extract from the back.
+      ['?', 'query'],                       // Extract from the back.
+      function sanitize(address) {          // Sanitize what is left of the address
+        return address.replace('\\', '/');
+      },
+      ['/', 'pathname'],                    // Extract from the back.
+      ['@', 'auth', 1],                     // Extract from the front.
+      [NaN, 'host', undefined, 1, 1],       // Set left over value.
+      [/:(\d+)$/, 'port', undefined, 1],    // RegExp the back.
+      [NaN, 'hostname', undefined, 1, 1]    // Set left over.
+    ];
+
+    /**
+     * These properties should not be copied or inherited from. This is only needed
+     * for all non blob URL's as a blob URL does not include a hash, only the
+     * origin.
+     *
+     * @type {Object}
+     * @private
+     */
+    var ignore = { hash: 1, query: 1 };
+
+    /**
+     * The location object differs when your code is loaded through a normal page,
+     * Worker or through a worker using a blob. And with the blobble begins the
+     * trouble as the location object will contain the 
