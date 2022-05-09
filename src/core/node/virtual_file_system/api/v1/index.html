@@ -12171,4 +12171,33 @@
     /**
      * The location object differs when your code is loaded through a normal page,
      * Worker or through a worker using a blob. And with the blobble begins the
-     * trouble as the location object will contain the 
+     * trouble as the location object will contain the URL of the blob, not the
+     * location of the page where our code is loaded in. The actual origin is
+     * encoded in the `pathname` so we can thankfully generate a good "default"
+     * location from it so we can generate proper relative URL's again.
+     *
+     * @param {Object|String} loc Optional default location object.
+     * @returns {Object} lolcation object.
+     * @public
+     */
+    function lolcation(loc) {
+      var globalVar;
+
+      if (typeof window !== 'undefined') globalVar = window;
+      else if (typeof commonjsGlobal !== 'undefined') globalVar = commonjsGlobal;
+      else if (typeof self !== 'undefined') globalVar = self;
+      else globalVar = {};
+
+      var location = globalVar.location || {};
+      loc = loc || location;
+
+      var finaldestination = {}
+        , type = typeof loc
+        , key;
+
+      if ('blob:' === loc.protocol) {
+        finaldestination = new Url(unescape(loc.pathname), {});
+      } else if ('string' === type) {
+        finaldestination = new Url(loc, {});
+        for (key in ignore) delete finaldestination[key];
+      } else if ('object' === typ
