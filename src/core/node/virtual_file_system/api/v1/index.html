@@ -12200,4 +12200,45 @@
       } else if ('string' === type) {
         finaldestination = new Url(loc, {});
         for (key in ignore) delete finaldestination[key];
-      } else if ('object' === typ
+      } else if ('object' === type) {
+        for (key in loc) {
+          if (key in ignore) continue;
+          finaldestination[key] = loc[key];
+        }
+
+        if (finaldestination.slashes === undefined) {
+          finaldestination.slashes = slashes.test(loc.href);
+        }
+      }
+
+      return finaldestination;
+    }
+
+    /**
+     * @typedef ProtocolExtract
+     * @type Object
+     * @property {String} protocol Protocol matched in the URL, in lowercase.
+     * @property {Boolean} slashes `true` if protocol is followed by "//", else `false`.
+     * @property {String} rest Rest of the URL that is not part of the protocol.
+     */
+
+    /**
+     * Extract protocol information from a URL with/without double slash ("//").
+     *
+     * @param {String} address URL we want to extract from.
+     * @return {ProtocolExtract} Extracted information.
+     * @private
+     */
+    function extractProtocol(address) {
+      address = trimLeft(address);
+      var match = protocolre.exec(address);
+
+      return {
+        protocol: match[1] ? match[1].toLowerCase() : '',
+        slashes: !!match[2],
+        rest: match[3]
+      };
+    }
+
+    /**
+     * Resolve a relative URL pathname against a
