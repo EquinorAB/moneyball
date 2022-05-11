@@ -12311,4 +12311,43 @@
       //    where the boolean indicates that the query string should also be parsed.
       //
       // 2. The `URL` interface of the browser which accepts a URL, object as
-      //    arguments. The supplied object will be used as default value
+      //    arguments. The supplied object will be used as default values / fall-back
+      //    for relative paths.
+      //
+      if ('object' !== type && 'string' !== type) {
+        parser = location;
+        location = null;
+      }
+
+      if (parser && 'function' !== typeof parser) parser = querystringify_1.parse;
+
+      location = lolcation(location);
+
+      //
+      // Extract protocol information before running the instructions.
+      //
+      extracted = extractProtocol(address || '');
+      relative = !extracted.protocol && !extracted.slashes;
+      url.slashes = extracted.slashes || relative && location.slashes;
+      url.protocol = extracted.protocol || location.protocol || '';
+      address = extracted.rest;
+
+      //
+      // When the authority component is absent the URL starts with a path
+      // component.
+      //
+      if (!extracted.slashes) instructions[3] = [/(.*)/, 'pathname'];
+
+      for (; i < instructions.length; i++) {
+        instruction = instructions[i];
+
+        if (typeof instruction === 'function') {
+          address = instruction(address);
+          continue;
+        }
+
+        parse = instruction[0];
+        key = instruction[1];
+
+        if (parse !== parse) {
+          url
