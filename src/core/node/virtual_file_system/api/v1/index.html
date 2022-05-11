@@ -12281,4 +12281,34 @@
      * create an actual constructor as it's much more memory efficient and
      * faster and it pleases my OCD.
      *
-     * It is worth noting that we should not use `URL` as clas
+     * It is worth noting that we should not use `URL` as class name to prevent
+     * clashes with the global URL instance that got introduced in browsers.
+     *
+     * @constructor
+     * @param {String} address URL we want to parse.
+     * @param {Object|String} [location] Location defaults for relative paths.
+     * @param {Boolean|Function} [parser] Parser for the query string.
+     * @private
+     */
+    function Url(address, location, parser) {
+      address = trimLeft(address);
+
+      if (!(this instanceof Url)) {
+        return new Url(address, location, parser);
+      }
+
+      var relative, extracted, parse, instruction, index, key
+        , instructions = rules.slice()
+        , type = typeof location
+        , url = this
+        , i = 0;
+
+      //
+      // The following if statements allows this module two have compatibility with
+      // 2 different API:
+      //
+      // 1. Node.js's `url.parse` api which accepts a URL, boolean as arguments
+      //    where the boolean indicates that the query string should also be parsed.
+      //
+      // 2. The `URL` interface of the browser which accepts a URL, object as
+      //    arguments. The supplied object will be used as default value
