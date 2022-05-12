@@ -12382,4 +12382,43 @@
       // with a custom parser as function use that instead of the default build-in
       // parser.
       //
-      if (parser) url.query = parser(
+      if (parser) url.query = parser(url.query);
+
+      //
+      // If the URL is relative, resolve the pathname against the base URL.
+      //
+      if (
+          relative
+        && location.slashes
+        && url.pathname.charAt(0) !== '/'
+        && (url.pathname !== '' || location.pathname !== '')
+      ) {
+        url.pathname = resolve(url.pathname, location.pathname);
+      }
+
+      //
+      // We should not add port numbers if they are already the default port number
+      // for a given protocol. As the host also contains the port number we're going
+      // override it with the hostname which contains no port number.
+      //
+      if (!requiresPort(url.port, url.protocol)) {
+        url.host = url.hostname;
+        url.port = '';
+      }
+
+      //
+      // Parse down the `auth` for the username and password.
+      //
+      url.username = url.password = '';
+      if (url.auth) {
+        instruction = url.auth.split(':');
+        url.username = instruction[0] || '';
+        url.password = instruction[1] || '';
+      }
+
+      url.origin = url.protocol && url.host && url.protocol !== 'file:'
+        ? url.protocol +'//'+ url.host
+        : 'null';
+
+      //
+      // The href is just the compiled resu
