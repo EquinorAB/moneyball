@@ -12350,4 +12350,36 @@
         key = instruction[1];
 
         if (parse !== parse) {
-          url
+          url[key] = address;
+        } else if ('string' === typeof parse) {
+          if (~(index = address.indexOf(parse))) {
+            if ('number' === typeof instruction[2]) {
+              url[key] = address.slice(0, index);
+              address = address.slice(index + instruction[2]);
+            } else {
+              url[key] = address.slice(index);
+              address = address.slice(0, index);
+            }
+          }
+        } else if ((index = parse.exec(address))) {
+          url[key] = index[1];
+          address = address.slice(0, index.index);
+        }
+
+        url[key] = url[key] || (
+          relative && instruction[3] ? location[key] || '' : ''
+        );
+
+        //
+        // Hostname, host and protocol should be lowercased so they can be used to
+        // create a proper `origin`.
+        //
+        if (instruction[4]) url[key] = url[key].toLowerCase();
+      }
+
+      //
+      // Also parse the supplied query string in to an object. If we're supplied
+      // with a custom parser as function use that instead of the default build-in
+      // parser.
+      //
+      if (parser) url.query = parser(
