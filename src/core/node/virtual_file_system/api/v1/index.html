@@ -12455,4 +12455,55 @@
           url[part] = value;
 
           if (!requiresPort(value, url.protocol)) {
-            url.h
+            url.host = url.hostname;
+            url[part] = '';
+          } else if (value) {
+            url.host = url.hostname +':'+ value;
+          }
+
+          break;
+
+        case 'hostname':
+          url[part] = value;
+
+          if (url.port) value += ':'+ url.port;
+          url.host = value;
+          break;
+
+        case 'host':
+          url[part] = value;
+
+          if (/:\d+$/.test(value)) {
+            value = value.split(':');
+            url.port = value.pop();
+            url.hostname = value.join(':');
+          } else {
+            url.hostname = value;
+            url.port = '';
+          }
+
+          break;
+
+        case 'protocol':
+          url.protocol = value.toLowerCase();
+          url.slashes = !fn;
+          break;
+
+        case 'pathname':
+        case 'hash':
+          if (value) {
+            var char = part === 'pathname' ? '/' : '#';
+            url[part] = value.charAt(0) !== char ? char + value : value;
+          } else {
+            url[part] = value;
+          }
+          break;
+
+        default:
+          url[part] = value;
+      }
+
+      for (var i = 0; i < rules.length; i++) {
+        var ins = rules[i];
+
+        if (ins[4]) url[ins[1]] = url[ins[1]].toLowerCas
