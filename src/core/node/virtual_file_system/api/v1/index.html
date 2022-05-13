@@ -12421,4 +12421,38 @@
         : 'null';
 
       //
-      // The href is just the compiled resu
+      // The href is just the compiled result.
+      //
+      url.href = url.toString();
+    }
+
+    /**
+     * This is convenience method for changing properties in the URL instance to
+     * insure that they all propagate correctly.
+     *
+     * @param {String} part          Property we need to adjust.
+     * @param {Mixed} value          The newly assigned value.
+     * @param {Boolean|Function} fn  When setting the query, it will be the function
+     *                               used to parse the query.
+     *                               When setting the protocol, double slash will be
+     *                               removed from the final url if it is true.
+     * @returns {URL} URL instance for chaining.
+     * @public
+     */
+    function set(part, value, fn) {
+      var url = this;
+
+      switch (part) {
+        case 'query':
+          if ('string' === typeof value && value.length) {
+            value = (fn || querystringify_1.parse)(value);
+          }
+
+          url[part] = value;
+          break;
+
+        case 'port':
+          url[part] = value;
+
+          if (!requiresPort(value, url.protocol)) {
+            url.h
