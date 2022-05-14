@@ -12506,4 +12506,45 @@
       for (var i = 0; i < rules.length; i++) {
         var ins = rules[i];
 
-        if (ins[4]) url[ins[1]] = url[ins[1]].toLowerCas
+        if (ins[4]) url[ins[1]] = url[ins[1]].toLowerCase();
+      }
+
+      url.origin = url.protocol && url.host && url.protocol !== 'file:'
+        ? url.protocol +'//'+ url.host
+        : 'null';
+
+      url.href = url.toString();
+
+      return url;
+    }
+
+    /**
+     * Transform the properties back in to a valid and full URL string.
+     *
+     * @param {Function} stringify Optional query stringify function.
+     * @returns {String} Compiled version of the URL.
+     * @public
+     */
+    function toString$1(stringify) {
+      if (!stringify || 'function' !== typeof stringify) stringify = querystringify_1.stringify;
+
+      var query
+        , url = this
+        , protocol = url.protocol;
+
+      if (protocol && protocol.charAt(protocol.length - 1) !== ':') protocol += ':';
+
+      var result = protocol + (url.slashes ? '//' : '');
+
+      if (url.username) {
+        result += url.username;
+        if (url.password) result += ':'+ url.password;
+        result += '@';
+      }
+
+      result += url.host + url.pathname;
+
+      query = 'object' === typeof url.query ? stringify(url.query) : url.query;
+      if (query) result += '?' !== query.charAt(0) ? '?'+ query : query;
+
+      if (url.hash) result += ur
