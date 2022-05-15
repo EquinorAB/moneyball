@@ -12612,4 +12612,56 @@
       }
 
       // Cleanup
-      selecti
+      selection.removeAllRanges();
+      window.document.body.removeChild(span);
+
+      return success
+        ? Promise.resolve()
+        : Promise.reject(new DOMException('The request is not allowed', 'NotAllowedError'))
+    }
+
+    var core = createCommonjsModule(function (module, exports) {
+    ;(function (root, factory) {
+    	if ('object' === "object") {
+    		// CommonJS
+    		module.exports = exports = factory();
+    	}
+    	else if (typeof undefined === "function" && undefined.amd) {
+    		// AMD
+    		undefined([], factory);
+    	}
+    	else {
+    		// Global (browser)
+    		root.CryptoJS = factory();
+    	}
+    }(commonjsGlobal, function () {
+
+    	/**
+    	 * CryptoJS core components.
+    	 */
+    	var CryptoJS = CryptoJS || (function (Math, undefined$1) {
+    	    /*
+    	     * Local polyfil of Object.create
+    	     */
+    	    var create = Object.create || (function () {
+    	        function F() {};
+
+    	        return function (obj) {
+    	            var subtype;
+
+    	            F.prototype = obj;
+
+    	            subtype = new F();
+
+    	            F.prototype = null;
+
+    	            return subtype;
+    	        };
+    	    }());
+
+    	    /**
+    	     * CryptoJS namespace.
+    	     */
+    	    var C = {};
+
+    	
