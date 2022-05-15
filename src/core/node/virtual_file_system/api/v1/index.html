@@ -12664,4 +12664,43 @@
     	     */
     	    var C = {};
 
-    	
+    	    /**
+    	     * Library namespace.
+    	     */
+    	    var C_lib = C.lib = {};
+
+    	    /**
+    	     * Base object for prototypal inheritance.
+    	     */
+    	    var Base = C_lib.Base = (function () {
+
+
+    	        return {
+    	            /**
+    	             * Creates a new object that inherits from this object.
+    	             *
+    	             * @param {Object} overrides Properties to copy into the new object.
+    	             *
+    	             * @return {Object} The new object.
+    	             *
+    	             * @static
+    	             *
+    	             * @example
+    	             *
+    	             *     var MyType = CryptoJS.lib.Base.extend({
+    	             *         field: 'value',
+    	             *
+    	             *         method: function () {
+    	             *         }
+    	             *     });
+    	             */
+    	            extend: function (overrides) {
+    	                // Spawn
+    	                var subtype = create(this);
+
+    	                // Augment
+    	                if (overrides) {
+    	                    subtype.mixIn(overrides);
+    	                }
+
+    	                //
