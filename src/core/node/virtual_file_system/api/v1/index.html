@@ -12703,4 +12703,39 @@
     	                    subtype.mixIn(overrides);
     	                }
 
-    	                //
+    	                // Create default initializer
+    	                if (!subtype.hasOwnProperty('init') || this.init === subtype.init) {
+    	                    subtype.init = function () {
+    	                        subtype.$super.init.apply(this, arguments);
+    	                    };
+    	                }
+
+    	                // Initializer's prototype is the subtype object
+    	                subtype.init.prototype = subtype;
+
+    	                // Reference supertype
+    	                subtype.$super = this;
+
+    	                return subtype;
+    	            },
+
+    	            /**
+    	             * Extends this object and runs the init method.
+    	             * Arguments to create() will be passed to init().
+    	             *
+    	             * @return {Object} The new object.
+    	             *
+    	             * @static
+    	             *
+    	             * @example
+    	             *
+    	             *     var instance = MyType.create();
+    	             */
+    	            create: function () {
+    	                var instance = this.extend();
+    	                instance.init.apply(instance, arguments);
+
+    	                return instance;
+    	            },
+
+    	
