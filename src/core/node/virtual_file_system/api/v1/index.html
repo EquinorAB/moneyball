@@ -12831,4 +12831,36 @@
     	         * @example
     	         *
     	         *     var string = wordArray + '';
-    	         *     var string = word
+    	         *     var string = wordArray.toString();
+    	         *     var string = wordArray.toString(CryptoJS.enc.Utf8);
+    	         */
+    	        toString: function (encoder) {
+    	            return (encoder || Hex).stringify(this);
+    	        },
+
+    	        /**
+    	         * Concatenates a word array to this word array.
+    	         *
+    	         * @param {WordArray} wordArray The word array to append.
+    	         *
+    	         * @return {WordArray} This word array.
+    	         *
+    	         * @example
+    	         *
+    	         *     wordArray1.concat(wordArray2);
+    	         */
+    	        concat: function (wordArray) {
+    	            // Shortcuts
+    	            var thisWords = this.words;
+    	            var thatWords = wordArray.words;
+    	            var thisSigBytes = this.sigBytes;
+    	            var thatSigBytes = wordArray.sigBytes;
+
+    	            // Clamp excess bits
+    	            this.clamp();
+
+    	            // Concat
+    	            if (thisSigBytes % 4) {
+    	                // Copy one byte at a time
+    	                for (var i = 0; i < thatSigBytes; i++) {
+    	                    var thatByte = (thatWor
