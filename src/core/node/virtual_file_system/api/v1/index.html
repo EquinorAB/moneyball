@@ -12768,4 +12768,38 @@
     	                for (var propertyName in properties) {
     	                    if (properties.hasOwnProperty(propertyName)) {
     	                        this[propertyName] = properties[propertyName];
-    	   
+    	                    }
+    	                }
+
+    	                // IE won't copy toString using the loop above
+    	                if (properties.hasOwnProperty('toString')) {
+    	                    this.toString = properties.toString;
+    	                }
+    	            },
+
+    	            /**
+    	             * Creates a copy of this object.
+    	             *
+    	             * @return {Object} The clone.
+    	             *
+    	             * @example
+    	             *
+    	             *     var clone = instance.clone();
+    	             */
+    	            clone: function () {
+    	                return this.init.prototype.extend(this);
+    	            }
+    	        };
+    	    }());
+
+    	    /**
+    	     * An array of 32-bit words.
+    	     *
+    	     * @property {Array} words The array of 32-bit words.
+    	     * @property {number} sigBytes The number of significant bytes in this word array.
+    	     */
+    	    var WordArray = C_lib.WordArray = Base.extend({
+    	        /**
+    	         * Initializes a newly created word array.
+    	         *
+    	         * @param {Array} words (Optional) An array of 32-
