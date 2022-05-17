@@ -12738,4 +12738,34 @@
     	                return instance;
     	            },
 
-    	
+    	            /**
+    	             * Initializes a newly created object.
+    	             * Override this method to add some logic when your objects are created.
+    	             *
+    	             * @example
+    	             *
+    	             *     var MyType = CryptoJS.lib.Base.extend({
+    	             *         init: function () {
+    	             *             // ...
+    	             *         }
+    	             *     });
+    	             */
+    	            init: function () {
+    	            },
+
+    	            /**
+    	             * Copies properties into this object.
+    	             *
+    	             * @param {Object} properties The properties to mix in.
+    	             *
+    	             * @example
+    	             *
+    	             *     MyType.mixIn({
+    	             *         field: 'value'
+    	             *     });
+    	             */
+    	            mixIn: function (properties) {
+    	                for (var propertyName in properties) {
+    	                    if (properties.hasOwnProperty(propertyName)) {
+    	                        this[propertyName] = properties[propertyName];
+    	   
