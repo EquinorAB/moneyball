@@ -12898,4 +12898,39 @@
     	        /**
     	         * Creates a copy of this word array.
     	         *
-    	         * @ret
+    	         * @return {WordArray} The clone.
+    	         *
+    	         * @example
+    	         *
+    	         *     var clone = wordArray.clone();
+    	         */
+    	        clone: function () {
+    	            var clone = Base.clone.call(this);
+    	            clone.words = this.words.slice(0);
+
+    	            return clone;
+    	        },
+
+    	        /**
+    	         * Creates a word array filled with random bytes.
+    	         *
+    	         * @param {number} nBytes The number of random bytes to generate.
+    	         *
+    	         * @return {WordArray} The random word array.
+    	         *
+    	         * @static
+    	         *
+    	         * @example
+    	         *
+    	         *     var wordArray = CryptoJS.lib.WordArray.random(16);
+    	         */
+    	        random: function (nBytes) {
+    	            var words = [];
+
+    	            var r = (function (m_w) {
+    	                var m_w = m_w;
+    	                var m_z = 0x3ade68b1;
+    	                var mask = 0xffffffff;
+
+    	                return function () {
+    	                    m_z = (0x9069 * (m_z & 
