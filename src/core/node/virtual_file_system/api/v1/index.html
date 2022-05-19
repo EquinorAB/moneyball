@@ -13004,4 +13004,40 @@
     	         *
     	         *     var wordArray = CryptoJS.enc.Hex.parse(hexString);
     	         */
-    	        parse: functi
+    	        parse: function (hexStr) {
+    	            // Shortcut
+    	            var hexStrLength = hexStr.length;
+
+    	            // Convert
+    	            var words = [];
+    	            for (var i = 0; i < hexStrLength; i += 2) {
+    	                words[i >>> 3] |= parseInt(hexStr.substr(i, 2), 16) << (24 - (i % 8) * 4);
+    	            }
+
+    	            return new WordArray.init(words, hexStrLength / 2);
+    	        }
+    	    };
+
+    	    /**
+    	     * Latin1 encoding strategy.
+    	     */
+    	    var Latin1 = C_enc.Latin1 = {
+    	        /**
+    	         * Converts a word array to a Latin1 string.
+    	         *
+    	         * @param {WordArray} wordArray The word array.
+    	         *
+    	         * @return {string} The Latin1 string.
+    	         *
+    	         * @static
+    	         *
+    	         * @example
+    	         *
+    	         *     var latin1String = CryptoJS.enc.Latin1.stringify(wordArray);
+    	         */
+    	        stringify: function (wordArray) {
+    	            // Shortcuts
+    	            var words = wordArray.words;
+    	            var sigBytes = wordArray.sigBytes;
+
+    	            
