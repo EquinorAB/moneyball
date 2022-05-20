@@ -13113,4 +13113,35 @@
     	         *
     	         * @example
     	         *
-   
+    	         *     var wordArray = CryptoJS.enc.Utf8.parse(utf8String);
+    	         */
+    	        parse: function (utf8Str) {
+    	            return Latin1.parse(unescape(encodeURIComponent(utf8Str)));
+    	        }
+    	    };
+
+    	    /**
+    	     * Abstract buffered block algorithm template.
+    	     *
+    	     * The property blockSize must be implemented in a concrete subtype.
+    	     *
+    	     * @property {number} _minBufferSize The number of blocks that should be kept unprocessed in the buffer. Default: 0
+    	     */
+    	    var BufferedBlockAlgorithm = C_lib.BufferedBlockAlgorithm = Base.extend({
+    	        /**
+    	         * Resets this block algorithm's data buffer to its initial state.
+    	         *
+    	         * @example
+    	         *
+    	         *     bufferedBlockAlgorithm.reset();
+    	         */
+    	        reset: function () {
+    	            // Initial values
+    	            this._data = new WordArray.init();
+    	            this._nDataBytes = 0;
+    	        },
+
+    	        /**
+    	         * Adds new data to this block algorithm's buffer.
+    	         *
+    	         * @param {WordArray|st
