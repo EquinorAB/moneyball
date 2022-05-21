@@ -13236,4 +13236,40 @@
     	        _minBufferSize: 0
     	    });
 
-   
+    	    /**
+    	     * Abstract hasher template.
+    	     *
+    	     * @property {number} blockSize The number of 32-bit words this hasher operates on. Default: 16 (512 bits)
+    	     */
+    	    var Hasher = C_lib.Hasher = BufferedBlockAlgorithm.extend({
+    	        /**
+    	         * Configuration options.
+    	         */
+    	        cfg: Base.extend(),
+
+    	        /**
+    	         * Initializes a newly created hasher.
+    	         *
+    	         * @param {Object} cfg (Optional) The configuration options to use for this hash computation.
+    	         *
+    	         * @example
+    	         *
+    	         *     var hasher = CryptoJS.algo.SHA256.create();
+    	         */
+    	        init: function (cfg) {
+    	            // Apply config defaults
+    	            this.cfg = this.cfg.extend(cfg);
+
+    	            // Set initial values
+    	            this.reset();
+    	        },
+
+    	        /**
+    	         * Resets this hasher to its initial state.
+    	         *
+    	         * @example
+    	         *
+    	         *     hasher.reset();
+    	         */
+    	        reset: function () {
+    	            // Reset 
