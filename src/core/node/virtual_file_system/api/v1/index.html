@@ -13199,4 +13199,41 @@
     	            var nWordsReady = nBlocksReady * blockSize;
 
     	            // Count bytes ready
-    	            var nByte
+    	            var nBytesReady = Math.min(nWordsReady * 4, dataSigBytes);
+
+    	            // Process blocks
+    	            if (nWordsReady) {
+    	                for (var offset = 0; offset < nWordsReady; offset += blockSize) {
+    	                    // Perform concrete-algorithm logic
+    	                    this._doProcessBlock(dataWords, offset);
+    	                }
+
+    	                // Remove processed words
+    	                var processedWords = dataWords.splice(0, nWordsReady);
+    	                data.sigBytes -= nBytesReady;
+    	            }
+
+    	            // Return processed words
+    	            return new WordArray.init(processedWords, nBytesReady);
+    	        },
+
+    	        /**
+    	         * Creates a copy of this object.
+    	         *
+    	         * @return {Object} The clone.
+    	         *
+    	         * @example
+    	         *
+    	         *     var clone = bufferedBlockAlgorithm.clone();
+    	         */
+    	        clone: function () {
+    	            var clone = Base.clone.call(this);
+    	            clone._data = this._data.clone();
+
+    	            return clone;
+    	        },
+
+    	        _minBufferSize: 0
+    	    });
+
+   
