@@ -13345,4 +13345,48 @@
     	         */
     	        _createHelper: function (hasher) {
     	            return function (message, cfg) {
-    	                return new hasher.init(cfg).f
+    	                return new hasher.init(cfg).finalize(message);
+    	            };
+    	        },
+
+    	        /**
+    	         * Creates a shortcut function to the HMAC's object interface.
+    	         *
+    	         * @param {Hasher} hasher The hasher to use in this HMAC helper.
+    	         *
+    	         * @return {Function} The shortcut function.
+    	         *
+    	         * @static
+    	         *
+    	         * @example
+    	         *
+    	         *     var HmacSHA256 = CryptoJS.lib.Hasher._createHmacHelper(CryptoJS.algo.SHA256);
+    	         */
+    	        _createHmacHelper: function (hasher) {
+    	            return function (message, key) {
+    	                return new C_algo.HMAC.init(hasher, key).finalize(message);
+    	            };
+    	        }
+    	    });
+
+    	    /**
+    	     * Algorithm namespace.
+    	     */
+    	    var C_algo = C.algo = {};
+
+    	    return C;
+    	}(Math));
+
+
+    	return CryptoJS;
+
+    }));
+    });
+
+    var sha256 = createCommonjsModule(function (module, exports) {
+    ;(function (root, factory) {
+    	if ('object' === "object") {
+    		// CommonJS
+    		module.exports = exports = factory(core);
+    	}
+    	else if (typeof undefined === "funct
