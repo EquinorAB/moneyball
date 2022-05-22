@@ -13310,4 +13310,39 @@
     	         *
     	         * @return {WordArray} The hash.
     	         *
-    
+    	         * @example
+    	         *
+    	         *     var hash = hasher.finalize();
+    	         *     var hash = hasher.finalize('message');
+    	         *     var hash = hasher.finalize(wordArray);
+    	         */
+    	        finalize: function (messageUpdate) {
+    	            // Final message update
+    	            if (messageUpdate) {
+    	                this._append(messageUpdate);
+    	            }
+
+    	            // Perform concrete-hasher logic
+    	            var hash = this._doFinalize();
+
+    	            return hash;
+    	        },
+
+    	        blockSize: 512/32,
+
+    	        /**
+    	         * Creates a shortcut function to a hasher's object interface.
+    	         *
+    	         * @param {Hasher} hasher The hasher to create a helper for.
+    	         *
+    	         * @return {Function} The shortcut function.
+    	         *
+    	         * @static
+    	         *
+    	         * @example
+    	         *
+    	         *     var SHA256 = CryptoJS.lib.Hasher._createHelper(CryptoJS.algo.SHA256);
+    	         */
+    	        _createHelper: function (hasher) {
+    	            return function (message, cfg) {
+    	                return new hasher.init(cfg).f
