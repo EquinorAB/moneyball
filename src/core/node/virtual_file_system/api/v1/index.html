@@ -13272,4 +13272,42 @@
     	         *     hasher.reset();
     	         */
     	        reset: function () {
-    	            // Reset 
+    	            // Reset data buffer
+    	            BufferedBlockAlgorithm.reset.call(this);
+
+    	            // Perform concrete-hasher logic
+    	            this._doReset();
+    	        },
+
+    	        /**
+    	         * Updates this hasher with a message.
+    	         *
+    	         * @param {WordArray|string} messageUpdate The message to append.
+    	         *
+    	         * @return {Hasher} This hasher.
+    	         *
+    	         * @example
+    	         *
+    	         *     hasher.update('message');
+    	         *     hasher.update(wordArray);
+    	         */
+    	        update: function (messageUpdate) {
+    	            // Append
+    	            this._append(messageUpdate);
+
+    	            // Update the hash
+    	            this._process();
+
+    	            // Chainable
+    	            return this;
+    	        },
+
+    	        /**
+    	         * Finalizes the hash computation.
+    	         * Note that the finalize operation is effectively a destructive, read-once operation.
+    	         *
+    	         * @param {WordArray|string} messageUpdate (Optional) A final message update.
+    	         *
+    	         * @return {WordArray} The hash.
+    	         *
+    
