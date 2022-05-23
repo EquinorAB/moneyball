@@ -13431,4 +13431,47 @@
     	        var n = 2;
     	        var nPrime = 0;
     	        while (nPrime < 64) {
-    	            if (isPrime(n))
+    	            if (isPrime(n)) {
+    	                if (nPrime < 8) {
+    	                    H[nPrime] = getFractionalBits(Math.pow(n, 1 / 2));
+    	                }
+    	                K[nPrime] = getFractionalBits(Math.pow(n, 1 / 3));
+
+    	                nPrime++;
+    	            }
+
+    	            n++;
+    	        }
+    	    }());
+
+    	    // Reusable object
+    	    var W = [];
+
+    	    /**
+    	     * SHA-256 hash algorithm.
+    	     */
+    	    var SHA256 = C_algo.SHA256 = Hasher.extend({
+    	        _doReset: function () {
+    	            this._hash = new WordArray.init(H.slice(0));
+    	        },
+
+    	        _doProcessBlock: function (M, offset) {
+    	            // Shortcut
+    	            var H = this._hash.words;
+
+    	            // Working variables
+    	            var a = H[0];
+    	            var b = H[1];
+    	            var c = H[2];
+    	            var d = H[3];
+    	            var e = H[4];
+    	            var f = H[5];
+    	            var g = H[6];
+    	            var h = H[7];
+
+    	            // Computation
+    	            for (var i = 0; i < 64; i++) {
+    	                if (i < 16) {
+    	                    W[i] = M[offset + i] | 0;
+    	                } else {
+    	     
