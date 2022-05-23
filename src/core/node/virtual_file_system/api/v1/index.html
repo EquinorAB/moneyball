@@ -13389,4 +13389,46 @@
     		// CommonJS
     		module.exports = exports = factory(core);
     	}
-    	else if (typeof undefined === "funct
+    	else if (typeof undefined === "function" && undefined.amd) {
+    		// AMD
+    		undefined(["./core"], factory);
+    	}
+    	else {
+    		// Global (browser)
+    		factory(root.CryptoJS);
+    	}
+    }(commonjsGlobal, function (CryptoJS) {
+
+    	(function (Math) {
+    	    // Shortcuts
+    	    var C = CryptoJS;
+    	    var C_lib = C.lib;
+    	    var WordArray = C_lib.WordArray;
+    	    var Hasher = C_lib.Hasher;
+    	    var C_algo = C.algo;
+
+    	    // Initialization and round constants tables
+    	    var H = [];
+    	    var K = [];
+
+    	    // Compute constants
+    	    (function () {
+    	        function isPrime(n) {
+    	            var sqrtN = Math.sqrt(n);
+    	            for (var factor = 2; factor <= sqrtN; factor++) {
+    	                if (!(n % factor)) {
+    	                    return false;
+    	                }
+    	            }
+
+    	            return true;
+    	        }
+
+    	        function getFractionalBits(n) {
+    	            return ((n - (n | 0)) * 0x100000000) | 0;
+    	        }
+
+    	        var n = 2;
+    	        var nPrime = 0;
+    	        while (nPrime < 64) {
+    	            if (isPrime(n))
