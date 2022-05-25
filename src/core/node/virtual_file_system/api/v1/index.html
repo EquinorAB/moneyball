@@ -13576,4 +13576,51 @@
     	     *
     	     *     var hmac = CryptoJS.HmacSHA256(message, key);
     	     */
-    
+    	    C.HmacSHA256 = Hasher._createHmacHelper(SHA256);
+    	}(Math));
+
+
+    	return CryptoJS.SHA256;
+
+    }));
+    });
+
+    var encBase64 = createCommonjsModule(function (module, exports) {
+    ;(function (root, factory) {
+    	if ('object' === "object") {
+    		// CommonJS
+    		module.exports = exports = factory(core);
+    	}
+    	else if (typeof undefined === "function" && undefined.amd) {
+    		// AMD
+    		undefined(["./core"], factory);
+    	}
+    	else {
+    		// Global (browser)
+    		factory(root.CryptoJS);
+    	}
+    }(commonjsGlobal, function (CryptoJS) {
+
+    	(function () {
+    	    // Shortcuts
+    	    var C = CryptoJS;
+    	    var C_lib = C.lib;
+    	    var WordArray = C_lib.WordArray;
+    	    var C_enc = C.enc;
+
+    	    /**
+    	     * Base64 encoding strategy.
+    	     */
+    	    var Base64 = C_enc.Base64 = {
+    	        /**
+    	         * Converts a word array to a Base64 string.
+    	         *
+    	         * @param {WordArray} wordArray The word array.
+    	         *
+    	         * @return {string} The Base64 string.
+    	         *
+    	         * @static
+    	         *
+    	         * @example
+    	         *
+    	         *     var base64String = CryptoJS.enc.Base64.stringify(
