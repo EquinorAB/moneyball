@@ -13760,4 +13760,37 @@
       ) {
         return nodeRandom(count, options)
       } else {
-        var crypto = window.crypt
+        var crypto = window.crypto || window.msCrypto;
+        if (!crypto) throw new Error("Your browser does not support window.crypto.")
+        return browserRandom(count, options)
+      }
+    }
+
+    function nodeRandom(count, options) {
+      var crypto = require$$0;
+      var buf = crypto.randomBytes(count);
+
+      switch (options.type) {
+        case 'Array':
+          return [].slice.call(buf)
+        case 'Buffer':
+          return buf
+        case 'Uint8Array':
+          var arr = new Uint8Array(count);
+          for (var i = 0; i < count; ++i) { arr[i] = buf.readUInt8(i); }
+          return arr
+        default:
+          throw new Error(options.type + " is unsupported.")
+      }
+    }
+
+    function browserRandom(count, options) {
+      var nativeArr = new Uint8Array(count);
+      var crypto = window.crypto || window.msCrypto;
+      crypto.getRandomValues(nativeArr);
+
+      switch (options.type) {
+        case 'Array':
+          return [].slice.call(nativeArr)
+        case 'Buffer':
+          try { var b = new Buffer(1); } catch(e) { throw new Error('Buffer not supported in this environment. Use Node.js or Browserify for browser suppor
