@@ -13651,4 +13651,39 @@
     	            // Add padding
     	            var paddingChar = map.charAt(64);
     	            if (paddingChar) {
-    	                while (base64Chars.leng
+    	                while (base64Chars.length % 4) {
+    	                    base64Chars.push(paddingChar);
+    	                }
+    	            }
+
+    	            return base64Chars.join('');
+    	        },
+
+    	        /**
+    	         * Converts a Base64 string to a word array.
+    	         *
+    	         * @param {string} base64Str The Base64 string.
+    	         *
+    	         * @return {WordArray} The word array.
+    	         *
+    	         * @static
+    	         *
+    	         * @example
+    	         *
+    	         *     var wordArray = CryptoJS.enc.Base64.parse(base64String);
+    	         */
+    	        parse: function (base64Str) {
+    	            // Shortcuts
+    	            var base64StrLength = base64Str.length;
+    	            var map = this._map;
+    	            var reverseMap = this._reverseMap;
+
+    	            if (!reverseMap) {
+    	                    reverseMap = this._reverseMap = [];
+    	                    for (var j = 0; j < map.length; j++) {
+    	                        reverseMap[map.charCodeAt(j)] = j;
+    	                    }
+    	            }
+
+    	            // Ignore padding
+    	            var paddingChar = map.charAt
