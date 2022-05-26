@@ -13723,4 +13723,41 @@
     }));
     });
 
-    var _n
+    var _nodeResolve_empty = {};
+
+    var _nodeResolve_empty$1 = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        'default': _nodeResolve_empty
+    });
+
+    var require$$0 = getCjsExportFromNamespace(_nodeResolve_empty$1);
+
+    var secureRandom = createCommonjsModule(function (module) {
+    !function(globals){
+    'use strict';
+
+    //*** UMD BEGIN
+    if (typeof undefined !== 'undefined' && undefined.amd) { //require.js / AMD
+      undefined([], function() {
+        return secureRandom
+      });
+    } else if ('object' !== 'undefined' && module.exports) { //CommonJS
+      module.exports = secureRandom;
+    } else { //script / browser
+      globals.secureRandom = secureRandom;
+    }
+    //*** UMD END
+
+    //options.type is the only valid option
+    function secureRandom(count, options) {
+      options = options || {type: 'Array'};
+      //we check for process.pid to prevent browserify from tricking us
+      if (
+        typeof process != 'undefined'
+        && typeof process.pid == 'number'
+        && process.versions
+        && process.versions.node
+      ) {
+        return nodeRandom(count, options)
+      } else {
+        var crypto = window.crypt
