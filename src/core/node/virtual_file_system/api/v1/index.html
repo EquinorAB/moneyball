@@ -13929,4 +13929,50 @@
       number: /-?\d+\.?\d*(e[+-]?\d+)?/i,
       punctuation: /[{}[\],]/,
       operator: /:/,
-      boolean
+      boolean: /\b(?:true|false)\b/,
+      null: {
+        pattern: /\bnull\b/,
+        alias: "keyword"
+      }
+    };
+
+    const highlight = function(code, lang) {
+      const supported = ["xml", "json"];
+
+      if (!supported.includes(lang)) {
+        lang = "markup";
+      }
+
+      return prism.highlight(code, prism.languages[lang], lang);
+    };
+
+    marked.setOptions({
+      highlight
+    });
+
+    const renderer = new marked.Renderer();
+
+    renderer.pre = renderer.code;
+    renderer.code = function(code, infostring, escaped) {
+      const out = this.pre(code, infostring, escaped);
+      return out.replace("<pre>", `<pre class="language-${infostring}">`);
+    };
+
+    const markdown = function(source) {
+      return source ? marked(source, { renderer: renderer }) : "";
+    };
+
+    const toc = function(source) {
+      if (!source) {
+        return [];
+      }
+
+      const tokens = marked.lexer(source);
+      const headings = tokens.filter(elem => elem.type === "heading");
+      const depths = headings.map(head => head.depth);
+      const minDepth = Math.min(...depths);
+
+      return headings.map(head => ({
+        text: head.text,
+        level: head.depth - minDepth
+ 
