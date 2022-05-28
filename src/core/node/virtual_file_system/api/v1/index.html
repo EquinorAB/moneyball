@@ -13837,3 +13837,44 @@
     exports.random = random;
     function hash(str) {
         return encBase64.stringify(sha256(str));
+    }
+    function base64url(str) {
+        return str
+            .replace(/=/g, "")
+            .replace(/\+/g, "-")
+            .replace(/\//g, "_");
+    }
+    function createVerifier(length) {
+        if (length === void 0) { length = 128; }
+        if (length < 43 || length > 128) {
+            throw new Error("expected length " + length + " between 43 and 128");
+        }
+        return random(length);
+    }
+    exports.createVerifier = createVerifier;
+    function createChallenge(verifier) {
+        return base64url(hash(verifier));
+    }
+    exports.createChallenge = createChallenge;
+    function create(length) {
+        if (length === void 0) { length = 128; }
+        var verifier = createVerifier(length);
+        var challenge = createChallenge(verifier);
+        return {
+            codeVerifier: verifier,
+            codeChallenge: challenge
+        };
+    }
+    exports.create = create;
+    });
+
+    var pkce = unwrapExports(lib$1);
+    var lib_1$1 = lib$1.random;
+    var lib_2$1 = lib$1.createVerifier;
+    var lib_3$1 = lib$1.createChallenge;
+    var lib_4 = lib$1.create;
+
+    const env = writable("");
+    const token$1 = writable("");
+
+    en
