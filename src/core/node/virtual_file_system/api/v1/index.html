@@ -13975,4 +13975,60 @@
       return headings.map(head => ({
         text: head.text,
         level: head.depth - minDepth
- 
+      }));
+    };
+
+    const colorize = function(str, prefix = "is-") {
+      switch (str) {
+        case "get":
+          return `${prefix}success`;
+        case "post":
+          return `${prefix}link`;
+        case "put":
+          return `${prefix}primary`;
+        case "patch":
+          return `${prefix}info`;
+        case "delete":
+          return `${prefix}danger`;
+        case 200:
+        case 201:
+        case 202:
+        case 204:
+          return `${prefix}info`;
+        case 401:
+        case 403:
+        case 404:
+        case 422:
+          return `${prefix}warning`;
+        case 500:
+          return `${prefix}danger`;
+      }
+    };
+
+    const slugify = function(str) {
+      return speakingurl$1(str, "-");
+    };
+
+    const alias = str => {
+      return str && str.match("json") ? "json" : "markup";
+    };
+
+    const stringify$2 = obj => {
+      if (typeof obj === "string") {
+        return obj;
+      }
+
+      if (obj) {
+        return JSON.stringify(obj, null, "  ");
+      }
+
+      return "";
+    };
+
+    const expandUrl = (uri, obj) => {
+      const tpl = uritemplate.parse(uri);
+      return tpl.expand(obj);
+    };
+
+    const actionFilter = (act, regex) => {
+      r
