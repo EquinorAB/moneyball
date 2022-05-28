@@ -13877,4 +13877,56 @@
     const env = writable("");
     const token$1 = writable("");
 
-    en
+    env.subscribe(val => {
+      if (val != "") {
+        store2.set("env", val);
+      }
+    });
+
+    function unique(value, index, self) {
+      return self.indexOf(value) === index;
+    }
+
+    function add(data, val) {
+      const arr = data.split(";");
+      arr.push(val);
+
+      return arr
+        .filter(unique)
+        .filter(String)
+        .join(";");
+    }
+
+    function remove(data, val) {
+      return data
+        .split(";")
+        .filter(v => v != val)
+        .join(";");
+    }
+
+    function createAuth() {
+      const { subscribe, update } = writable("");
+
+      return {
+        subscribe,
+        add: val => update(data => add(data, val)),
+        remove: val => update(data => remove(data, val))
+      };
+    }
+
+    const auth = createAuth();
+
+    prism.languages.json = {
+      property: {
+        pattern: /"(?:\\.|[^\\"\r\n])*"(?=\s*:)/,
+        greedy: true
+      },
+      string: {
+        pattern: /"(?:\\.|[^\\"\r\n])*"(?!\s*:)/,
+        greedy: true
+      },
+      comment: /\/\/.*|\/\*[\s\S]*?(?:\*\/|$)/,
+      number: /-?\d+\.?\d*(e[+-]?\d+)?/i,
+      punctuation: /[{}[\],]/,
+      operator: /:/,
+      boolean
