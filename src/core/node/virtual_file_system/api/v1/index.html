@@ -14106,4 +14106,45 @@
     };
 
     const isPKCE = environment => {
-      if (isAuth(
+      if (isAuth(environment, "oauth2")) {
+        return environment.auth.options.clientSecret === undefined;
+      }
+
+      return false;
+    };
+
+    const requestToken = async (client, options) => {
+      const authRequest = src.client(client, options);
+      const authCode = await authRequest();
+
+      if (typeof authCode === "string") {
+        const authParsed = querystringify_1.parse(authCode);
+        return {
+          accessToken: authParsed.access_token,
+          refreshToken: authParsed.refresh_token
+        };
+      }
+
+      return {
+        accessToken: authCode.access_token,
+        refreshToken: authCode.refresh_token
+      };
+    };
+
+    const exchangeToken = async (code, options, isPKCE, pkceChallenge) => {
+      if (isPKCE) {
+        return requestToken(axios$1.create(), {
+          url: options.tokenUrl,
+          grant_type: "authorization_code",
+          state: getState(),
+          client_id: options.clientId,
+          redirect_uri: options.callbackUrl,
+          code: code,
+          code_verifier: pkceChallenge.codeVerifier
+        });
+      }
+
+      return requestToken(axios$1.create(), {
+        url: options.tokenUrl,
+        grant_type: "authorization_code",
+        state: 
