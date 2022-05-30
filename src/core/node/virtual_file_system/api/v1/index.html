@@ -14072,4 +14072,38 @@
             );
 
             return filteredItem(tag.title, "children", children.filter(Boolean));
-          }
+          })
+          .filter(Boolean);
+      }
+
+      const regex = new RegExp(escape$2(query), "gi");
+
+      return tagActions
+        .map(tag => {
+          const children = tag.children.map(child => {
+            const actions = child.actions.filter(act => actionFilter(act, regex));
+            return filteredItem(child.title, "actions", actions);
+          });
+
+          return filteredItem(tag.title, "children", children.filter(Boolean));
+        })
+        .filter(Boolean);
+    };
+
+    const tokenStore = store2.namespace("token");
+
+    const setToken = (env, token) => tokenStore.set(env, token);
+    const getToken = env => tokenStore.get(env);
+    const removeToken = env => tokenStore.remove(env);
+
+    const refreshTokenStore = store2.namespace("refresh-token");
+    const setRefreshToken = (env, token) => refreshTokenStore.set(env, token);
+    const getRefreshToken = env => refreshTokenStore.get(env);
+    const removeRefreshToken = env => refreshTokenStore.remove(env);
+
+    const isAuth = (environment, name) => {
+      return environment.auth && environment.auth.name === name;
+    };
+
+    const isPKCE = environment => {
+      if (isAuth(
