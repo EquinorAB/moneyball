@@ -14243,4 +14243,55 @@
 
     const getEnv = () => store2.get("env");
 
-    const pkceSt
+    const pkceStore = store2.namespace("pkce");
+
+    const getPKCE = () => {
+      const existing = pkceStore.getAll();
+
+      if (Object.keys(existing).length === 0) {
+        const challengePair = pkce.create();
+        pkceStore.setAll(challengePair);
+
+        return challengePair;
+      }
+
+      return existing;
+    };
+
+    const getState = () => {
+      const existing = store2.get("state");
+      if (existing) return existing;
+
+      const state = pkce.random(16);
+      store2.set("state", state);
+      return state;
+    };
+
+    const clearPKCE = () => pkceStore.clear();
+    const clearState = () => store2.remove("state");
+
+    const buildHref = path => {
+      const pathname = window.location.pathname;
+
+      if (!path) {
+        return pathname;
+      }
+
+      return `${pathname}${path}`.replace("//", "/");
+    };
+
+    const handleLink = event => {
+      const pathname = window.location.pathname;
+
+      let href = event.target.getAttribute("href");
+
+      if (!href) {
+        href = event.target.parentElement.getAttribute("href");
+      }
+
+      const cleanHref = href.replace(pathname, "");
+
+      navigateTo(cleanHref);
+    };
+
+    /* Users/kings/.nvm/versions/node/v12.1
