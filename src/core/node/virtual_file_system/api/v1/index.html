@@ -14147,4 +14147,48 @@
       return requestToken(axios$1.create(), {
         url: options.tokenUrl,
         grant_type: "authorization_code",
-        state: 
+        state: getState(),
+        client_id: options.clientId,
+        client_secret: options.clientSecret,
+        redirect_uri: options.callbackUrl,
+        code: code
+      });
+    };
+
+    const populate = arr => {
+      return arr
+        .filter(Boolean)
+        .filter(obj => obj.used)
+        .reduce((prev, cur) => {
+          prev[cur.name] = cur.value;
+          return prev;
+        }, {});
+    };
+
+    const allowBody = action => {
+      return ["put", "post", "patch"].includes(action.method);
+    };
+
+    const refreshInterceptor = (env, options) => {
+      const refreshToken = getRefreshToken(env);
+
+      return async failedRequest => {
+        const {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken
+        } = await requestToken(axios$1, {
+          url: options.tokenUrl,
+          grant_type: "refresh_token",
+          state: getState(),
+          client_id: options.clientId,
+          client_secret: options.clientSecret,
+          refresh_token: refreshToken
+        });
+
+        if (newAccessToken) {
+          token$1.set(newAccessToken);
+          setToken(env, newAccessToken);
+        }
+
+        if (newRefreshToken) {
+          setRefreshToken(env
