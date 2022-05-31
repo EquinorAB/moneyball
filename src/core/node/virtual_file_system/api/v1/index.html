@@ -14191,4 +14191,56 @@
         }
 
         if (newRefreshToken) {
-          setRefreshToken(env
+          setRefreshToken(env, newRefreshToken);
+        }
+
+        failedRequest.response.config.headers[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
+      };
+    };
+
+    const sendRequest = (
+      env,
+      environment,
+      action,
+      { headers, parameters, body }
+    ) => {
+      const client = axios$1.create({
+        baseURL: environment.url
+      });
+
+      const options = {
+        method: action.method,
+        headers: populate(headers)
+      };
+
+      const expandedUrl = expandUrl(action.pathTemplate, populate(parameters));
+      const destUrl = urlParse(expandedUrl, true);
+
+      options.params = destUrl.query;
+      options.url = destUrl.pathname;
+
+      if (allowBody(action)) {
+        options.data = body;
+      }
+
+      if (isAuth(environment, "oauth2")) {
+        createAuthRefreshInterceptor(
+          client,
+          refreshInterceptor(env, environment.auth.options)
+        );
+      }
+
+      return client.request(options);
+    };
+
+    const copyUrl = (url, parameters) => {
+      const expandedUrl = expandUrl(url.pathname, populate(parameters));
+
+      clipboardCopy_1(url.origin + expandedUrl);
+    };
+
+    const getEnv = () => store2.get("env");
+
+    const pkceSt
