@@ -14333,4 +14333,48 @@
     	};
     }
 
-    f
+    function instance$3($$self, $$props, $$invalidate) {
+    	let { title } = $$props;
+    	let { description } = $$props;
+
+    	$$self.$set = $$props => {
+    		if ("title" in $$props) $$invalidate(0, title = $$props.title);
+    		if ("description" in $$props) $$invalidate(1, description = $$props.description);
+    	};
+
+    	return [title, description];
+    }
+
+    class Home extends SvelteComponent {
+    	constructor(options) {
+    		super();
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { title: 0, description: 1 });
+    	}
+    }
+
+    var uint32 = createCommonjsModule(function (module) {
+    /**
+    	C-like unsigned 32 bits integers in Javascript
+    	Copyright (C) 2013, Pierre Curto
+    	MIT license
+     */
+    ;(function (root) {
+
+    	// Local cache for typical radices
+    	var radixPowerCache = {
+    		36: UINT32( Math.pow(36, 5) )
+    	,	16: UINT32( Math.pow(16, 7) )
+    	,	10: UINT32( Math.pow(10, 9) )
+    	,	2:  UINT32( Math.pow(2, 30) )
+    	};
+    	var radixCache = {
+    		36: UINT32(36)
+    	,	16: UINT32(16)
+    	,	10: UINT32(10)
+    	,	2:  UINT32(2)
+    	};
+
+    	/**
+    	 *	Represents an unsigned 32 bits integer
+    	 * @constructor
+    	 * @param {Number
