@@ -14377,4 +14377,49 @@
     	/**
     	 *	Represents an unsigned 32 bits integer
     	 * @constructor
-    	 * @param {Number
+    	 * @param {Number|String|Number} low bits     | integer as a string 		 | integer as a number
+    	 * @param {Number|Number|Undefined} high bits | radix (optional, default=10)
+    	 * @return 
+    	 */
+    	function UINT32 (l, h) {
+    		if ( !(this instanceof UINT32) )
+    			return new UINT32(l, h)
+
+    		this._low = 0;
+    		this._high = 0;
+    		this.remainder = null;
+    		if (typeof h == 'undefined')
+    			return fromNumber.call(this, l)
+
+    		if (typeof l == 'string')
+    			return fromString.call(this, l, h)
+
+    		fromBits.call(this, l, h);
+    	}
+
+    	/**
+    	 * Set the current _UINT32_ object with its low and high bits
+    	 * @method fromBits
+    	 * @param {Number} low bits
+    	 * @param {Number} high bits
+    	 * @return ThisExpression
+    	 */
+    	function fromBits (l, h) {
+    		this._low = l | 0;
+    		this._high = h | 0;
+
+    		return this
+    	}
+    	UINT32.prototype.fromBits = fromBits;
+
+    	/**
+    	 * Set the current _UINT32_ object from a number
+    	 * @method fromNumber
+    	 * @param {Number} number
+    	 * @return ThisExpression
+    	 */
+    	function fromNumber (value) {
+    		this._low = value & 0xFFFF;
+    		this._high = value >>> 16;
+
+ 
