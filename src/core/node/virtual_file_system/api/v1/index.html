@@ -14511,4 +14511,42 @@
     		var b16 = other._high;
     		var b00 = other._low;
 
-    /* Removed to increase s
+    /* Removed to increase speed under normal circumstances (i.e. not multiplying by 0 or 1)
+    		// this == 0 or other == 1: nothing to do
+    		if ((a00 == 0 && a16 == 0) || (b00 == 1 && b16 == 0)) return this
+
+    		// other == 0 or this == 1: this = other
+    		if ((b00 == 0 && b16 == 0) || (a00 == 1 && a16 == 0)) {
+    			this._low = other._low
+    			this._high = other._high
+    			return this
+    		}
+    */
+
+    		var c16, c00;
+    		c00 = a00 * b00;
+    		c16 = c00 >>> 16;
+
+    		c16 += a16 * b00;
+    		c16 &= 0xFFFF;		// Not required but improves performance
+    		c16 += a00 * b16;
+
+    		this._low = c00 & 0xFFFF;
+    		this._high = c16 & 0xFFFF;
+
+    		return this
+    	};
+
+    	/**
+    	 * Divide two _UINT32_. The current _UINT32_ stores the result.
+    	 * The remainder is made available as the _remainder_ property on
+    	 * the _UINT32_ object. It can be null, meaning there are no remainder.
+    	 * @method div
+    	 * @param {Object} other UINT32
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.div = function (other) {
+    		if ( (other._low == 0) && (other._high == 0) ) throw Error('division by zero')
+
+    		// other == 1
+    		
