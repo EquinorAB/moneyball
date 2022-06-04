@@ -14422,4 +14422,47 @@
     		this._low = value & 0xFFFF;
     		this._high = value >>> 16;
 
- 
+    		return this
+    	}
+    	UINT32.prototype.fromNumber = fromNumber;
+
+    	/**
+    	 * Set the current _UINT32_ object from a string
+    	 * @method fromString
+    	 * @param {String} integer as a string
+    	 * @param {Number} radix (optional, default=10)
+    	 * @return ThisExpression
+    	 */
+    	function fromString (s, radix) {
+    		var value = parseInt(s, radix || 10);
+
+    		this._low = value & 0xFFFF;
+    		this._high = value >>> 16;
+
+    		return this
+    	}
+    	UINT32.prototype.fromString = fromString;
+
+    	/**
+    	 * Convert this _UINT32_ to a number
+    	 * @method toNumber
+    	 * @return {Number} the converted UINT32
+    	 */
+    	UINT32.prototype.toNumber = function () {
+    		return (this._high * 65536) + this._low
+    	};
+
+    	/**
+    	 * Convert this _UINT32_ to a string
+    	 * @method toString
+    	 * @param {Number} radix (optional, default=10)
+    	 * @return {String} the converted UINT32
+    	 */
+    	UINT32.prototype.toString = function (radix) {
+    		return this.toNumber().toString(radix || 10)
+    	};
+
+    	/**
+    	 * Add two _UINT32_. The current _UINT32_ stores the result
+    	 * @method add
+    	 * @param {Objec
