@@ -14465,4 +14465,50 @@
     	/**
     	 * Add two _UINT32_. The current _UINT32_ stores the result
     	 * @method add
-    	 * @param {Objec
+    	 * @param {Object} other UINT32
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.add = function (other) {
+    		var a00 = this._low + other._low;
+    		var a16 = a00 >>> 16;
+
+    		a16 += this._high + other._high;
+
+    		this._low = a00 & 0xFFFF;
+    		this._high = a16 & 0xFFFF;
+
+    		return this
+    	};
+
+    	/**
+    	 * Subtract two _UINT32_. The current _UINT32_ stores the result
+    	 * @method subtract
+    	 * @param {Object} other UINT32
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.subtract = function (other) {
+    		//TODO inline
+    		return this.add( other.clone().negate() )
+    	};
+
+    	/**
+    	 * Multiply two _UINT32_. The current _UINT32_ stores the result
+    	 * @method multiply
+    	 * @param {Object} other UINT32
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.multiply = function (other) {
+    		/*
+    			a = a00 + a16
+    			b = b00 + b16
+    			a*b = (a00 + a16)(b00 + b16)
+    				= a00b00 + a00b16 + a16b00 + a16b16
+
+    			a16b16 overflows the 32bits
+    		 */
+    		var a16 = this._high;
+    		var a00 = this._low;
+    		var b16 = other._high;
+    		var b00 = other._low;
+
+    /* Removed to increase s
