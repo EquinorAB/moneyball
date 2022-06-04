@@ -14549,4 +14549,46 @@
     		if ( (other._low == 0) && (other._high == 0) ) throw Error('division by zero')
 
     		// other == 1
-    		
+    		if (other._high == 0 && other._low == 1) {
+    			this.remainder = new UINT32(0);
+    			return this
+    		}
+
+    		// other > this: 0
+    		if ( other.gt(this) ) {
+    			this.remainder = this.clone();
+    			this._low = 0;
+    			this._high = 0;
+    			return this
+    		}
+    		// other == this: 1
+    		if ( this.eq(other) ) {
+    			this.remainder = new UINT32(0);
+    			this._low = 1;
+    			this._high = 0;
+    			return this
+    		}
+
+    		// Shift the divisor left until it is higher than the dividend
+    		var _other = other.clone();
+    		var i = -1;
+    		while ( !this.lt(_other) ) {
+    			// High bit can overflow the default 16bits
+    			// Its ok since we right shift after this loop
+    			// The overflown bit must be kept though
+    			_other.shiftLeft(1, true);
+    			i++;
+    		}
+
+    		// Set the remainder
+    		this.remainder = this.clone();
+    		// Initialize the current result to 0
+    		this._low = 0;
+    		this._high = 0;
+    		for (; i >= 0; i--) {
+    			_other.shiftRight(1);
+    			// If shifted divisor is smaller than the dividend
+    			// then subtract it from the dividend
+    			if ( !this.remainder.lt(_other) ) {
+    				this.remainder.subtract(_other);
+    				// Update
