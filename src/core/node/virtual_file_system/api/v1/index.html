@@ -14591,4 +14591,51 @@
     			// then subtract it from the dividend
     			if ( !this.remainder.lt(_other) ) {
     				this.remainder.subtract(_other);
-    				// Update
+    				// Update the current result
+    				if (i >= 16) {
+    					this._high |= 1 << (i - 16);
+    				} else {
+    					this._low |= 1 << i;
+    				}
+    			}
+    		}
+
+    		return this
+    	};
+
+    	/**
+    	 * Negate the current _UINT32_
+    	 * @method negate
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.negate = function () {
+    		var v = ( ~this._low & 0xFFFF ) + 1;
+    		this._low = v & 0xFFFF;
+    		this._high = (~this._high + (v >>> 16)) & 0xFFFF;
+
+    		return this
+    	};
+
+    	/**
+    	 * Equals
+    	 * @method eq
+    	 * @param {Object} other UINT32
+    	 * @return {Boolean}
+    	 */
+    	UINT32.prototype.equals = UINT32.prototype.eq = function (other) {
+    		return (this._low == other._low) && (this._high == other._high)
+    	};
+
+    	/**
+    	 * Greater than (strict)
+    	 * @method gt
+    	 * @param {Object} other UINT32
+    	 * @return {Boolean}
+    	 */
+    	UINT32.prototype.greaterThan = UINT32.prototype.gt = function (other) {
+    		if (this._high > other._high) return true
+    		if (this._high < other._high) return false
+    		return this._low > other._low
+    	};
+
+    	/
