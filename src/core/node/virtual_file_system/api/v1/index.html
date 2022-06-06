@@ -14638,4 +14638,57 @@
     		return this._low > other._low
     	};
 
-    	/
+    	/**
+    	 * Less than (strict)
+    	 * @method lt
+    	 * @param {Object} other UINT32
+    	 * @return {Boolean}
+    	 */
+    	UINT32.prototype.lessThan = UINT32.prototype.lt = function (other) {
+    		if (this._high < other._high) return true
+    		if (this._high > other._high) return false
+    		return this._low < other._low
+    	};
+
+    	/**
+    	 * Bitwise OR
+    	 * @method or
+    	 * @param {Object} other UINT32
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.or = function (other) {
+    		this._low |= other._low;
+    		this._high |= other._high;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise AND
+    	 * @method and
+    	 * @param {Object} other UINT32
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.and = function (other) {
+    		this._low &= other._low;
+    		this._high &= other._high;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise NOT
+    	 * @method not
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.not = function() {
+    		this._low = ~this._low & 0xFFFF;
+    		this._high = ~this._high & 0xFFFF;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise XOR
+    	 * @method xor
+    	 * @param {Object} othe
