@@ -14736,4 +14736,52 @@
     			if (!allowOverflow) {
     				this._high &= 0xFFFF;
     			}
-    		} els
+    		} else if (n == 16) {
+    			this._high = this._low;
+    			this._low = 0;
+    		} else {
+    			this._high = (this._high << n) | (this._low >> (16-n));
+    			this._low = (this._low << n) & 0xFFFF;
+    			if (!allowOverflow) {
+    				// Overflow only allowed on the high bits...
+    				this._high &= 0xFFFF;
+    			}
+    		}
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise rotate left
+    	 * @method rotl
+    	 * @param {Number} number of bits to rotate
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.rotateLeft = UINT32.prototype.rotl = function (n) {
+    		var v = (this._high << 16) | this._low;
+    		v = (v << n) | (v >>> (32 - n));
+    		this._low = v & 0xFFFF;
+    		this._high = v >>> 16;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise rotate right
+    	 * @method rotr
+    	 * @param {Number} number of bits to rotate
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.rotateRight = UINT32.prototype.rotr = function (n) {
+    		var v = (this._high << 16) | this._low;
+    		v = (v >>> n) | (v << (32 - n));
+    		this._low = v & 0xFFFF;
+    		this._high = v >>> 16;
+
+    		return this
+    	};
+
+    	/**
+    	 * Clone the current _UINT32_
+    	 * @method clone
+    	 * @return {Object} cloned UINT32
