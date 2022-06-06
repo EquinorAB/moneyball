@@ -14691,4 +14691,49 @@
     	/**
     	 * Bitwise XOR
     	 * @method xor
-    	 * @param {Object} othe
+    	 * @param {Object} other UINT32
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.xor = function (other) {
+    		this._low ^= other._low;
+    		this._high ^= other._high;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise shift right
+    	 * @method shiftRight
+    	 * @param {Number} number of bits to shift
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.shiftRight = UINT32.prototype.shiftr = function (n) {
+    		if (n > 16) {
+    			this._low = this._high >> (n - 16);
+    			this._high = 0;
+    		} else if (n == 16) {
+    			this._low = this._high;
+    			this._high = 0;
+    		} else {
+    			this._low = (this._low >> n) | ( (this._high << (16-n)) & 0xFFFF );
+    			this._high >>= n;
+    		}
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise shift left
+    	 * @method shiftLeft
+    	 * @param {Number} number of bits to shift
+    	 * @param {Boolean} allow overflow
+    	 * @return ThisExpression
+    	 */
+    	UINT32.prototype.shiftLeft = UINT32.prototype.shiftl = function (n, allowOverflow) {
+    		if (n > 16) {
+    			this._high = this._low << (n - 16);
+    			this._low = 0;
+    			if (!allowOverflow) {
+    				this._high &= 0xFFFF;
+    			}
+    		} els
