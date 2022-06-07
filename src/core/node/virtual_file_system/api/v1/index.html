@@ -14785,3 +14785,51 @@
     	 * Clone the current _UINT32_
     	 * @method clone
     	 * @return {Object} cloned UINT32
+    	 */
+    	UINT32.prototype.clone = function () {
+    		return new UINT32(this._low, this._high)
+    	};
+
+    	if (typeof undefined != 'undefined' && undefined.amd) {
+    		// AMD / RequireJS
+    		undefined([], function () {
+    			return UINT32
+    		});
+    	} else if ('object' != 'undefined' && module.exports) {
+    		// Node.js
+    		module.exports = UINT32;
+    	} else {
+    		// Browser
+    		root['UINT32'] = UINT32;
+    	}
+
+    })(commonjsGlobal);
+    });
+
+    var uint64 = createCommonjsModule(function (module) {
+    /**
+    	C-like unsigned 64 bits integers in Javascript
+    	Copyright (C) 2013, Pierre Curto
+    	MIT license
+     */
+    ;(function (root) {
+
+    	// Local cache for typical radices
+    	var radixPowerCache = {
+    		16: UINT64( Math.pow(16, 5) )
+    	,	10: UINT64( Math.pow(10, 5) )
+    	,	2:  UINT64( Math.pow(2, 5) )
+    	};
+    	var radixCache = {
+    		16: UINT64(16)
+    	,	10: UINT64(10)
+    	,	2:  UINT64(2)
+    	};
+
+    	/**
+    	 *	Represents an unsigned 64 bits integer
+    	 * @constructor
+    	 * @param {Number} first low bits (8)
+    	 * @param {Number} second low bits (8)
+    	 * @param {Number} first high bits (8)
+    	 * @param {Num
