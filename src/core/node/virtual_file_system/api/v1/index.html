@@ -14832,4 +14832,41 @@
     	 * @param {Number} first low bits (8)
     	 * @param {Number} second low bits (8)
     	 * @param {Number} first high bits (8)
-    	 * @param {Num
+    	 * @param {Number} second high bits (8)
+    	 * or
+    	 * @param {Number} low bits (32)
+    	 * @param {Number} high bits (32)
+    	 * or
+    	 * @param {String|Number} integer as a string 		 | integer as a number
+    	 * @param {Number|Undefined} radix (optional, default=10)
+    	 * @return 
+    	 */
+    	function UINT64 (a00, a16, a32, a48) {
+    		if ( !(this instanceof UINT64) )
+    			return new UINT64(a00, a16, a32, a48)
+
+    		this.remainder = null;
+    		if (typeof a00 == 'string')
+    			return fromString.call(this, a00, a16)
+
+    		if (typeof a16 == 'undefined')
+    			return fromNumber.call(this, a00)
+
+    		fromBits.apply(this, arguments);
+    	}
+
+    	/**
+    	 * Set the current _UINT64_ object with its low and high bits
+    	 * @method fromBits
+    	 * @param {Number} first low bits (8)
+    	 * @param {Number} second low bits (8)
+    	 * @param {Number} first high bits (8)
+    	 * @param {Number} second high bits (8)
+    	 * or
+    	 * @param {Number} low bits (32)
+    	 * @param {Number} high bits (32)
+    	 * @return ThisExpression
+    	 */
+    	function fromBits (a00, a16, a32, a48) {
+    		if (typeof a32 == 'undefined') {
+    			this._a00 = a00 & 0
