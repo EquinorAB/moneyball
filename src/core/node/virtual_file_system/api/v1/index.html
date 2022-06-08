@@ -14869,4 +14869,53 @@
     	 */
     	function fromBits (a00, a16, a32, a48) {
     		if (typeof a32 == 'undefined') {
-    			this._a00 = a00 & 0
+    			this._a00 = a00 & 0xFFFF;
+    			this._a16 = a00 >>> 16;
+    			this._a32 = a16 & 0xFFFF;
+    			this._a48 = a16 >>> 16;
+    			return this
+    		}
+
+    		this._a00 = a00 | 0;
+    		this._a16 = a16 | 0;
+    		this._a32 = a32 | 0;
+    		this._a48 = a48 | 0;
+
+    		return this
+    	}
+    	UINT64.prototype.fromBits = fromBits;
+
+    	/**
+    	 * Set the current _UINT64_ object from a number
+    	 * @method fromNumber
+    	 * @param {Number} number
+    	 * @return ThisExpression
+    	 */
+    	function fromNumber (value) {
+    		this._a00 = value & 0xFFFF;
+    		this._a16 = value >>> 16;
+    		this._a32 = 0;
+    		this._a48 = 0;
+
+    		return this
+    	}
+    	UINT64.prototype.fromNumber = fromNumber;
+
+    	/**
+    	 * Set the current _UINT64_ object from a string
+    	 * @method fromString
+    	 * @param {String} integer as a string
+    	 * @param {Number} radix (optional, default=10)
+    	 * @return ThisExpression
+    	 */
+    	function fromString (s, radix) {
+    		radix = radix || 10;
+
+    		this._a00 = 0;
+    		this._a16 = 0;
+    		this._a32 = 0;
+    		this._a48 = 0;
+
+    		/*
+    			In Javascript, bitwise operators only operate on the first 32 bits 
+   
