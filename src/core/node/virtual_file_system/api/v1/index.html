@@ -14918,4 +14918,40 @@
 
     		/*
     			In Javascript, bitwise operators only operate on the first 32 bits 
-   
+    			of a number, even though parseInt() encodes numbers with a 53 bits 
+    			mantissa.
+    			Therefore UINT64(<Number>) can only work on 32 bits.
+    			The radix maximum value is 36 (as per ECMA specs) (26 letters + 10 digits)
+    			maximum input value is m = 32bits as 1 = 2^32 - 1
+    			So the maximum substring length n is:
+    			36^(n+1) - 1 = 2^32 - 1
+    			36^(n+1) = 2^32
+    			(n+1)ln(36) = 32ln(2)
+    			n = 32ln(2)/ln(36) - 1
+    			n = 5.189644915687692
+    			n = 5
+    		 */
+    		var radixUint = radixPowerCache[radix] || new UINT64( Math.pow(radix, 5) );
+
+    		for (var i = 0, len = s.length; i < len; i += 5) {
+    			var size = Math.min(5, len - i);
+    			var value = parseInt( s.slice(i, i + size), radix );
+    			this.multiply(
+    					size < 5
+    						? new UINT64( Math.pow(radix, size) )
+    						: radixUint
+    				)
+    				.add( new UINT64(value) );
+    		}
+
+    		return this
+    	}
+    	UINT64.prototype.fromString = fromString;
+
+    	/**
+    	 * Convert this _UINT64_ to a number (last 32 bits are dropped)
+    	 * @method toNumber
+    	 * @return {Number} the converted UINT64
+    	 */
+    	UINT64.prototype.toNumber = function () {
+    		return (this._a16 * 65536) + this.
