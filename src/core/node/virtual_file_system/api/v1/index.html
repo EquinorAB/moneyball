@@ -14954,4 +14954,49 @@
     	 * @return {Number} the converted UINT64
     	 */
     	UINT64.prototype.toNumber = function () {
-    		return (this._a16 * 65536) + this.
+    		return (this._a16 * 65536) + this._a00
+    	};
+
+    	/**
+    	 * Convert this _UINT64_ to a string
+    	 * @method toString
+    	 * @param {Number} radix (optional, default=10)
+    	 * @return {String} the converted UINT64
+    	 */
+    	UINT64.prototype.toString = function (radix) {
+    		radix = radix || 10;
+    		var radixUint = radixCache[radix] || new UINT64(radix);
+
+    		if ( !this.gt(radixUint) ) return this.toNumber().toString(radix)
+
+    		var self = this.clone();
+    		var res = new Array(64);
+    		for (var i = 63; i >= 0; i--) {
+    			self.div(radixUint);
+    			res[i] = self.remainder.toNumber().toString(radix);
+    			if ( !self.gt(radixUint) ) break
+    		}
+    		res[i-1] = self.toNumber().toString(radix);
+
+    		return res.join('')
+    	};
+
+    	/**
+    	 * Add two _UINT64_. The current _UINT64_ stores the result
+    	 * @method add
+    	 * @param {Object} other UINT64
+    	 * @return ThisExpression
+    	 */
+    	UINT64.prototype.add = function (other) {
+    		var a00 = this._a00 + other._a00;
+
+    		var a16 = a00 >>> 16;
+    		a16 += this._a16 + other._a16;
+
+    		var a32 = a16 >>> 16;
+    		a32 += this._a32 + other._a32;
+
+    		var a48 = a32 >>> 16;
+    		a48 += this._a48 + other._a48;
+
+    		this._a00 = a00 & 0x
