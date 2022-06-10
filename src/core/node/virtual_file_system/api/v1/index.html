@@ -15038,4 +15038,55 @@
     			a*b	= a00b00 + a00b16 + a00b32 + a00b48
     				+ a16b00 + a16b16 + a16b32
     				+ a32b00 + a32b16
-    	
+    				+ a48b00
+    				= a00b00
+    				+ a00b16 + a16b00
+    				+ a00b32 + a16b16 + a32b00
+    				+ a00b48 + a16b32 + a32b16 + a48b00
+    		 */
+    		var a00 = this._a00;
+    		var a16 = this._a16;
+    		var a32 = this._a32;
+    		var a48 = this._a48;
+    		var b00 = other._a00;
+    		var b16 = other._a16;
+    		var b32 = other._a32;
+    		var b48 = other._a48;
+
+    		var c00 = a00 * b00;
+
+    		var c16 = c00 >>> 16;
+    		c16 += a00 * b16;
+    		var c32 = c16 >>> 16;
+    		c16 &= 0xFFFF;
+    		c16 += a16 * b00;
+
+    		c32 += c16 >>> 16;
+    		c32 += a00 * b32;
+    		var c48 = c32 >>> 16;
+    		c32 &= 0xFFFF;
+    		c32 += a16 * b16;
+    		c48 += c32 >>> 16;
+    		c32 &= 0xFFFF;
+    		c32 += a32 * b00;
+
+    		c48 += c32 >>> 16;
+    		c48 += a00 * b48;
+    		c48 &= 0xFFFF;
+    		c48 += a16 * b32;
+    		c48 &= 0xFFFF;
+    		c48 += a32 * b16;
+    		c48 &= 0xFFFF;
+    		c48 += a48 * b00;
+
+    		this._a00 = c00 & 0xFFFF;
+    		this._a16 = c16 & 0xFFFF;
+    		this._a32 = c32 & 0xFFFF;
+    		this._a48 = c48 & 0xFFFF;
+
+    		return this
+    	};
+
+    	/**
+    	 * Divide two _UINT64_. The current _UINT64_ stores the result.
+    	 * The remainder is made available
