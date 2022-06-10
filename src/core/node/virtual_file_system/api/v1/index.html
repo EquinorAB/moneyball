@@ -14999,4 +14999,43 @@
     		var a48 = a32 >>> 16;
     		a48 += this._a48 + other._a48;
 
-    		this._a00 = a00 & 0x
+    		this._a00 = a00 & 0xFFFF;
+    		this._a16 = a16 & 0xFFFF;
+    		this._a32 = a32 & 0xFFFF;
+    		this._a48 = a48 & 0xFFFF;
+
+    		return this
+    	};
+
+    	/**
+    	 * Subtract two _UINT64_. The current _UINT64_ stores the result
+    	 * @method subtract
+    	 * @param {Object} other UINT64
+    	 * @return ThisExpression
+    	 */
+    	UINT64.prototype.subtract = function (other) {
+    		return this.add( other.clone().negate() )
+    	};
+
+    	/**
+    	 * Multiply two _UINT64_. The current _UINT64_ stores the result
+    	 * @method multiply
+    	 * @param {Object} other UINT64
+    	 * @return ThisExpression
+    	 */
+    	UINT64.prototype.multiply = function (other) {
+    		/*
+    			a = a00 + a16 + a32 + a48
+    			b = b00 + b16 + b32 + b48
+    			a*b = (a00 + a16 + a32 + a48)(b00 + b16 + b32 + b48)
+    				= a00b00 + a00b16 + a00b32 + a00b48
+    				+ a16b00 + a16b16 + a16b32 + a16b48
+    				+ a32b00 + a32b16 + a32b32 + a32b48
+    				+ a48b00 + a48b16 + a48b32 + a48b48
+
+    			a16b48, a32b32, a48b16, a48b32 and a48b48 overflow the 64 bits
+    			so it comes down to:
+    			a*b	= a00b00 + a00b16 + a00b32 + a00b48
+    				+ a16b00 + a16b16 + a16b32
+    				+ a32b00 + a32b16
+    	
