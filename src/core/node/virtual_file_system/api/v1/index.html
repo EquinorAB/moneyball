@@ -15213,4 +15213,48 @@
     	 * Less than (strict)
     	 * @method lt
     	 * @param {Object} other UINT64
-    	 * @return {Boole
+    	 * @return {Boolean}
+    	 */
+    	UINT64.prototype.lessThan = UINT64.prototype.lt = function (other) {
+    		if (this._a48 < other._a48) return true
+    		if (this._a48 > other._a48) return false
+    		if (this._a32 < other._a32) return true
+    		if (this._a32 > other._a32) return false
+    		if (this._a16 < other._a16) return true
+    		if (this._a16 > other._a16) return false
+    		return this._a00 < other._a00
+    	};
+
+    	/**
+    	 * Bitwise OR
+    	 * @method or
+    	 * @param {Object} other UINT64
+    	 * @return ThisExpression
+    	 */
+    	UINT64.prototype.or = function (other) {
+    		this._a00 |= other._a00;
+    		this._a16 |= other._a16;
+    		this._a32 |= other._a32;
+    		this._a48 |= other._a48;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise AND
+    	 * @method and
+    	 * @param {Object} other UINT64
+    	 * @return ThisExpression
+    	 */
+    	UINT64.prototype.and = function (other) {
+    		this._a00 &= other._a00;
+    		this._a16 &= other._a16;
+    		this._a32 &= other._a32;
+    		this._a48 &= other._a48;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise XOR
+    	 * @method x
