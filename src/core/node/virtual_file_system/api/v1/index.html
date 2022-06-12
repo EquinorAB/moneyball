@@ -15257,4 +15257,48 @@
 
     	/**
     	 * Bitwise XOR
-    	 * @method x
+    	 * @method xor
+    	 * @param {Object} other UINT64
+    	 * @return ThisExpression
+    	 */
+    	UINT64.prototype.xor = function (other) {
+    		this._a00 ^= other._a00;
+    		this._a16 ^= other._a16;
+    		this._a32 ^= other._a32;
+    		this._a48 ^= other._a48;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise NOT
+    	 * @method not
+    	 * @return ThisExpression
+    	 */
+    	UINT64.prototype.not = function() {
+    		this._a00 = ~this._a00 & 0xFFFF;
+    		this._a16 = ~this._a16 & 0xFFFF;
+    		this._a32 = ~this._a32 & 0xFFFF;
+    		this._a48 = ~this._a48 & 0xFFFF;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise shift right
+    	 * @method shiftRight
+    	 * @param {Number} number of bits to shift
+    	 * @return ThisExpression
+    	 */
+    	UINT64.prototype.shiftRight = UINT64.prototype.shiftr = function (n) {
+    		n %= 64;
+    		if (n >= 48) {
+    			this._a00 = this._a48 >> (n - 48);
+    			this._a16 = 0;
+    			this._a32 = 0;
+    			this._a48 = 0;
+    		} else if (n >= 32) {
+    			n -= 32;
+    			this._a00 = ( (this._a32 >> n) | (this._a48 << (16-n)) ) & 0xFFFF;
+    			this._a16 = (this._a48 >> n) & 0xFFFF;
+    			this
