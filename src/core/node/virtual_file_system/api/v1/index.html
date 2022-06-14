@@ -15424,4 +15424,58 @@
     		var _high = (high >>> n) | (low << (32 - n));
     		var _low = (low >>> n) | (high << (32 - n));
 
-   
+    		this._a00 = _low & 0xFFFF;
+    		this._a16 = _low >>> 16;
+    		this._a32 = _high & 0xFFFF;
+    		this._a48 = _high >>> 16;
+
+    		return this
+    	};
+
+    	/**
+    	 * Clone the current _UINT64_
+    	 * @method clone
+    	 * @return {Object} cloned UINT64
+    	 */
+    	UINT64.prototype.clone = function () {
+    		return new UINT64(this._a00, this._a16, this._a32, this._a48)
+    	};
+
+    	if (typeof undefined != 'undefined' && undefined.amd) {
+    		// AMD / RequireJS
+    		undefined([], function () {
+    			return UINT64
+    		});
+    	} else if ('object' != 'undefined' && module.exports) {
+    		// Node.js
+    		module.exports = UINT64;
+    	} else {
+    		// Browser
+    		root['UINT64'] = UINT64;
+    	}
+
+    })(commonjsGlobal);
+    });
+
+    var UINT32 = uint32;
+    var UINT64 = uint64;
+
+    var cuint = {
+    	UINT32: UINT32,
+    	UINT64: UINT64
+    };
+
+    /**
+    xxHash implementation in pure Javascript
+
+    Copyright (C) 2013, Pierre Curto
+    MIT license
+    */
+    var UINT32$1 = cuint.UINT32;
+
+    /*
+    	Merged this sequence of method calls as it speeds up
+    	the calculations by a factor of 2
+     */
+    // this.v1.add( other.multiply(PRIME32_2) ).rotl(13).multiply(PRIME32_1);
+    
