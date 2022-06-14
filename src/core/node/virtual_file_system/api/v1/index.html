@@ -15377,3 +15377,51 @@
     			v = this._a48;
     			this._a48 = this._a16;
     			this._a16 = v;
+    			if (n == 32) return this
+    			n -= 32;
+    		}
+
+    		var high = (this._a48 << 16) | this._a32;
+    		var low = (this._a16 << 16) | this._a00;
+
+    		var _high = (high << n) | (low >>> (32 - n));
+    		var _low = (low << n) | (high >>> (32 - n));
+
+    		this._a00 = _low & 0xFFFF;
+    		this._a16 = _low >>> 16;
+    		this._a32 = _high & 0xFFFF;
+    		this._a48 = _high >>> 16;
+
+    		return this
+    	};
+
+    	/**
+    	 * Bitwise rotate right
+    	 * @method rotr
+    	 * @param {Number} number of bits to rotate
+    	 * @return ThisExpression
+    	 */
+    	UINT64.prototype.rotateRight = UINT64.prototype.rotr = function (n) {
+    		n %= 64;
+    		if (n == 0) return this
+    		if (n >= 32) {
+    			// A.B.C.D
+    			// D.A.B.C rotr(16)
+    			// C.D.A.B rotr(32)
+    			var v = this._a00;
+    			this._a00 = this._a32;
+    			this._a32 = v;
+    			v = this._a48;
+    			this._a48 = this._a16;
+    			this._a16 = v;
+    			if (n == 32) return this
+    			n -= 32;
+    		}
+
+    		var high = (this._a48 << 16) | this._a32;
+    		var low = (this._a16 << 16) | this._a00;
+
+    		var _high = (high >>> n) | (low << (32 - n));
+    		var _low = (low >>> n) | (high << (32 - n));
+
+   
