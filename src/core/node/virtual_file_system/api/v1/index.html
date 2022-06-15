@@ -15478,4 +15478,52 @@
     	the calculations by a factor of 2
      */
     // this.v1.add( other.multiply(PRIME32_2) ).rotl(13).multiply(PRIME32_1);
-    
+    UINT32$1.prototype.xxh_update = function (low, high) {
+    	var b00 = PRIME32_2._low;
+    	var b16 = PRIME32_2._high;
+
+    	var c16, c00;
+    	c00 = low * b00;
+    	c16 = c00 >>> 16;
+
+    	c16 += high * b00;
+    	c16 &= 0xFFFF;		// Not required but improves performance
+    	c16 += low * b16;
+
+    	var a00 = this._low + (c00 & 0xFFFF);
+    	var a16 = a00 >>> 16;
+
+    	a16 += this._high + (c16 & 0xFFFF);
+
+    	var v = (a16 << 16) | (a00 & 0xFFFF);
+    	v = (v << 13) | (v >>> 19);
+
+    	a00 = v & 0xFFFF;
+    	a16 = v >>> 16;
+
+    	b00 = PRIME32_1._low;
+    	b16 = PRIME32_1._high;
+
+    	c00 = a00 * b00;
+    	c16 = c00 >>> 16;
+
+    	c16 += a16 * b00;
+    	c16 &= 0xFFFF;		// Not required but improves performance
+    	c16 += a00 * b16;
+
+    	this._low = c00 & 0xFFFF;
+    	this._high = c16 & 0xFFFF;
+    };
+
+    /*
+     * Constants
+     */
+    var PRIME32_1 = UINT32$1( '2654435761' );
+    var PRIME32_2 = UINT32$1( '2246822519' );
+    var PRIME32_3 = UINT32$1( '3266489917' );
+    var PRIME32_4 = UINT32$1(  '668265263' );
+    var PRIME32_5 = UINT32$1(  '374761393' );
+
+    /**
+    * Convert string to proper UTF-8 array
+    * @param str Input
