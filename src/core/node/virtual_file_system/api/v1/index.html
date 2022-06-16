@@ -15604,4 +15604,49 @@
     /**
      * Add data to be computed for the XXH hash
      * @method update
-     *
+     * @param {String|Buffer|ArrayBuffer} input as a string or nodejs Buffer or ArrayBuffer
+     * @return ThisExpression
+     */
+    XXH.prototype.update = function (input) {
+    	var isString = typeof input == 'string';
+    	var isArrayBuffer;
+
+    	// Convert all strings to utf-8 first (issue #5)
+    	if (isString) {
+    		input = toUTF8Array(input);
+    		isString = false;
+    		isArrayBuffer = true;
+    	}
+
+    	if (typeof ArrayBuffer !== "undefined" && input instanceof ArrayBuffer)
+    	{
+    		isArrayBuffer = true;
+    		input = new Uint8Array(input);
+    	}
+
+    	var p = 0;
+    	var len = input.length;
+    	var bEnd = p + len;
+
+    	if (len == 0) return this
+
+    	this.total_len += len;
+
+    	if (this.memsize == 0)
+    	{
+    		if (isString) {
+    			this.memory = '';
+    		} else if (isArrayBuffer) {
+    			this.memory = new Uint8Array(16);
+    		} else {
+    			this.memory = new Buffer(16);
+    		}
+    	}
+
+    	if (this.memsize + len < 16)   // fill in tmp buffer
+    	{
+    		// XXH_memcpy(this.memory + this.memsize, input, len)
+    		if (isString) {
+    			this.memory += input;
+    		} else if (isArrayBuffer) {
+    			this.memory.set( input.subarray(
