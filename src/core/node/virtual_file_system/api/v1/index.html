@@ -15683,4 +15683,43 @@
     			p32 += 4;
     			this.v3.xxh_update(
     				(this.memory.charCodeAt(p32+1) << 8) | this.memory.charCodeAt(p32)
-    
+    			,	(this.memory.charCodeAt(p32+3) << 8) | this.memory.charCodeAt(p32+2)
+    			);
+    			p32 += 4;
+    			this.v4.xxh_update(
+    				(this.memory.charCodeAt(p32+1) << 8) | this.memory.charCodeAt(p32)
+    			,	(this.memory.charCodeAt(p32+3) << 8) | this.memory.charCodeAt(p32+2)
+    			);
+    		} else {
+    			this.v1.xxh_update(
+    				(this.memory[p32+1] << 8) | this.memory[p32]
+    			,	(this.memory[p32+3] << 8) | this.memory[p32+2]
+    			);
+    			p32 += 4;
+    			this.v2.xxh_update(
+    				(this.memory[p32+1] << 8) | this.memory[p32]
+    			,	(this.memory[p32+3] << 8) | this.memory[p32+2]
+    			);
+    			p32 += 4;
+    			this.v3.xxh_update(
+    				(this.memory[p32+1] << 8) | this.memory[p32]
+    			,	(this.memory[p32+3] << 8) | this.memory[p32+2]
+    			);
+    			p32 += 4;
+    			this.v4.xxh_update(
+    				(this.memory[p32+1] << 8) | this.memory[p32]
+    			,	(this.memory[p32+3] << 8) | this.memory[p32+2]
+    			);
+    		}
+
+    		p += 16 - this.memsize;
+    		this.memsize = 0;
+    		if (isString) this.memory = '';
+    	}
+
+    	if (p <= bEnd - 16)
+    	{
+    		var limit = bEnd - 16;
+
+    		do
+    	
