@@ -15565,4 +15565,43 @@
      * XXH object used as a constructor or a function
      * @constructor
      * or
-    
+     * @param {Object|String} input data
+     * @param {Number|UINT32} seed
+     * @return ThisExpression
+     * or
+     * @return {UINT32} xxHash
+     */
+    function XXH () {
+    	if (arguments.length == 2)
+    		return new XXH( arguments[1] ).update( arguments[0] ).digest()
+
+    	if (!(this instanceof XXH))
+    		return new XXH( arguments[0] )
+
+    	init$1.call(this, arguments[0]);
+    }
+
+    /**
+     * Initialize the XXH instance with the given seed
+     * @method init
+     * @param {Number|Object} seed as a number or an unsigned 32 bits integer
+     * @return ThisExpression
+     */
+     function init$1 (seed) {
+    	this.seed = seed instanceof UINT32$1 ? seed.clone() : UINT32$1(seed);
+    	this.v1 = this.seed.clone().add(PRIME32_1).add(PRIME32_2);
+    	this.v2 = this.seed.clone().add(PRIME32_2);
+    	this.v3 = this.seed.clone();
+    	this.v4 = this.seed.clone().subtract(PRIME32_1);
+    	this.total_len = 0;
+    	this.memsize = 0;
+    	this.memory = null;
+
+    	return this
+    }
+    XXH.prototype.init = init$1;
+
+    /**
+     * Add data to be computed for the XXH hash
+     * @method update
+     *
