@@ -15759,4 +15759,56 @@
     				,	(input[p+3] << 8) | input[p+2]
     				);
     				p += 4;
-    				this.v
+    				this.v4.xxh_update(
+    					(input[p+1] << 8) | input[p]
+    				,	(input[p+3] << 8) | input[p+2]
+    				);
+    			}
+    			p += 4;
+    		} while (p <= limit)
+    	}
+
+    	if (p < bEnd)
+    	{
+    		// XXH_memcpy(this.memory, p, bEnd-p);
+    		if (isString) {
+    			this.memory += input.slice(p);
+    		} else if (isArrayBuffer) {
+    			this.memory.set( input.subarray(p, bEnd), this.memsize );
+    		} else {
+    			input.copy( this.memory, this.memsize, p, bEnd );
+    		}
+
+    		this.memsize = bEnd - p;
+    	}
+
+    	return this
+    };
+
+    /**
+     * Finalize the XXH computation. The XXH instance is ready for reuse for the given seed
+     * @method digest
+     * @return {UINT32} xxHash
+     */
+    XXH.prototype.digest = function () {
+    	var input = this.memory;
+    	var isString = typeof input == 'string';
+    	var p = 0;
+    	var bEnd = this.memsize;
+    	var h32, h;
+    	var u = new UINT32$1;
+
+    	if (this.total_len >= 16)
+    	{
+    		h32 = this.v1.rotl(1).add( this.v2.rotl(7).add( this.v3.rotl(12).add( this.v4.rotl(18) ) ) );
+    	}
+    	else
+    	{
+    		h32  = this.seed.clone().add( PRIME32_5 );
+    	}
+
+    	h32.add( u.fromNumber(this.total_len) );
+
+    	while (p <= bEnd - 4)
+    	{
+    		if 
