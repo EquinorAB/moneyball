@@ -15938,4 +15938,51 @@
      function init$2 (seed) {
     	this.seed = seed instanceof UINT64$1 ? seed.clone() : UINT64$1(seed);
     	this.v1 = this.seed.clone().add(PRIME64_1).add(PRIME64_2);
-    	this.v2 = this.seed.clone().add(PRI
+    	this.v2 = this.seed.clone().add(PRIME64_2);
+    	this.v3 = this.seed.clone();
+    	this.v4 = this.seed.clone().subtract(PRIME64_1);
+    	this.total_len = 0;
+    	this.memsize = 0;
+    	this.memory = null;
+
+    	return this
+    }
+    XXH64.prototype.init = init$2;
+
+    /**
+     * Add data to be computed for the XXH64 hash
+     * @method update
+     * @param {String|Buffer|ArrayBuffer} input as a string or nodejs Buffer or ArrayBuffer
+     * @return ThisExpression
+     */
+    XXH64.prototype.update = function (input) {
+    	var isString = typeof input == 'string';
+    	var isArrayBuffer;
+
+    	// Convert all strings to utf-8 first (issue #5)
+    	if (isString) {
+    		input = toUTF8Array$1(input);
+    		isString = false;
+    		isArrayBuffer = true;
+    	}
+
+    	if (typeof ArrayBuffer !== "undefined" && input instanceof ArrayBuffer)
+    	{
+    		isArrayBuffer = true;
+    		input = new Uint8Array(input);
+    	}
+
+    	var p = 0;
+    	var len = input.length;
+    	var bEnd = p + len;
+
+    	if (len == 0) return this
+
+    	this.total_len += len;
+
+    	if (this.memsize == 0)
+    	{
+    		if (isString) {
+    			this.memory = '';
+    		} else if (isArrayBuffer) {
+    			this.memory = new Uin
