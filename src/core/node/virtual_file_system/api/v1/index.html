@@ -16102,4 +16102,28 @@
     				other = UINT64$1(
     						(input.charCodeAt(p+1) << 8) | input.charCodeAt(p)
     					,	(input.charCodeAt(p+3) << 8) | input.charCodeAt(p+2)
-    					,	(input.charCodeAt(p+5) << 8) | input.ch
+    					,	(input.charCodeAt(p+5) << 8) | input.charCodeAt(p+4)
+    					,	(input.charCodeAt(p+7) << 8) | input.charCodeAt(p+6)
+    					);
+    				this.v1.add( other.multiply(PRIME64_2) ).rotl(31).multiply(PRIME64_1);
+    				p += 8;
+    				other = UINT64$1(
+    						(input.charCodeAt(p+1) << 8) | input.charCodeAt(p)
+    					,	(input.charCodeAt(p+3) << 8) | input.charCodeAt(p+2)
+    					,	(input.charCodeAt(p+5) << 8) | input.charCodeAt(p+4)
+    					,	(input.charCodeAt(p+7) << 8) | input.charCodeAt(p+6)
+    					);
+    				this.v2.add( other.multiply(PRIME64_2) ).rotl(31).multiply(PRIME64_1);
+    				p += 8;
+    				other = UINT64$1(
+    						(input.charCodeAt(p+1) << 8) | input.charCodeAt(p)
+    					,	(input.charCodeAt(p+3) << 8) | input.charCodeAt(p+2)
+    					,	(input.charCodeAt(p+5) << 8) | input.charCodeAt(p+4)
+    					,	(input.charCodeAt(p+7) << 8) | input.charCodeAt(p+6)
+    					);
+    				this.v3.add( other.multiply(PRIME64_2) ).rotl(31).multiply(PRIME64_1);
+    				p += 8;
+    				other = UINT64$1(
+    						(input.charCodeAt(p+1) << 8) | input.charCodeAt(p)
+    					,	(input.charCodeAt(p+3) << 8) | input.charCodeAt(p+2)
+    					,	(input.c
