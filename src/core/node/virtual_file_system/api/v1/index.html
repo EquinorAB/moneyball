@@ -16067,4 +16067,39 @@
     				,	(this.memory[p64+5] << 8) | this.memory[p64+4]
     				,	(this.memory[p64+7] << 8) | this.memory[p64+6]
     				);
-    			this.v2.add( other.multiply(PRIME6
+    			this.v2.add( other.multiply(PRIME64_2) ).rotl(31).multiply(PRIME64_1);
+    			p64 += 8;
+    			other = UINT64$1(
+    					(this.memory[p64+1] << 8) | this.memory[p64]
+    				,	(this.memory[p64+3] << 8) | this.memory[p64+2]
+    				,	(this.memory[p64+5] << 8) | this.memory[p64+4]
+    				,	(this.memory[p64+7] << 8) | this.memory[p64+6]
+    				);
+    			this.v3.add( other.multiply(PRIME64_2) ).rotl(31).multiply(PRIME64_1);
+    			p64 += 8;
+    			other = UINT64$1(
+    					(this.memory[p64+1] << 8) | this.memory[p64]
+    				,	(this.memory[p64+3] << 8) | this.memory[p64+2]
+    				,	(this.memory[p64+5] << 8) | this.memory[p64+4]
+    				,	(this.memory[p64+7] << 8) | this.memory[p64+6]
+    				);
+    			this.v4.add( other.multiply(PRIME64_2) ).rotl(31).multiply(PRIME64_1);
+    		}
+
+    		p += 32 - this.memsize;
+    		this.memsize = 0;
+    		if (isString) this.memory = '';
+    	}
+
+    	if (p <= bEnd - 32)
+    	{
+    		var limit = bEnd - 32;
+
+    		do
+    		{
+    			if (isString) {
+    				var other;
+    				other = UINT64$1(
+    						(input.charCodeAt(p+1) << 8) | input.charCodeAt(p)
+    					,	(input.charCodeAt(p+3) << 8) | input.charCodeAt(p+2)
+    					,	(input.charCodeAt(p+5) << 8) | input.ch
