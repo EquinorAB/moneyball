@@ -16156,4 +16156,49 @@
     					);
     				this.v3.add( other.multiply(PRIME64_2) ).rotl(31).multiply(PRIME64_1);
     				p += 8;
-    				othe
+    				other = UINT64$1(
+    						(input[p+1] << 8) | input[p]
+    					,	(input[p+3] << 8) | input[p+2]
+    					,	(input[p+5] << 8) | input[p+4]
+    					,	(input[p+7] << 8) | input[p+6]
+    					);
+    				this.v4.add( other.multiply(PRIME64_2) ).rotl(31).multiply(PRIME64_1);
+    			}
+    			p += 8;
+    		} while (p <= limit)
+    	}
+
+    	if (p < bEnd)
+    	{
+    		// XXH64_memcpy(this.memory, p, bEnd-p);
+    		if (isString) {
+    			this.memory += input.slice(p);
+    		} else if (isArrayBuffer) {
+    			this.memory.set( input.subarray(p, bEnd), this.memsize );
+    		} else {
+    			input.copy( this.memory, this.memsize, p, bEnd );
+    		}
+
+    		this.memsize = bEnd - p;
+    	}
+
+    	return this
+    };
+
+    /**
+     * Finalize the XXH64 computation. The XXH64 instance is ready for reuse for the given seed
+     * @method digest
+     * @return {UINT64} xxHash
+     */
+    XXH64.prototype.digest = function () {
+    	var input = this.memory;
+    	var isString = typeof input == 'string';
+    	var p = 0;
+    	var bEnd = this.memsize;
+    	var h64, h;
+    	var u = new UINT64$1;
+
+    	if (this.total_len >= 32)
+    	{
+    		h64 = this.v1.clone().rotl(1);
+    		h64.add( t
