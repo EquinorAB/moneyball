@@ -16201,4 +16201,40 @@
     	if (this.total_len >= 32)
     	{
     		h64 = this.v1.clone().rotl(1);
-    		h64.add( t
+    		h64.add( this.v2.clone().rotl(7) );
+    		h64.add( this.v3.clone().rotl(12) );
+    		h64.add( this.v4.clone().rotl(18) );
+
+    		h64.xor( this.v1.multiply(PRIME64_2).rotl(31).multiply(PRIME64_1) );
+    		h64.multiply(PRIME64_1).add(PRIME64_4);
+
+    		h64.xor( this.v2.multiply(PRIME64_2).rotl(31).multiply(PRIME64_1) );
+    		h64.multiply(PRIME64_1).add(PRIME64_4);
+
+    		h64.xor( this.v3.multiply(PRIME64_2).rotl(31).multiply(PRIME64_1) );
+    		h64.multiply(PRIME64_1).add(PRIME64_4);
+
+    		h64.xor( this.v4.multiply(PRIME64_2).rotl(31).multiply(PRIME64_1) );
+    		h64.multiply(PRIME64_1).add(PRIME64_4);
+    	}
+    	else
+    	{
+    		h64  = this.seed.clone().add( PRIME64_5 );
+    	}
+
+    	h64.add( u.fromNumber(this.total_len) );
+
+    	while (p <= bEnd - 8)
+    	{
+    		if (isString) {
+    			u.fromBits(
+    				(input.charCodeAt(p+1) << 8) | input.charCodeAt(p)
+    			,	(input.charCodeAt(p+3) << 8) | input.charCodeAt(p+2)
+    			,	(input.charCodeAt(p+5) << 8) | input.charCodeAt(p+4)
+    			,	(input.charCodeAt(p+7) << 8) | input.charCodeAt(p+6)
+    			);
+    		} else {
+    			u.fromBits(
+    				(input[p+1] << 8) | input[p]
+    			,	(input[p+3] << 8) | input[p+2]
+    			,	(i
