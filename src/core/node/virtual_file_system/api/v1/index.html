@@ -16289,4 +16289,46 @@
     	h = h64.clone().shiftRight(29);
     	h64.xor(h).multiply(PRIME64_3);
 
-    	h = h64.clone().shiftRigh
+    	h = h64.clone().shiftRight(32);
+    	h64.xor(h);
+
+    	// Reset the state
+    	this.init( this.seed );
+
+    	return h64
+    };
+
+    var xxhash64 = XXH64;
+
+    var lib$2 = {
+    	h32: xxhash
+    ,	h64: xxhash64
+    };
+    var lib_1$2 = lib$2.h32;
+    var lib_2$2 = lib$2.h64;
+
+    'use strict';
+
+    var fastJsonStableStringify = function (data, opts) {
+        if (!opts) opts = {};
+        if (typeof opts === 'function') opts = { cmp: opts };
+        var cycles = (typeof opts.cycles === 'boolean') ? opts.cycles : false;
+
+        var cmp = opts.cmp && (function (f) {
+            return function (node) {
+                return function (a, b) {
+                    var aobj = { key: a, value: node[a] };
+                    var bobj = { key: b, value: node[b] };
+                    return f(aobj, bobj);
+                };
+            };
+        })(opts.cmp);
+
+        var seen = [];
+        return (function stringify (node) {
+            if (node && node.toJSON && typeof node.toJSON === 'function') {
+                node = node.toJSON();
+            }
+
+            if (node === undefined) return;
+            if (typeof node == 'number') return isFinite(node) ? '' + node : 'nul
