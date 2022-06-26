@@ -16463,4 +16463,52 @@
     	let span;
     	let t1;
     	let code;
-    	let t2_va
+    	let t2_value = /*schema*/ ctx[6].enum + "";
+    	let t2;
+
+    	return {
+    		c() {
+    			div = element("div");
+    			span = element("span");
+    			span.textContent = "Values:";
+    			t1 = space();
+    			code = element("code");
+    			t2 = text(t2_value);
+    		},
+    		m(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, span);
+    			append(div, t1);
+    			append(div, code);
+    			append(code, t2);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*parameters*/ 2 && t2_value !== (t2_value = /*schema*/ ctx[6].enum + "")) set_data(t2, t2_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div);
+    		}
+    	};
+    }
+
+    // (15:4) {#each parameters as { name, example, required, description, schema }}
+    function create_each_block(ctx) {
+    	let tr;
+    	let td0;
+    	let code;
+    	let t0_value = /*name*/ ctx[2] + "";
+    	let t0;
+    	let t1;
+    	let td1;
+    	let div;
+    	let span0;
+    	let t2_value = /*schema*/ ctx[6].type + "";
+    	let t2;
+    	let t3;
+    	let span1;
+    	let t4_value = (/*required*/ ctx[4] ? "required" : "optional") + "";
+    	let t4;
+    	let t5;
+    	let td2;
+    	let t6;
+    	let t
