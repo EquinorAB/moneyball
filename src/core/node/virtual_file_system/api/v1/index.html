@@ -16414,4 +16414,53 @@
     			div.innerHTML = raw_value;
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*parameters*/ 2 && raw_value !=
+    			if (dirty & /*parameters*/ 2 && raw_value !== (raw_value = markdown(/*description*/ ctx[5]) + "")) div.innerHTML = raw_value;;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div);
+    		}
+    	};
+    }
+
+    // (40:10) {#if example}
+    function create_if_block_1$2(ctx) {
+    	let div;
+    	let span;
+    	let t1;
+    	let code;
+    	let t2_value = /*example*/ ctx[3] + "";
+    	let t2;
+
+    	return {
+    		c() {
+    			div = element("div");
+    			span = element("span");
+    			span.textContent = "Example:";
+    			t1 = space();
+    			code = element("code");
+    			t2 = text(t2_value);
+    			attr(code, "class", "tag");
+    		},
+    		m(target, anchor) {
+    			insert(target, div, anchor);
+    			append(div, span);
+    			append(div, t1);
+    			append(div, code);
+    			append(code, t2);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*parameters*/ 2 && t2_value !== (t2_value = /*example*/ ctx[3] + "")) set_data(t2, t2_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div);
+    		}
+    	};
+    }
+
+    // (47:10) {#if schema.enum}
+    function create_if_block$3(ctx) {
+    	let div;
+    	let span;
+    	let t1;
+    	let code;
+    	let t2_va
