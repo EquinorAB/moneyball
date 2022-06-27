@@ -16626,4 +16626,51 @@
     			}
     		},
     		d(detaching) {
-    			if (detachin
+    			if (detaching) detach(tr);
+    			if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+    		}
+    	};
+    }
+
+    function create_fragment$4(ctx) {
+    	let table;
+    	let thead;
+    	let tr;
+    	let th;
+    	let t0;
+    	let t1;
+    	let tbody;
+    	let each_value = /*parameters*/ ctx[1];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    	}
+
+    	return {
+    		c() {
+    			table = element("table");
+    			thead = element("thead");
+    			tr = element("tr");
+    			th = element("th");
+    			t0 = text(/*title*/ ctx[0]);
+    			t1 = space();
+    			tbody = element("tbody");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr(th, "colspan", "3");
+    			attr(table, "class", "table table-bordered is-bordered is-fullwidth");
+    		},
+    		m(target, anchor) {
+    			insert(target, table, anchor);
+    			append(table, thead);
+    			append(thead, tr);
+    			append(tr, th);
+    			append(th, t0);
+    			append(table, t1);
+ 
