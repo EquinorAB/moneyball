@@ -16511,4 +16511,42 @@
     	let t5;
     	let td2;
     	let t6;
-    	let t
+    	let t7;
+    	let t8;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*description*/ ctx[5]) return create_if_block_2$1;
+    		return create_else_block$2;
+    	}
+
+    	let current_block_type = select_block_type(ctx, -1);
+    	let if_block0 = current_block_type(ctx);
+    	let if_block1 = /*example*/ ctx[3] && create_if_block_1$2(ctx);
+    	let if_block2 = /*schema*/ ctx[6].enum && create_if_block$3(ctx);
+
+    	return {
+    		c() {
+    			tr = element("tr");
+    			td0 = element("td");
+    			code = element("code");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			td1 = element("td");
+    			div = element("div");
+    			span0 = element("span");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			span1 = element("span");
+    			t4 = text(t4_value);
+    			t5 = space();
+    			td2 = element("td");
+    			if_block0.c();
+    			t6 = space();
+    			if (if_block1) if_block1.c();
+    			t7 = space();
+    			if (if_block2) if_block2.c();
+    			t8 = space();
+    			attr(span0, "class", "tag");
+    			attr(span1, "class", "tag");
+    			toggle_class(span1, "is-dark", /*required*/ ctx[4]);
+    			toggle_class(span1, "is-white", 
