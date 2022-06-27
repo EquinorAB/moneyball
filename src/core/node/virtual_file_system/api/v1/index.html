@@ -16549,4 +16549,35 @@
     			attr(span0, "class", "tag");
     			attr(span1, "class", "tag");
     			toggle_class(span1, "is-dark", /*required*/ ctx[4]);
-    			toggle_class(span1, "is-white", 
+    			toggle_class(span1, "is-white", !/*required*/ ctx[4]);
+    			attr(div, "class", "tags has-addons");
+    		},
+    		m(target, anchor) {
+    			insert(target, tr, anchor);
+    			append(tr, td0);
+    			append(td0, code);
+    			append(code, t0);
+    			append(tr, t1);
+    			append(tr, td1);
+    			append(td1, div);
+    			append(div, span0);
+    			append(span0, t2);
+    			append(div, t3);
+    			append(div, span1);
+    			append(span1, t4);
+    			append(tr, t5);
+    			append(tr, td2);
+    			if_block0.m(td2, null);
+    			append(td2, t6);
+    			if (if_block1) if_block1.m(td2, null);
+    			append(td2, t7);
+    			if (if_block2) if_block2.m(td2, null);
+    			append(tr, t8);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*parameters*/ 2 && t0_value !== (t0_value = /*name*/ ctx[2] + "")) set_data(t0, t0_value);
+    			if (dirty & /*parameters*/ 2 && t2_value !== (t2_value = /*schema*/ ctx[6].type + "")) set_data(t2, t2_value);
+    			if (dirty & /*parameters*/ 2 && t4_value !== (t4_value = (/*required*/ ctx[4] ? "required" : "optional") + "")) set_data(t4, t4_value);
+
+    			if (dirty & /*parameters*/ 2) {
+    				toggle_class(span1, "is-dark", 
