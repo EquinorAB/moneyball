@@ -16580,4 +16580,50 @@
     			if (dirty & /*parameters*/ 2 && t4_value !== (t4_value = (/*required*/ ctx[4] ? "required" : "optional") + "")) set_data(t4, t4_value);
 
     			if (dirty & /*parameters*/ 2) {
-    				toggle_class(span1, "is-dark", 
+    				toggle_class(span1, "is-dark", /*required*/ ctx[4]);
+    			}
+
+    			if (dirty & /*parameters*/ 2) {
+    				toggle_class(span1, "is-white", !/*required*/ ctx[4]);
+    			}
+
+    			if (current_block_type === (current_block_type = select_block_type(ctx, dirty)) && if_block0) {
+    				if_block0.p(ctx, dirty);
+    			} else {
+    				if_block0.d(1);
+    				if_block0 = current_block_type(ctx);
+
+    				if (if_block0) {
+    					if_block0.c();
+    					if_block0.m(td2, t6);
+    				}
+    			}
+
+    			if (/*example*/ ctx[3]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block_1$2(ctx);
+    					if_block1.c();
+    					if_block1.m(td2, t7);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (/*schema*/ ctx[6].enum) {
+    				if (if_block2) {
+    					if_block2.p(ctx, dirty);
+    				} else {
+    					if_block2 = create_if_block$3(ctx);
+    					if_block2.c();
+    					if_block2.m(td2, null);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+    		},
+    		d(detaching) {
+    			if (detachin
