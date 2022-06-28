@@ -16673,4 +16673,47 @@
     			append(tr, th);
     			append(th, t0);
     			append(table, t1);
- 
+    			append(table, tbody);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(tbody, null);
+    			}
+    		},
+    		p(ctx, [dirty]) {
+    			if (dirty & /*title*/ 1) set_data(t0, /*title*/ ctx[0]);
+
+    			if (dirty & /*parameters, markdown*/ 2) {
+    				each_value = /*parameters*/ ctx[1];
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(tbody, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(table);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+    }
+
+    function instance$4($$self, $$props, $$invalidate) {
+    	let { title } = $$props;
+    	let { parameters } =
