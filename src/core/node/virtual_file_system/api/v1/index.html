@@ -16755,4 +16755,45 @@
     		},
     		p(ctx, dirty) {
     			const parametertable_changes = {};
-    			if (dirty & /*pathParameters*/ 1) parametertable_ch
+    			if (dirty & /*pathParameters*/ 1) parametertable_changes.parameters = /*pathParameters*/ ctx[0];
+    			parametertable.$set(parametertable_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(parametertable.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(parametertable.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(parametertable, detaching);
+    		}
+    	};
+    }
+
+    // (14:0) {#if queryParameters.length > 0}
+    function create_if_block$4(ctx) {
+    	let current;
+
+    	const parametertable = new ParameterTable({
+    			props: {
+    				parameters: /*queryParameters*/ ctx[1],
+    				title: "Query Parameters"
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(parametertable.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(parametertable, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const parametertable_changes = {};
+    			if (dirty & /*queryParameters*/ 2) parametertable_changes.parameters = /*queryParameters*/ ctx[1];
+    			parametertable.$set(parametertable_changes);
+  
