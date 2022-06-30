@@ -16883,3 +16883,45 @@
     		o(local) {
     			transition_out(if_block0);
     			transition_out(if_block1);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (if_block0) if_block0.d(detaching);
+    			if (detaching) detach(t);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach(if_block1_anchor);
+    		}
+    	};
+    }
+
+    function instance$5($$self, $$props, $$invalidate) {
+    	let { parameters = [] } = $$props;
+
+    	$$self.$set = $$props => {
+    		if ("parameters" in $$props) $$invalidate(2, parameters = $$props.parameters);
+    	};
+
+    	let pathParameters;
+    	let queryParameters;
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*parameters*/ 4) {
+    			 $$invalidate(0, pathParameters = parameters.filter(param => param.location === "path"));
+    		}
+
+    		if ($$self.$$.dirty & /*parameters*/ 4) {
+    			 $$invalidate(1, queryParameters = parameters.filter(param => param.location === "query"));
+    		}
+    	};
+
+    	return [pathParameters, queryParameters, parameters];
+    }
+
+    class ParameterPanel extends SvelteComponent {
+    	constructor(options) {
+    		super();
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, { parameters: 2 });
+    	}
+    }
+
+    /* Users/kings/.nvm/versions/node/v12.16.1/lib/node_modules/snowboard/templates/winter/componen
