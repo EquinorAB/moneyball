@@ -16960,4 +16960,43 @@
     				toggle_class(i, "fa-chevron-up", !/*show*/ ctx[0]);
     			}
 
-    			if (dirty & /*show*
+    			if (dirty & /*show*/ 1) {
+    				toggle_class(i, "fa-chevron-down", /*show*/ ctx[0]);
+    			}
+
+    			if (dirty & /*additionalClass*/ 4 && span_class_value !== (span_class_value = "toggle-icon icon " + /*additionalClass*/ ctx[2] + " svelte-o7a14x")) {
+    				attr(span, "class", span_class_value);
+    			}
+
+    			if (dirty & /*additionalClass, dark*/ 6) {
+    				toggle_class(span, "has-text-grey", !/*dark*/ ctx[1]);
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(span);
+    			dispose();
+    		}
+    	};
+    }
+
+    function instance$6($$self, $$props, $$invalidate) {
+    	let { dark = false } = $$props;
+    	let { show = false } = $$props;
+    	let { additionalClass = "" } = $$props;
+    	let { handleClick } = $$props;
+
+    	function toggle(event) {
+    		$$invalidate(0, show = !show);
+    		handleClick(event);
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("dark" in $$props) $$invalidate(1, dark = $$props.dark);
+    		if ("show" in $$props) $$invalidate(0, show = $$props.show);
+    		if ("additionalClass" in $$props) $$invalidate(2, additionalClass = $$props.additionalClass);
+    		if ("handleClick" in $$props) $$invalidate(4, handleClick = $$props.handleClick);
+    	};
+
+    
