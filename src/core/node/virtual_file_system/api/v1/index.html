@@ -17064,4 +17064,38 @@
     			if (body_slot) body_slot.c();
     			attr(div0, "class", "panel-heading svelte-1hkyt70");
     			toggle_class(div0, "has-background-dark", /*dark*/ ctx[1]);
+    			toggle_class(div0, "has-text-white", /*dark*/ ctx[1]);
+    			toggle_class(div0, "panel-dark", /*dark*/ ctx[1]);
+    			toggle_class(div0, "panel-button", !/*show*/ ctx[0]);
+    			attr(div1, "class", "panel-section has-background-white svelte-1hkyt70");
+    			toggle_class(div1, "is-hidden", !/*show*/ ctx[0]);
+    			toggle_class(div1, "is-darkmode", /*isDarkmode*/ ctx[2]);
+    			attr(div2, "class", "panel");
+    		},
+    		m(target, anchor) {
+    			insert(target, div2, anchor);
+    			append(div2, div0);
+
+    			if (heading_slot) {
+    				heading_slot.m(div0, null);
+    			}
+
+    			append(div0, t0);
+    			mount_component(toggleicon, div0, null);
+    			append(div2, t1);
+    			append(div2, div1);
+
+    			if (body_slot) {
+    				body_slot.m(div1, null);
+    			}
+
+    			current = true;
+    		},
+    		p(ctx, [dirty]) {
+    			if (heading_slot) {
+    				if (heading_slot.p && dirty & /*$$scope*/ 8) {
+    					heading_slot.p(get_slot_context(heading_slot_template, ctx, /*$$scope*/ ctx[3], get_heading_slot_context), get_slot_changes(heading_slot_template, /*$$scope*/ ctx[3], dirty, get_heading_slot_changes));
+    				}
+    			}
+
   
