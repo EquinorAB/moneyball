@@ -17028,4 +17028,40 @@
     const get_body_slot_changes = dirty => ({});
     const get_body_slot_context = ctx => ({});
     const get_heading_slot_changes = dirty => ({});
-    const get_heading_slot_context = ctx
+    const get_heading_slot_context = ctx => ({});
+
+    function create_fragment$7(ctx) {
+    	let div2;
+    	let div0;
+    	let t0;
+    	let t1;
+    	let div1;
+    	let current;
+    	const heading_slot_template = /*$$slots*/ ctx[4].heading;
+    	const heading_slot = create_slot(heading_slot_template, ctx, /*$$scope*/ ctx[3], get_heading_slot_context);
+
+    	const toggleicon = new ToggleIcon({
+    			props: {
+    				dark: /*dark*/ ctx[1],
+    				show: /*show*/ ctx[0],
+    				additionalClass: "is-pulled-right",
+    				handleClick: /*func*/ ctx[5]
+    			}
+    		});
+
+    	const body_slot_template = /*$$slots*/ ctx[4].body;
+    	const body_slot = create_slot(body_slot_template, ctx, /*$$scope*/ ctx[3], get_body_slot_context);
+
+    	return {
+    		c() {
+    			div2 = element("div");
+    			div0 = element("div");
+    			if (heading_slot) heading_slot.c();
+    			t0 = space();
+    			create_component(toggleicon.$$.fragment);
+    			t1 = space();
+    			div1 = element("div");
+    			if (body_slot) body_slot.c();
+    			attr(div0, "class", "panel-heading svelte-1hkyt70");
+    			toggle_class(div0, "has-background-dark", /*dark*/ ctx[1]);
+  
