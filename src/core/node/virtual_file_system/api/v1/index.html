@@ -17131,4 +17131,39 @@
     			}
 
     			if (dirty & /*isDarkmode*/ 4) {
-    				toggle_class(div1, "is-darkmode", /*isDa
+    				toggle_class(div1, "is-darkmode", /*isDarkmode*/ ctx[2]);
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(heading_slot, local);
+    			transition_in(toggleicon.$$.fragment, local);
+    			transition_in(body_slot, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(heading_slot, local);
+    			transition_out(toggleicon.$$.fragment, local);
+    			transition_out(body_slot, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div2);
+    			if (heading_slot) heading_slot.d(detaching);
+    			destroy_component(toggleicon);
+    			if (body_slot) body_slot.d(detaching);
+    		}
+    	};
+    }
+
+    function instance$7($$self, $$props, $$invalidate) {
+    	let { dark = false } = $$props;
+    	let { show = false } = $$props;
+    	let { isDarkmode } = $$props;
+    	let { $$slots = {}, $$scope } = $$props;
+    	const func = () => $$invalidate(0, show = !show);
+
+    	$$self.$set = $$props => {
+    		if ("dark" in $$props) $$invalidate(1, dark = $$props.dark);
+    		if ("show" in $$props) $$invalidate(0, show = $$props.show);
+    		if ("isDarkmode" in $$props) $$invalidate(2, isDarkmode = $$props
