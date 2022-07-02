@@ -17098,4 +17098,37 @@
     				}
     			}
 
-  
+    			const toggleicon_changes = {};
+    			if (dirty & /*dark*/ 2) toggleicon_changes.dark = /*dark*/ ctx[1];
+    			if (dirty & /*show*/ 1) toggleicon_changes.show = /*show*/ ctx[0];
+    			if (dirty & /*show*/ 1) toggleicon_changes.handleClick = /*func*/ ctx[5];
+    			toggleicon.$set(toggleicon_changes);
+
+    			if (dirty & /*dark*/ 2) {
+    				toggle_class(div0, "has-background-dark", /*dark*/ ctx[1]);
+    			}
+
+    			if (dirty & /*dark*/ 2) {
+    				toggle_class(div0, "has-text-white", /*dark*/ ctx[1]);
+    			}
+
+    			if (dirty & /*dark*/ 2) {
+    				toggle_class(div0, "panel-dark", /*dark*/ ctx[1]);
+    			}
+
+    			if (dirty & /*show*/ 1) {
+    				toggle_class(div0, "panel-button", !/*show*/ ctx[0]);
+    			}
+
+    			if (body_slot) {
+    				if (body_slot.p && dirty & /*$$scope*/ 8) {
+    					body_slot.p(get_slot_context(body_slot_template, ctx, /*$$scope*/ ctx[3], get_body_slot_context), get_slot_changes(body_slot_template, /*$$scope*/ ctx[3], dirty, get_body_slot_changes));
+    				}
+    			}
+
+    			if (dirty & /*show*/ 1) {
+    				toggle_class(div1, "is-hidden", !/*show*/ ctx[0]);
+    			}
+
+    			if (dirty & /*isDarkmode*/ 4) {
+    				toggle_class(div1, "is-darkmode", /*isDa
