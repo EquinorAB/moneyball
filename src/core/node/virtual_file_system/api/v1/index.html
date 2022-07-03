@@ -17238,4 +17238,45 @@
     			attr(div, "class", "field has-addons");
     		},
     		m(target, anchor) {
-    			insert
+    			insert(target, div, anchor);
+    			append(div, p0);
+    			append(p0, input0);
+    			append(p0, t0);
+    			append(p0, label);
+    			append(div, t1);
+    			append(div, p1);
+    			append(p1, input1);
+    			append(div, t2);
+    			append(div, p2);
+    			append(p2, input2);
+    		},
+    		p(ctx, [dirty]) {
+    			if (dirty & /*name*/ 1 && input0_id_value !== (input0_id_value = "h-" + /*name*/ ctx[0])) {
+    				attr(input0, "id", input0_id_value);
+    			}
+
+    			if (dirty & /*name*/ 1 && label_for_value !== (label_for_value = "h-" + /*name*/ ctx[0])) {
+    				attr(label, "for", label_for_value);
+    			}
+
+    			if (dirty & /*placeholder*/ 2) {
+    				attr(input1, "placeholder", /*placeholder*/ ctx[1]);
+    			}
+
+    			if (dirty & /*value*/ 4 && input2.value !== /*value*/ ctx[2]) {
+    				input2.value = /*value*/ ctx[2];
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(div);
+    		}
+    	};
+    }
+
+    function instance$8($$self, $$props, $$invalidate) {
+    	let { name } = $$props;
+    	let { placeholder } = $$props;
+    	let { value } = $$props;
+
