@@ -17311,4 +17311,40 @@
     	let p0;
     	let input0;
     	let input0_id_value;
-    	
+    	let t0;
+    	let label;
+    	let label_for_value;
+    	let t1;
+    	let p1;
+    	let input1;
+    	let t2;
+    	let p2;
+    	let input2;
+    	let dispose;
+
+    	return {
+    		c() {
+    			div = element("div");
+    			p0 = element("p");
+    			input0 = element("input");
+    			t0 = space();
+    			label = element("label");
+    			t1 = space();
+    			p1 = element("p");
+    			input1 = element("input");
+    			t2 = space();
+    			p2 = element("p");
+    			input2 = element("input");
+    			attr(input0, "class", "switch is-rounded is-success");
+    			attr(input0, "id", input0_id_value = "p-" + /*name*/ ctx[3]);
+    			attr(input0, "type", "checkbox");
+    			input0.disabled = /*required*/ ctx[2];
+    			attr(label, "for", label_for_value = "p-" + /*name*/ ctx[3]);
+    			attr(p0, "class", "control control-switch svelte-a7ak6u");
+    			attr(input1, "class", "input is-rounded has-border svelte-a7ak6u");
+    			attr(input1, "type", "text");
+    			attr(input1, "placeholder", /*name*/ ctx[3]);
+    			input1.disabled = true;
+    			attr(p1, "class", "control");
+    			attr(input2, "class", "input has-border is-family-code svelte-a7ak6u");
+    			attr(input2, "type", "te
