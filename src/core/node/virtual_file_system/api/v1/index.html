@@ -17347,4 +17347,43 @@
     			input1.disabled = true;
     			attr(p1, "class", "control");
     			attr(input2, "class", "input has-border is-family-code svelte-a7ak6u");
-    			attr(input2, "type", "te
+    			attr(input2, "type", "text");
+    			toggle_class(input2, "is-rounded", /*rounded*/ ctx[4]);
+    			attr(p2, "class", "control is-expanded");
+    			attr(div, "class", "field has-addons");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, div, anchor);
+    			append(div, p0);
+    			append(p0, input0);
+    			input0.checked = /*used*/ ctx[0];
+    			append(p0, t0);
+    			append(p0, label);
+    			append(div, t1);
+    			append(div, p1);
+    			append(p1, input1);
+    			append(div, t2);
+    			append(div, p2);
+    			append(p2, input2);
+    			set_input_value(input2, /*value*/ ctx[1]);
+    			if (remount) run_all(dispose);
+
+    			dispose = [
+    				listen(input0, "change", /*input0_change_handler*/ ctx[5]),
+    				listen(input2, "input", /*input2_input_handler*/ ctx[6])
+    			];
+    		},
+    		p(ctx, [dirty]) {
+    			if (dirty & /*name*/ 8 && input0_id_value !== (input0_id_value = "p-" + /*name*/ ctx[3])) {
+    				attr(input0, "id", input0_id_value);
+    			}
+
+    			if (dirty & /*required*/ 4) {
+    				input0.disabled = /*required*/ ctx[2];
+    			}
+
+    			if (dirty & /*used*/ 1) {
+    				input0.checked = /*used*/ ctx[0];
+    			}
+
+    			if (dirty & /*name*/ 8 && label_for_val
