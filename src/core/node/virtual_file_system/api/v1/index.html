@@ -17386,4 +17386,48 @@
     				input0.checked = /*used*/ ctx[0];
     			}
 
-    			if (dirty & /*name*/ 8 && label_for_val
+    			if (dirty & /*name*/ 8 && label_for_value !== (label_for_value = "p-" + /*name*/ ctx[3])) {
+    				attr(label, "for", label_for_value);
+    			}
+
+    			if (dirty & /*name*/ 8) {
+    				attr(input1, "placeholder", /*name*/ ctx[3]);
+    			}
+
+    			if (dirty & /*value*/ 2 && input2.value !== /*value*/ ctx[1]) {
+    				set_input_value(input2, /*value*/ ctx[1]);
+    			}
+
+    			if (dirty & /*rounded*/ 16) {
+    				toggle_class(input2, "is-rounded", /*rounded*/ ctx[4]);
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(div);
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function instance$9($$self, $$props, $$invalidate) {
+    	let { used } = $$props;
+    	let { required } = $$props;
+    	let { name } = $$props;
+    	let { value } = $$props;
+    	let { rounded } = $$props;
+
+    	function input0_change_handler() {
+    		used = this.checked;
+    		$$invalidate(0, used);
+    	}
+
+    	function input2_input_handler() {
+    		value = this.value;
+    		$$invalidate(1, value);
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("used" in $$props) $$invalidate(0, used = $$props.used);
+    		if ("required" in $$prop
