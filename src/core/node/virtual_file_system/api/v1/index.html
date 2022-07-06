@@ -17510,4 +17510,50 @@
     			if_block_anchor = empty();
     		},
     		m(target, anchor) {
-    			if (
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+    		p(ctx, [dirty]) {
+    			if (/*body*/ ctx[0]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$5(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
+    		}
+    	};
+    }
+
+    function instance$a($$self, $$props, $$invalidate) {
+    	let { type } = $$props;
+    	let { body } = $$props;
+
+    	$$self.$set = $$props => {
+    		if ("type" in $$props) $$invalidate(2, type = $$props.type);
+    		if ("body" in $$props) $$invalidate(0, body = $$props.body);
+    	};
+
+    	let mime;
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*type*/ 4) {
+    			 $$invalidate(1, mime = alias(type));
+    		}
+    	};
+
+    	return [body, mime, type];
+    }
+
+    class CodeBlock extends Svelt
