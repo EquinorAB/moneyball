@@ -17473,4 +17473,41 @@
 
     	return {
     		c() {
-    			pre = elem
+    			pre = element("pre");
+    			code = element("code");
+    			attr(code, "class", code_class_value = "language-" + /*mime*/ ctx[1]);
+    			attr(pre, "class", pre_class_value = "language-" + /*mime*/ ctx[1]);
+    		},
+    		m(target, anchor) {
+    			insert(target, pre, anchor);
+    			append(pre, code);
+    			code.innerHTML = raw_value;
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*body, mime*/ 3 && raw_value !== (raw_value = highlight(stringify$2(/*body*/ ctx[0]), /*mime*/ ctx[1]) + "")) code.innerHTML = raw_value;;
+
+    			if (dirty & /*mime*/ 2 && code_class_value !== (code_class_value = "language-" + /*mime*/ ctx[1])) {
+    				attr(code, "class", code_class_value);
+    			}
+
+    			if (dirty & /*mime*/ 2 && pre_class_value !== (pre_class_value = "language-" + /*mime*/ ctx[1])) {
+    				attr(pre, "class", pre_class_value);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(pre);
+    		}
+    	};
+    }
+
+    function create_fragment$a(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*body*/ ctx[0] && create_if_block$5(ctx);
+
+    	return {
+    		c() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (
