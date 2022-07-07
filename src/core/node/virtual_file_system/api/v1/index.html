@@ -17595,4 +17595,41 @@
     				attr(a, "href", /*authorizeUrl*/ ctx[1]);
     			}
 
-    			if (dirty
+    			if (dirty & /*fullWidth*/ 1) {
+    				toggle_class(a, "is-fullwidth", /*fullWidth*/ ctx[0]);
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(a);
+    		}
+    	};
+    }
+
+    function instance$b($$self, $$props, $$invalidate) {
+    	let { authOptions } = $$props;
+    	let { fullWidth } = $$props;
+    	let { pkceChallenge } = $$props;
+    	let { isPKCE } = $$props;
+
+    	$$self.$set = $$props => {
+    		if ("authOptions" in $$props) $$invalidate(2, authOptions = $$props.authOptions);
+    		if ("fullWidth" in $$props) $$invalidate(0, fullWidth = $$props.fullWidth);
+    		if ("pkceChallenge" in $$props) $$invalidate(3, pkceChallenge = $$props.pkceChallenge);
+    		if ("isPKCE" in $$props) $$invalidate(4, isPKCE = $$props.isPKCE);
+    	};
+
+    	let authorizeParams;
+    	let authorizeUrl;
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*isPKCE, authOptions, pkceChallenge*/ 28) {
+    			 $$invalidate(5, authorizeParams = isPKCE
+    			? querystringify_1.stringify(
+    					{
+    						client_id: authOptions.clientId,
+    						redirect_uri: authOptions.callbackUrl,
+    						response_type: "code",
+    						state: getState(),
+    	
