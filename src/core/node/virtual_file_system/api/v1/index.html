@@ -17749,3 +17749,35 @@
     			span2 = element("span");
     			t4 = text(t4_value);
     			attr(span0, "class", "is-uppercase has-text-weight-bold");
+    			attr(span2, "class", "has-text-weight-bold");
+    			attr(a, "href", "javascript:void(0)");
+    			attr(a, "class", "button button-left is-warning is-family-code is-fullwidth svelte-c3oocm");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, a, anchor);
+    			append(a, span0);
+    			append(span0, t0);
+    			append(a, t1);
+    			append(a, span1);
+    			append(span1, t2);
+    			append(a, t3);
+    			append(a, span2);
+    			append(span2, t4);
+    			if (remount) dispose();
+    			dispose = listen(a, "click", /*handleCopy*/ ctx[17]);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty[0] & /*currentAction*/ 64 && t0_value !== (t0_value = /*currentAction*/ ctx[6].method + "")) set_data(t0, t0_value);
+    			if (dirty[0] & /*currentUrl*/ 8192 && t2_value !== (t2_value = /*currentUrl*/ ctx[13].origin + "")) set_data(t2, t2_value);
+    			if (dirty[0] & /*currentUrl*/ 8192 && t4_value !== (t4_value = /*currentUrl*/ ctx[13].pathname + "")) set_data(t4, t4_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(a);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (123:8) {#if copying}
+    function create_if_block_7(ctx) {
+   
