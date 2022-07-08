@@ -17696,4 +17696,56 @@
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[38] = list
+    	child_ctx[38] = list[i];
+    	child_ctx[39] = list;
+    	child_ctx[40] = i;
+    	return child_ctx;
+    }
+
+    // (119:2) <span slot="heading">
+    function create_heading_slot(ctx) {
+    	let span;
+
+    	return {
+    		c() {
+    			span = element("span");
+    			span.textContent = "Playground";
+    			attr(span, "slot", "heading");
+    		},
+    		m(target, anchor) {
+    			insert(target, span, anchor);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(span);
+    		}
+    	};
+    }
+
+    // (128:8) {:else}
+    function create_else_block_4(ctx) {
+    	let a;
+    	let span0;
+    	let t0_value = /*currentAction*/ ctx[6].method + "";
+    	let t0;
+    	let t1;
+    	let span1;
+    	let t2_value = /*currentUrl*/ ctx[13].origin + "";
+    	let t2;
+    	let t3;
+    	let span2;
+    	let t4_value = /*currentUrl*/ ctx[13].pathname + "";
+    	let t4;
+    	let dispose;
+
+    	return {
+    		c() {
+    			a = element("a");
+    			span0 = element("span");
+    			t0 = text(t0_value);
+    			t1 = text("\n             \n            ");
+    			span1 = element("span");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			span2 = element("span");
+    			t4 = text(t4_value);
+    			attr(span0, "class", "is-uppercase has-text-weight-bold");
