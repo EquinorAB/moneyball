@@ -17827,4 +17827,38 @@
     	};
     }
 
-    // (143:8) {#if 
+    // (143:8) {#if isAuth(environment, 'oauth2') && !$auth.split(';').includes($env)}
+    function create_if_block_6(ctx) {
+    	let current;
+
+    	const loginbutton = new LoginButton({
+    			props: {
+    				authOptions: /*environment*/ ctx[11].auth.options,
+    				isPKCE: isPKCE(/*environment*/ ctx[11]),
+    				pkceChallenge: /*pkceChallenge*/ ctx[7],
+    				fullWidth: true
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(loginbutton.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(loginbutton, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const loginbutton_changes = {};
+    			if (dirty[0] & /*environment*/ 2048) loginbutton_changes.authOptions = /*environment*/ ctx[11].auth.options;
+    			if (dirty[0] & /*environment*/ 2048) loginbutton_changes.isPKCE = isPKCE(/*environment*/ ctx[11]);
+    			if (dirty[0] & /*pkceChallenge*/ 128) loginbutton_changes.pkceChallenge = /*pkceChallenge*/ ctx[7];
+    			loginbutton.$set(loginbutton_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(loginbutton.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(loginbutton.$
