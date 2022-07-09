@@ -17780,4 +17780,51 @@
 
     // (123:8) {#if copying}
     function create_if_block_7(ctx) {
-   
+    	let button;
+
+    	return {
+    		c() {
+    			button = element("button");
+    			button.innerHTML = `<span>URL has been copied to clipboard.</span>`;
+    			attr(button, "class", "button button-left is-warning is-family-code is-fullwidth svelte-c3oocm");
+    		},
+    		m(target, anchor) {
+    			insert(target, button, anchor);
+    		},
+    		p: noop,
+    		d(detaching) {
+    			if (detaching) detach(button);
+    		}
+    	};
+    }
+
+    // (149:8) {:else}
+    function create_else_block_3(ctx) {
+    	let button;
+    	let dispose;
+
+    	return {
+    		c() {
+    			button = element("button");
+
+    			button.innerHTML = `<span class="icon"><i class="fas fa-paper-plane"></i></span> 
+            <span>Send</span>`;
+
+    			attr(button, "class", "button is-success is-fullwidth");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, button, anchor);
+    			if (remount) dispose();
+    			dispose = listen(button, "click", /*handleClick*/ ctx[15]);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(button);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (143:8) {#if 
