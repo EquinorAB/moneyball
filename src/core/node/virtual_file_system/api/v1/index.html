@@ -17861,4 +17861,48 @@
     			current = true;
     		},
     		o(local) {
-    			transition_out(loginbutton.$
+    			transition_out(loginbutton.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(loginbutton, detaching);
+    		}
+    	};
+    }
+
+    // (181:6) {:else}
+    function create_else_block_2(ctx) {
+    	let t;
+    	let if_block_anchor;
+    	let current;
+    	let each_value_2 = /*requestHeaders*/ ctx[0];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_2.length; i += 1) {
+    		each_blocks[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+    	}
+
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
+
+    	let if_block = /*requestAuthHeader*/ ctx[1] && create_if_block_5(ctx);
+
+    	return {
+    		c() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t = space();
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert(target, t, anchor);
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, if_bloc
