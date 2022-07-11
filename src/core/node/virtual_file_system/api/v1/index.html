@@ -18040,4 +18040,38 @@
 
     	return {
     		c() {
-    			create_component(fiel
+    			create_component(fieldswitch.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(fieldswitch, target, anchor);
+    			current = true;
+    		},
+    		p(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			const fieldswitch_changes = {};
+    			if (dirty[0] & /*requestHeaders*/ 1) fieldswitch_changes.name = /*header*/ ctx[38].name;
+    			if (dirty[0] & /*requestHeaders*/ 1) fieldswitch_changes.required = /*header*/ ctx[38].required;
+
+    			if (!updating_used && dirty[0] & /*requestHeaders*/ 1) {
+    				updating_used = true;
+    				fieldswitch_changes.used = /*header*/ ctx[38].used;
+    				add_flush_callback(() => updating_used = false);
+    			}
+
+    			if (!updating_value && dirty[0] & /*requestHeaders*/ 1) {
+    				updating_value = true;
+    				fieldswitch_changes.value = /*header*/ ctx[38].value;
+    				add_flush_callback(() => updating_value = false);
+    			}
+
+    			fieldswitch.$set(fieldswitch_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(fieldswitch.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(fieldswitch.$$.fragment, local);
+    			current = false;
+   
