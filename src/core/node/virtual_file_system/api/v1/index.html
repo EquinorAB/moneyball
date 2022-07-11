@@ -18074,4 +18074,44 @@
     		o(local) {
     			transition_out(fieldswitch.$$.fragment, local);
     			current = false;
-   
+    		},
+    		d(detaching) {
+    			destroy_component(fieldswitch, detaching);
+    		}
+    	};
+    }
+
+    // (191:8) {#if requestAuthHeader}
+    function create_if_block_5(ctx) {
+    	let updating_value;
+    	let current;
+
+    	function fieldswitch_value_binding_1(value) {
+    		/*fieldswitch_value_binding_1*/ ctx[25].call(null, value);
+    	}
+
+    	let fieldswitch_props = {
+    		name: /*requestAuthHeader*/ ctx[1].name,
+    		required: /*requestAuthHeader*/ ctx[1].required,
+    		used: /*requestAuthHeader*/ ctx[1].used,
+    		rounded: true
+    	};
+
+    	if (/*requestAuthHeader*/ ctx[1].value !== void 0) {
+    		fieldswitch_props.value = /*requestAuthHeader*/ ctx[1].value;
+    	}
+
+    	const fieldswitch = new FieldSwitch({ props: fieldswitch_props });
+    	binding_callbacks.push(() => bind(fieldswitch, "value", fieldswitch_value_binding_1));
+
+    	return {
+    		c() {
+    			create_component(fieldswitch.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(fieldswitch, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const fieldswitch_changes = {};
+    			if (dirty[0] & /*requestAuthHeader
