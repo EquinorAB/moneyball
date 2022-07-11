@@ -18001,4 +18001,43 @@
     		i: noop,
     		o: noop,
     		d(detaching) {
-    			if (detachi
+    			if (detaching) detach(p);
+    		}
+    	};
+    }
+
+    // (182:8) {#each requestHeaders as header}
+    function create_each_block_2(ctx) {
+    	let updating_used;
+    	let updating_value;
+    	let current;
+
+    	function fieldswitch_used_binding(value) {
+    		/*fieldswitch_used_binding*/ ctx[23].call(null, value, /*header*/ ctx[38]);
+    	}
+
+    	function fieldswitch_value_binding(value) {
+    		/*fieldswitch_value_binding*/ ctx[24].call(null, value, /*header*/ ctx[38]);
+    	}
+
+    	let fieldswitch_props = {
+    		name: /*header*/ ctx[38].name,
+    		required: /*header*/ ctx[38].required,
+    		rounded: true
+    	};
+
+    	if (/*header*/ ctx[38].used !== void 0) {
+    		fieldswitch_props.used = /*header*/ ctx[38].used;
+    	}
+
+    	if (/*header*/ ctx[38].value !== void 0) {
+    		fieldswitch_props.value = /*header*/ ctx[38].value;
+    	}
+
+    	const fieldswitch = new FieldSwitch({ props: fieldswitch_props });
+    	binding_callbacks.push(() => bind(fieldswitch, "used", fieldswitch_used_binding));
+    	binding_callbacks.push(() => bind(fieldswitch, "value", fieldswitch_value_binding));
+
+    	return {
+    		c() {
+    			create_component(fiel
