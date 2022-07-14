@@ -18321,4 +18321,52 @@
     	};
     }
 
-    // (225
+    // (225:6) {:else}
+    function create_else_block$3(ctx) {
+    	let p;
+
+    	return {
+    		c() {
+    			p = element("p");
+    			p.innerHTML = `<i>Body is only available for POST, PUT and PATCH.</i>`;
+    		},
+    		m(target, anchor) {
+    			insert(target, p, anchor);
+    		},
+    		p: noop,
+    		d(detaching) {
+    			if (detaching) detach(p);
+    		}
+    	};
+    }
+
+    // (220:6) {#if allowBody(currentAction)}
+    function create_if_block_2$2(ctx) {
+    	let textarea;
+    	let dispose;
+
+    	return {
+    		c() {
+    			textarea = element("textarea");
+    			attr(textarea, "class", "textarea is-family-code");
+    			attr(textarea, "rows", "8");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, textarea, anchor);
+    			set_input_value(textarea, /*requestBody*/ ctx[3]);
+    			if (remount) dispose();
+    			dispose = listen(textarea, "input", /*textarea_input_handler*/ ctx[28]);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty[0] & /*requestBody*/ 8) {
+    				set_input_value(textarea, /*requestBody*/ ctx[3]);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(textarea);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (265:4) 
