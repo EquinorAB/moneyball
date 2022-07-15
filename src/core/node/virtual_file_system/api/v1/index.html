@@ -18525,4 +18525,52 @@
     				attr(section1, "class", section1_class_value);
     			}
 
-    			if (dirty[0] & /*response*/ 256) show_if = Object.keys(/*value*/ ctx[29].headers
+    			if (dirty[0] & /*response*/ 256) show_if = Object.keys(/*value*/ ctx[29].headers).length > 0;
+
+    			if (show_if) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    					transition_in(if_block, 1);
+    				} else {
+    					if_block = create_if_block_1$4(ctx);
+    					if_block.c();
+    					transition_in(if_block, 1);
+    					if_block.m(div1, null);
+    				}
+    			} else if (if_block) {
+    				group_outros();
+
+    				transition_out(if_block, 1, 1, () => {
+    					if_block = null;
+    				});
+
+    				check_outros();
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(if_block);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(if_block);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div1);
+    			if (if_block) if_block.d();
+    		}
+    	};
+    }
+
+    // (249:10) {#if Object.keys(value.headers).length > 0}
+    function create_if_block_1$4(ctx) {
+    	let div1;
+    	let div0;
+    	let t;
+    	let current;
+    	let each_value = Object.entries(/*value*/ ctx[29].headers);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each
