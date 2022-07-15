@@ -18573,4 +18573,50 @@
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each
+    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+    	}
+
+    	const codeblock = new CodeBlock({
+    			props: {
+    				type: contentType(/*value*/ ctx[29].headers),
+    				body: /*value*/ ctx[29].data
+    			}
+    		});
+
+    	return {
+    		c() {
+    			div1 = element("div");
+    			div0 = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t = space();
+    			create_component(codeblock.$$.fragment);
+    			attr(div0, "class", "content-header svelte-c3oocm");
+    			attr(div1, "class", "container container-content svelte-c3oocm");
+    		},
+    		m(target, anchor) {
+    			insert(target, div1, anchor);
+    			append(div1, div0);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div0, null);
+    			}
+
+    			append(div1, t);
+    			mount_component(codeblock, div1, null);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			if (dirty[0] & /*response*/ 256) {
+    				each_value = Object.entries(/*value*/ ctx[29].headers);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$1(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    				
