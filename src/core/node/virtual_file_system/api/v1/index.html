@@ -18501,4 +18501,28 @@
     			attr(h1, "class", "title");
     			attr(div0, "class", "container has-text-centered");
     			attr(section0, "class", "hero-body hero-small svelte-c3oocm");
-    			attr(section1, "class", section1_class_v
+    			attr(section1, "class", section1_class_value = "hero hero-rounded " + colorize(/*value*/ ctx[29].status) + " svelte-c3oocm");
+    			attr(div1, "class", "small-section svelte-c3oocm");
+    		},
+    		m(target, anchor) {
+    			insert(target, div1, anchor);
+    			append(div1, section1);
+    			append(section1, section0);
+    			append(section0, div0);
+    			append(div0, h1);
+    			append(h1, t0);
+    			append(h1, t1);
+    			append(h1, t2);
+    			append(div1, t3);
+    			if (if_block) if_block.m(div1, null);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			if ((!current || dirty[0] & /*response*/ 256) && t0_value !== (t0_value = /*value*/ ctx[29].status + "")) set_data(t0, t0_value);
+    			if ((!current || dirty[0] & /*response*/ 256) && t2_value !== (t2_value = /*value*/ ctx[29].statusText + "")) set_data(t2, t2_value);
+
+    			if (!current || dirty[0] & /*response*/ 256 && section1_class_value !== (section1_class_value = "hero hero-rounded " + colorize(/*value*/ ctx[29].status) + " svelte-c3oocm")) {
+    				attr(section1, "class", section1_class_value);
+    			}
+
+    			if (dirty[0] & /*response*/ 256) show_if = Object.keys(/*value*/ ctx[29].headers
