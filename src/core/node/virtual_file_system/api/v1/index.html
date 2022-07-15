@@ -18619,4 +18619,47 @@
 
     					if (each_blocks[i]) {
     						each_blocks[i].p(child_ctx, dirty);
-    				
+    					} else {
+    						each_blocks[i] = create_each_block$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div0, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+
+    			const codeblock_changes = {};
+    			if (dirty[0] & /*response*/ 256) codeblock_changes.type = contentType(/*value*/ ctx[29].headers);
+    			if (dirty[0] & /*response*/ 256) codeblock_changes.body = /*value*/ ctx[29].data;
+    			codeblock.$set(codeblock_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(codeblock.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(codeblock.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div1);
+    			destroy_each(each_blocks, detaching);
+    			destroy_component(codeblock);
+    		}
+    	};
+    }
+
+    // (252:16) {#each Object.entries(value.headers) as [key, val]}
+    function create_each_block$1(ctx) {
+    	let p;
+    	let span;
+    	let t0_value = /*key*/ ctx[31] + "";
+    	let t0;
+    	let t1;
+  
