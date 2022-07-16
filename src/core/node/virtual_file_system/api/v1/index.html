@@ -18701,4 +18701,58 @@
 
     	return {
     		c() {
-   
+    			div = element("div");
+    			div.innerHTML = `<span class="icon is-medium has-text-danger"><i class="fas fa-2x fa-spinner fa-pulse"></i></span>`;
+    			attr(div, "class", "section has-text-centered");
+    		},
+    		m(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(div);
+    		}
+    	};
+    }
+
+    // (120:2) <div slot="body">
+    function create_body_slot(ctx) {
+    	let div0;
+    	let div3;
+    	let div1;
+    	let t0;
+    	let div2;
+    	let show_if_1;
+    	let current_block_type_index;
+    	let if_block1;
+    	let t1;
+    	let div4;
+    	let ul;
+    	let li0;
+    	let a0;
+    	let t3;
+    	let li1;
+    	let a1;
+    	let t5;
+    	let li2;
+    	let a2;
+    	let t7;
+    	let div5;
+    	let current_block_type_index_1;
+    	let if_block2;
+    	let t8;
+    	let div6;
+    	let current_block_type_index_2;
+    	let if_block3;
+    	let t9;
+    	let div7;
+    	let show_if;
+    	let t10;
+    	let promise;
+    	let current;
+    	let dispose;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*copying*/ ctx[10]) return create_i
