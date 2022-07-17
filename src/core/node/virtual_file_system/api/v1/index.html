@@ -18755,4 +18755,31 @@
     	let dispose;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*copying*/ ctx[10]) return create_i
+    		if (/*copying*/ ctx[10]) return create_if_block_7;
+    		return create_else_block_4;
+    	}
+
+    	let current_block_type = select_block_type(ctx, [-1]);
+    	let if_block0 = current_block_type(ctx);
+    	const if_block_creators = [create_if_block_6, create_else_block_3];
+    	const if_blocks = [];
+
+    	function select_block_type_1(ctx, dirty) {
+    		if (dirty[0] & /*environment, $auth, $env*/ 22528) show_if_1 = !!(isAuth(/*environment*/ ctx[11], "oauth2") && !/*$auth*/ ctx[14].split(";").includes(/*$env*/ ctx[12]));
+    		if (show_if_1) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type_1(ctx, [-1]);
+    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	const if_block_creators_1 = [create_if_block_4, create_else_block_2];
+    	const if_blocks_1 = [];
+
+    	function select_block_type_2(ctx, dirty) {
+    		if (/*requestHeaders*/ ctx[0].length === 0 && !/*environment*/ ctx[11].auth) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index_1 = select_block_type_2(ctx, [-1]);
+    	if_block2 = if_blocks_1[current_block_type_index_1] = if_block_creators_1[current_block_type_index_1](ctx);
+    	const if_block_creators_2 = 
