@@ -18858,4 +18858,38 @@
     			attr(a1, "href", "javascript:void(0)");
     			toggle_class(li1, "is-active", /*requestTab*/ ctx[9] === 1);
     			attr(a2, "href", "javascript:void(0)");
-    			toggle_class(li2, "is-active"
+    			toggle_class(li2, "is-active", /*requestTab*/ ctx[9] === 2);
+    			attr(div4, "class", "tabs is-boxed");
+    			attr(div5, "class", "section-headers");
+    			toggle_class(div5, "is-hidden", /*requestTab*/ ctx[9] != 0);
+    			attr(div6, "class", "section-parameters");
+    			toggle_class(div6, "is-hidden", /*requestTab*/ ctx[9] != 1);
+    			attr(div7, "class", "section-body");
+    			toggle_class(div7, "is-hidden", /*requestTab*/ ctx[9] != 2);
+    			attr(div0, "slot", "body");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, div0, anchor);
+    			append(div0, div3);
+    			append(div3, div1);
+    			if_block0.m(div1, null);
+    			append(div3, t0);
+    			append(div3, div2);
+    			if_blocks[current_block_type_index].m(div2, null);
+    			append(div0, t1);
+    			append(div0, div4);
+    			append(div4, ul);
+    			append(ul, li0);
+    			append(li0, a0);
+    			append(ul, t3);
+    			append(ul, li1);
+    			append(li1, a1);
+    			append(ul, t5);
+    			append(ul, li2);
+    			append(li2, a2);
+    			append(div0, t7);
+    			append(div0, div5);
+    			if_blocks_1[current_block_type_index_1].m(div5, null);
+    			append(div0, t8);
+    			append(div0, div6);
+    			if_blocks_2[curren
