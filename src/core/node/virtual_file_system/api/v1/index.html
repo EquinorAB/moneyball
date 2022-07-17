@@ -18782,4 +18782,44 @@
 
     	current_block_type_index_1 = select_block_type_2(ctx, [-1]);
     	if_block2 = if_blocks_1[current_block_type_index_1] = if_block_creators_1[current_block_type_index_1](ctx);
-    	const if_block_creators_2 = 
+    	const if_block_creators_2 = [create_if_block_3, create_else_block_1];
+    	const if_blocks_2 = [];
+
+    	function select_block_type_3(ctx, dirty) {
+    		if (/*requestParameters*/ ctx[2].length === 0) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index_2 = select_block_type_3(ctx, [-1]);
+    	if_block3 = if_blocks_2[current_block_type_index_2] = if_block_creators_2[current_block_type_index_2](ctx);
+
+    	function select_block_type_4(ctx, dirty) {
+    		if (show_if == null || dirty[0] & /*currentAction*/ 64) show_if = !!allowBody(/*currentAction*/ ctx[6]);
+    		if (show_if) return create_if_block_2$2;
+    		return create_else_block$3;
+    	}
+
+    	let current_block_type_1 = select_block_type_4(ctx, [-1]);
+    	let if_block4 = current_block_type_1(ctx);
+
+    	let info = {
+    		ctx,
+    		current: null,
+    		token: null,
+    		pending: create_pending_block,
+    		then: create_then_block,
+    		catch: create_catch_block,
+    		value: 29,
+    		error: 30,
+    		blocks: [,,,]
+    	};
+
+    	handle_promise(promise = /*response*/ ctx[8], info);
+
+    	return {
+    		c() {
+    			div0 = element("div");
+    			div3 = element("div");
+    			div1 = element("div");
+    			if_block0.c();
+    			t0 = spa
