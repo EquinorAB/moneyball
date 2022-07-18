@@ -18892,4 +18892,40 @@
     			if_blocks_1[current_block_type_index_1].m(div5, null);
     			append(div0, t8);
     			append(div0, div6);
-    			if_blocks_2[curren
+    			if_blocks_2[current_block_type_index_2].m(div6, null);
+    			append(div0, t9);
+    			append(div0, div7);
+    			if_block4.m(div7, null);
+    			append(div0, t10);
+    			info.block.m(div0, info.anchor = null);
+    			info.mount = () => div0;
+    			info.anchor = null;
+    			current = true;
+    			if (remount) run_all(dispose);
+
+    			dispose = [
+    				listen(a0, "click", /*click_handler*/ ctx[20]),
+    				listen(a1, "click", /*click_handler_1*/ ctx[21]),
+    				listen(a2, "click", /*click_handler_2*/ ctx[22])
+    			];
+    		},
+    		p(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (current_block_type === (current_block_type = select_block_type(ctx, dirty)) && if_block0) {
+    				if_block0.p(ctx, dirty);
+    			} else {
+    				if_block0.d(1);
+    				if_block0 = current_block_type(ctx);
+
+    				if (if_block0) {
+    					if_block0.c();
+    					if_block0.m(div1, null);
+    				}
+    			}
+
+    			let previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type_1(ctx, dirty);
+
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(ctx, 
