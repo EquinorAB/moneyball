@@ -18964,4 +18964,41 @@
     			current_block_type_index_1 = select_block_type_2(ctx, dirty);
 
     			if (current_block_type_index_1 === previous_block_index_1) {
-    				if_blocks_1[current_block_type_index_1].p(ctx, dirty
+    				if_blocks_1[current_block_type_index_1].p(ctx, dirty);
+    			} else {
+    				group_outros();
+
+    				transition_out(if_blocks_1[previous_block_index_1], 1, 1, () => {
+    					if_blocks_1[previous_block_index_1] = null;
+    				});
+
+    				check_outros();
+    				if_block2 = if_blocks_1[current_block_type_index_1];
+
+    				if (!if_block2) {
+    					if_block2 = if_blocks_1[current_block_type_index_1] = if_block_creators_1[current_block_type_index_1](ctx);
+    					if_block2.c();
+    				}
+
+    				transition_in(if_block2, 1);
+    				if_block2.m(div5, null);
+    			}
+
+    			if (dirty[0] & /*requestTab*/ 512) {
+    				toggle_class(div5, "is-hidden", /*requestTab*/ ctx[9] != 0);
+    			}
+
+    			let previous_block_index_2 = current_block_type_index_2;
+    			current_block_type_index_2 = select_block_type_3(ctx, dirty);
+
+    			if (current_block_type_index_2 === previous_block_index_2) {
+    				if_blocks_2[current_block_type_index_2].p(ctx, dirty);
+    			} else {
+    				group_outros();
+
+    				transition_out(if_blocks_2[previous_block_index_2], 1, 1, () => {
+    					if_blocks_2[previous_block_index_2] = null;
+    				});
+
+    				check_outros();
+    				if_block3 = if_
