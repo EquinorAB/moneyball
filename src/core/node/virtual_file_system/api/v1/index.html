@@ -18928,4 +18928,40 @@
     			current_block_type_index = select_block_type_1(ctx, dirty);
 
     			if (current_block_type_index === previous_block_index) {
-    				if_blocks[current_block_type_index].p(ctx, 
+    				if_blocks[current_block_type_index].p(ctx, dirty);
+    			} else {
+    				group_outros();
+
+    				transition_out(if_blocks[previous_block_index], 1, 1, () => {
+    					if_blocks[previous_block_index] = null;
+    				});
+
+    				check_outros();
+    				if_block1 = if_blocks[current_block_type_index];
+
+    				if (!if_block1) {
+    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block1.c();
+    				}
+
+    				transition_in(if_block1, 1);
+    				if_block1.m(div2, null);
+    			}
+
+    			if (dirty[0] & /*requestTab*/ 512) {
+    				toggle_class(li0, "is-active", /*requestTab*/ ctx[9] === 0);
+    			}
+
+    			if (dirty[0] & /*requestTab*/ 512) {
+    				toggle_class(li1, "is-active", /*requestTab*/ ctx[9] === 1);
+    			}
+
+    			if (dirty[0] & /*requestTab*/ 512) {
+    				toggle_class(li2, "is-active", /*requestTab*/ ctx[9] === 2);
+    			}
+
+    			let previous_block_index_1 = current_block_type_index_1;
+    			current_block_type_index_1 = select_block_type_2(ctx, dirty);
+
+    			if (current_block_type_index_1 === previous_block_index_1) {
+    				if_blocks_1[current_block_type_index_1].p(ctx, dirty
