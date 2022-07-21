@@ -19043,4 +19043,58 @@
     			}
     		},
     		i(local) {
-   
+    			if (current) return;
+    			transition_in(if_block1);
+    			transition_in(if_block2);
+    			transition_in(if_block3);
+    			transition_in(info.block);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(if_block1);
+    			transition_out(if_block2);
+    			transition_out(if_block3);
+
+    			for (let i = 0; i < 3; i += 1) {
+    				const block = info.blocks[i];
+    				transition_out(block);
+    			}
+
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div0);
+    			if_block0.d();
+    			if_blocks[current_block_type_index].d();
+    			if_blocks_1[current_block_type_index_1].d();
+    			if_blocks_2[current_block_type_index_2].d();
+    			if_block4.d();
+    			info.block.d();
+    			info.token = null;
+    			info = null;
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (118:0) <CollapsiblePanel dark={true} {isDarkmode} {show}>
+    function create_default_slot(ctx) {
+    	let t;
+    	let current;
+
+    	return {
+    		c() {
+    			t = space();
+    		},
+    		m(target, anchor) {
+    			insert(target, t, anchor);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(t);
+    		}
+    	};
+    }
+
