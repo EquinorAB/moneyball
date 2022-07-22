@@ -19169,4 +19169,48 @@
     	let { environments } = $$props;
     	let { currentAction } = $$props;
     	let { requestHeaders } = $$props;
-    	let
+    	let { requestAuthHeader } = $$props;
+    	let { requestParameters } = $$props;
+    	let { requestBody } = $$props;
+    	let { pkceChallenge } = $$props;
+    	let response;
+    	let requestTab = 0;
+    	let copying = false;
+
+    	function handleClick() {
+    		$$invalidate(8, response = sendRequest($env, environment, currentAction, {
+    			headers: requestHeaders.concat(requestAuthHeader),
+    			parameters: requestParameters,
+    			body: requestBody
+    		}));
+    	}
+
+    	function handleTab(index) {
+    		$$invalidate(9, requestTab = index);
+    	}
+
+    	function handleCopy() {
+    		$$invalidate(10, copying = true);
+
+    		setTimeout(
+    			() => {
+    				$$invalidate(10, copying = false);
+    			},
+    			2000
+    		);
+
+    		copyUrl(currentUrl, requestParameters);
+    	}
+
+    	const click_handler = () => handleTab(0);
+    	const click_handler_1 = () => handleTab(1);
+    	const click_handler_2 = () => handleTab(2);
+
+    	function fieldswitch_used_binding(value, header) {
+    		header.used = value;
+    		$$invalidate(0, requestHeaders);
+    	}
+
+    	function fieldswitch_value_binding(value, header) {
+    		header.value = value;
+    		$$invalid
