@@ -19098,3 +19098,35 @@
     	};
     }
 
+    function create_fragment$c(ctx) {
+    	let current;
+
+    	const collapsiblepanel = new CollapsiblePanel({
+    			props: {
+    				dark: true,
+    				isDarkmode: /*isDarkmode*/ ctx[5],
+    				show: /*show*/ ctx[4],
+    				$$slots: {
+    					default: [create_default_slot],
+    					body: [create_body_slot],
+    					heading: [create_heading_slot]
+    				},
+    				$$scope: { ctx }
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(collapsiblepanel.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(collapsiblepanel, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const collapsiblepanel_changes = {};
+    			if (dirty[0] & /*isDarkmode*/ 32) collapsiblepanel_changes.isDarkmode = /*isDarkmode*/ ctx[5];
+    			if (dirty[0] & /*show*/ 16) collapsiblepanel_changes.show = /*show*/ ctx[4];
+
+    			if (dirty[0] & /*response, requestTab, requestBody, currentAction, requestParameters, requestHeaders, environment, requestAuthHeader, pkceChallenge, $auth, $env, copying, currentUrl*/ 32719 | dirty[1] & /*$$scope*/ 1024) {
+    				collapsiblepanel_changes.$$scope = { dirty
