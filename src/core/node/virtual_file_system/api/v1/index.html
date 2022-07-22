@@ -19129,4 +19129,44 @@
     			if (dirty[0] & /*show*/ 16) collapsiblepanel_changes.show = /*show*/ ctx[4];
 
     			if (dirty[0] & /*response, requestTab, requestBody, currentAction, requestParameters, requestHeaders, environment, requestAuthHeader, pkceChallenge, $auth, $env, copying, currentUrl*/ 32719 | dirty[1] & /*$$scope*/ 1024) {
-    				collapsiblepanel_changes.$$scope = { dirty
+    				collapsiblepanel_changes.$$scope = { dirty, ctx };
+    			}
+
+    			collapsiblepanel.$set(collapsiblepanel_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(collapsiblepanel.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(collapsiblepanel.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(collapsiblepanel, detaching);
+    		}
+    	};
+    }
+
+    function contentType(headers) {
+    	return headers && headers["content-type"];
+    }
+
+    function basicAuth$1(username, password) {
+    	return btoa(`${username}:${password}`);
+    }
+
+    function instance$c($$self, $$props, $$invalidate) {
+    	let $env;
+    	let $router;
+    	let $auth;
+    	component_subscribe($$self, env, $$value => $$invalidate(12, $env = $$value));
+    	component_subscribe($$self, router, $$value => $$invalidate(19, $router = $$value));
+    	component_subscribe($$self, auth, $$value => $$invalidate(14, $auth = $$value));
+    	let { show = true } = $$props;
+    	let { isDarkmode } = $$props;
+    	let { environments } = $$props;
+    	let { currentAction } = $$props;
+    	let { requestHeaders } = $$props;
+    	let
