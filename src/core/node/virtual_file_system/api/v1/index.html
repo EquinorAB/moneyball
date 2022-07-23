@@ -19213,4 +19213,34 @@
 
     	function fieldswitch_value_binding(value, header) {
     		header.value = value;
-    		$$invalid
+    		$$invalidate(0, requestHeaders);
+    	}
+
+    	function fieldswitch_value_binding_1(value) {
+    		requestAuthHeader.value = value;
+    		$$invalidate(1, requestAuthHeader);
+    	}
+
+    	function fieldswitch_used_binding_1(value, param) {
+    		param.used = value;
+    		$$invalidate(2, requestParameters);
+    	}
+
+    	function fieldswitch_value_binding_2(value, param) {
+    		param.value = value;
+    		$$invalidate(2, requestParameters);
+    	}
+
+    	function textarea_input_handler() {
+    		requestBody = this.value;
+    		$$invalidate(3, requestBody);
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("show" in $$props) $$invalidate(4, show = $$props.show);
+    		if ("isDarkmode" in $$props) $$invalidate(5, isDarkmode = $$props.isDarkmode);
+    		if ("environments" in $$props) $$invalidate(18, environments = $$props.environments);
+    		if ("currentAction" in $$props) $$invalidate(6, currentAction = $$props.currentAction);
+    		if ("requestHeaders" in $$props) $$invalidate(0, requestHeaders = $$props.requestHeaders);
+    		if ("requestAuthHeader" in $$props) $$invalidate(1, requestAuthHeader = $$props.requestAuthHeader);
+    	
