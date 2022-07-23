@@ -19243,4 +19243,44 @@
     		if ("currentAction" in $$props) $$invalidate(6, currentAction = $$props.currentAction);
     		if ("requestHeaders" in $$props) $$invalidate(0, requestHeaders = $$props.requestHeaders);
     		if ("requestAuthHeader" in $$props) $$invalidate(1, requestAuthHeader = $$props.requestAuthHeader);
-    	
+    		if ("requestParameters" in $$props) $$invalidate(2, requestParameters = $$props.requestParameters);
+    		if ("requestBody" in $$props) $$invalidate(3, requestBody = $$props.requestBody);
+    		if ("pkceChallenge" in $$props) $$invalidate(7, pkceChallenge = $$props.pkceChallenge);
+    	};
+
+    	let environment;
+    	let currentUrl;
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty[0] & /*environments, $env*/ 266240) {
+    			 $$invalidate(11, environment = environments[$env]);
+    		}
+
+    		if ($$self.$$.dirty[0] & /*environment, currentAction*/ 2112) {
+    			 $$invalidate(13, currentUrl = urlParse(urlJoin(environment.url, currentAction.path)));
+    		}
+
+    		if ($$self.$$.dirty[0] & /*$router*/ 524288) {
+    			 $$invalidate(8, response = $router && undefined);
+    		}
+    	};
+
+    	return [
+    		requestHeaders,
+    		requestAuthHeader,
+    		requestParameters,
+    		requestBody,
+    		show,
+    		isDarkmode,
+    		currentAction,
+    		pkceChallenge,
+    		response,
+    		requestTab,
+    		copying,
+    		environment,
+    		$env,
+    		currentUrl,
+    		$auth,
+    		handleClick,
+    		handleTab,
+    		h
