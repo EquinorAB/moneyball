@@ -19333,3 +19333,48 @@
     	child_ctx[2] = list[i].example;
     	return child_ctx;
     }
+
+    // (5:0) {#if headers.length > 0}
+    function create_if_block$7(ctx) {
+    	let table;
+    	let thead;
+    	let t1;
+    	let tbody;
+    	let each_value = /*headers*/ ctx[0];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$2(get_each_context$2(ctx, each_value, i));
+    	}
+
+    	return {
+    		c() {
+    			table = element("table");
+    			thead = element("thead");
+    			thead.innerHTML = `<tr><th colspan="2">Headers</th></tr>`;
+    			t1 = space();
+    			tbody = element("tbody");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr(table, "class", "table is-stripped is-fullwidth");
+    		},
+    		m(target, anchor) {
+    			insert(target, table, anchor);
+    			append(table, thead);
+    			append(table, t1);
+    			append(table, tbody);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(tbody, null);
+    			}
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*headers*/ 1) {
+    				each_value = /*headers*/ ctx[0];
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const ch
