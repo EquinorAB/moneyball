@@ -19377,4 +19377,54 @@
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
-    					const ch
+    					const child_ctx = get_each_context$2(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$2(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(tbody, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(table);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+    }
+
+    // (13:6) {#each headers as { name, example }}
+    function create_each_block$2(ctx) {
+    	let tr;
+    	let td0;
+    	let t0_value = /*name*/ ctx[1] + "";
+    	let t0;
+    	let t1;
+    	let td1;
+    	let code;
+    	let t2_value = /*example*/ ctx[2] + "";
+    	let t2;
+    	let t3;
+
+    	return {
+    		c() {
+    			tr = element("tr");
+    			td0 = element("td");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			td1 = element("td");
+    			code = element("code");
+    			t2 = text(t2_value);
+    			t3 = space();
+    		},
+    		m(target, anchor) {
+    			insert(target, 
