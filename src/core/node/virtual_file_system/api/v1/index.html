@@ -19427,4 +19427,45 @@
     			t3 = space();
     		},
     		m(target, anchor) {
-    			insert(target, 
+    			insert(target, tr, anchor);
+    			append(tr, td0);
+    			append(td0, t0);
+    			append(tr, t1);
+    			append(tr, td1);
+    			append(td1, code);
+    			append(code, t2);
+    			append(tr, t3);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*headers*/ 1 && t0_value !== (t0_value = /*name*/ ctx[1] + "")) set_data(t0, t0_value);
+    			if (dirty & /*headers*/ 1 && t2_value !== (t2_value = /*example*/ ctx[2] + "")) set_data(t2, t2_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(tr);
+    		}
+    	};
+    }
+
+    function create_fragment$d(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*headers*/ ctx[0].length > 0 && create_if_block$7(ctx);
+
+    	return {
+    		c() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+    		p(ctx, [dirty]) {
+    			if (/*headers*/ ctx[0].length > 0) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$7(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if
