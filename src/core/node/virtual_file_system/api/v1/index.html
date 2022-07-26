@@ -19555,4 +19555,43 @@
     			toggle_class(li, "is-active", /*tabIndex*/ ctx[7] === 0);
     			attr(div0, "class", "tabs is-fullwidth");
     			toggle_class(div0, "is-toggle", /*asToggle*/ ctx[3]);
-    			attr
+    			attr(section, "class", section_class_value = "tab-content " + /*activeBody*/ ctx[5] + " svelte-15v28ah");
+    			attr(div2, "class", "tabs-with-content");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, div2, anchor);
+    			append(div2, div0);
+    			append(div0, ul);
+    			append(ul, li);
+    			append(li, a);
+    			append(ul, t1);
+    			if (if_block0) if_block0.m(ul, null);
+    			append(div2, t2);
+    			append(div2, div1);
+    			append(div1, section);
+    			mount_component(codeblock, section, null);
+    			append(div1, t3);
+    			if (if_block1) if_block1.m(div1, null);
+    			current = true;
+    			if (remount) dispose();
+    			dispose = listen(a, "click", /*tabSelect*/ ctx[4]);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*tabIndex*/ 128) {
+    				toggle_class(li, "is-active", /*tabIndex*/ ctx[7] === 0);
+    			}
+
+    			if (/*schema*/ ctx[2]) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_2$3(ctx);
+    					if_block0.c();
+    					if_block0.m(ul, null);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if 
