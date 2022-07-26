@@ -19510,4 +19510,49 @@
 
     // (32:0) {#if example || schema}
     function create_if_block$8(ctx) {
-    	let di
+    	let div2;
+    	let div0;
+    	let ul;
+    	let li;
+    	let a;
+    	let t1;
+    	let t2;
+    	let div1;
+    	let section;
+    	let section_class_value;
+    	let t3;
+    	let current;
+    	let dispose;
+    	let if_block0 = /*schema*/ ctx[2] && create_if_block_2$3(ctx);
+
+    	const codeblock = new CodeBlock({
+    			props: {
+    				type: /*contentType*/ ctx[0],
+    				body: /*example*/ ctx[1]
+    			}
+    		});
+
+    	let if_block1 = /*schema*/ ctx[2] && create_if_block_1$5(ctx);
+
+    	return {
+    		c() {
+    			div2 = element("div");
+    			div0 = element("div");
+    			ul = element("ul");
+    			li = element("li");
+    			a = element("a");
+    			a.textContent = "Body";
+    			t1 = space();
+    			if (if_block0) if_block0.c();
+    			t2 = space();
+    			div1 = element("div");
+    			section = element("section");
+    			create_component(codeblock.$$.fragment);
+    			t3 = space();
+    			if (if_block1) if_block1.c();
+    			attr(a, "data-index", "0");
+    			attr(a, "href", "javascript:void(0)");
+    			toggle_class(li, "is-active", /*tabIndex*/ ctx[7] === 0);
+    			attr(div0, "class", "tabs is-fullwidth");
+    			toggle_class(div0, "is-toggle", /*asToggle*/ ctx[3]);
+    			attr
