@@ -19628,4 +19628,52 @@
     			}
     		},
     		i(local) {
-    			if (current) ret
+    			if (current) return;
+    			transition_in(codeblock.$$.fragment, local);
+    			transition_in(if_block1);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(codeblock.$$.fragment, local);
+    			transition_out(if_block1);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div2);
+    			if (if_block0) if_block0.d();
+    			destroy_component(codeblock);
+    			if (if_block1) if_block1.d();
+    			dispose();
+    		}
+    	};
+    }
+
+    // (42:8) {#if schema}
+    function create_if_block_2$3(ctx) {
+    	let li;
+    	let a;
+    	let dispose;
+
+    	return {
+    		c() {
+    			li = element("li");
+    			a = element("a");
+    			a.textContent = "Schema";
+    			attr(a, "data-index", "1");
+    			attr(a, "href", "javascript:void(0)");
+    			toggle_class(li, "is-active", /*tabIndex*/ ctx[7] === 1);
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, li, anchor);
+    			append(li, a);
+    			if (remount) dispose();
+    			dispose = listen(a, "click", /*tabSelect*/ ctx[4]);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*tabIndex*/ 128) {
+    				toggle_class(li, "is-active", /*tabIndex*/ ctx[7] === 1);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(li);
+    			dispose()
