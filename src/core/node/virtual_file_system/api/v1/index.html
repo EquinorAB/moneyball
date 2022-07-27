@@ -19594,4 +19594,38 @@
     				if_block0 = null;
     			}
 
-    			if 
+    			if (dirty & /*asToggle*/ 8) {
+    				toggle_class(div0, "is-toggle", /*asToggle*/ ctx[3]);
+    			}
+
+    			const codeblock_changes = {};
+    			if (dirty & /*contentType*/ 1) codeblock_changes.type = /*contentType*/ ctx[0];
+    			if (dirty & /*example*/ 2) codeblock_changes.body = /*example*/ ctx[1];
+    			codeblock.$set(codeblock_changes);
+
+    			if (!current || dirty & /*activeBody*/ 32 && section_class_value !== (section_class_value = "tab-content " + /*activeBody*/ ctx[5] + " svelte-15v28ah")) {
+    				attr(section, "class", section_class_value);
+    			}
+
+    			if (/*schema*/ ctx[2]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    					transition_in(if_block1, 1);
+    				} else {
+    					if_block1 = create_if_block_1$5(ctx);
+    					if_block1.c();
+    					transition_in(if_block1, 1);
+    					if_block1.m(div1, null);
+    				}
+    			} else if (if_block1) {
+    				group_outros();
+
+    				transition_out(if_block1, 1, 1, () => {
+    					if_block1 = null;
+    				});
+
+    				check_outros();
+    			}
+    		},
+    		i(local) {
+    			if (current) ret
