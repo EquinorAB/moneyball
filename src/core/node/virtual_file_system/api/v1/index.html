@@ -19676,4 +19676,44 @@
     		},
     		d(detaching) {
     			if (detaching) detach(li);
-    			dispose()
+    			dispose();
+    		}
+    	};
+    }
+
+    // (55:6) {#if schema}
+    function create_if_block_1$5(ctx) {
+    	let section;
+    	let section_class_value;
+    	let current;
+
+    	const codeblock = new CodeBlock({
+    			props: {
+    				type: "application/json",
+    				body: /*schema*/ ctx[2]
+    			}
+    		});
+
+    	return {
+    		c() {
+    			section = element("section");
+    			create_component(codeblock.$$.fragment);
+    			attr(section, "class", section_class_value = "tab-content " + /*activeSchema*/ ctx[6] + " svelte-15v28ah");
+    		},
+    		m(target, anchor) {
+    			insert(target, section, anchor);
+    			mount_component(codeblock, section, null);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const codeblock_changes = {};
+    			if (dirty & /*schema*/ 4) codeblock_changes.body = /*schema*/ ctx[2];
+    			codeblock.$set(codeblock_changes);
+
+    			if (!current || dirty & /*activeSchema*/ 64 && section_class_value !== (section_class_value = "tab-content " + /*activeSchema*/ ctx[6] + " svelte-15v28ah")) {
+    				attr(section, "class", section_class_value);
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transi
