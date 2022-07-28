@@ -19759,4 +19759,45 @@
     			} else if (if_block) {
     				group_outros();
 
-    				transition_out(if_blo
+    				transition_out(if_block, 1, 1, () => {
+    					if_block = null;
+    				});
+
+    				check_outros();
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(if_block);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(if_block);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
+    		}
+    	};
+    }
+
+    function instance$e($$self, $$props, $$invalidate) {
+    	let { contentType } = $$props;
+    	let { example } = $$props;
+    	let { schema } = $$props;
+    	let { asToggle } = $$props;
+    	let activeBody = "is-active";
+    	let activeSchema = "";
+    	let tabIndex = 0;
+
+    	const tabSelect = event => {
+    		const index = event.target.dataset["index"];
+    		$$invalidate(7, tabIndex = parseInt(index, 10));
+    	};
+
+    	$$self.$set = $$props => {
+    		if ("contentType" in $$props) $$invalidate(0, contentType = $$props.contentType);
+    		if ("example" in $$props) $$invalidate(1, example = $$props.example);
+    		if ("schema" in $$props) $$invalidate(2, schema = $$props.schema);
+    		if ("asToggle" in $$props) $$invalidate(3, asToggle = $$prop
