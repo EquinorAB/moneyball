@@ -19897,4 +19897,43 @@
     	const codepanel = new CodePanel({
     			props: {
     				contentType: /*contentType*/ ctx[2],
-    				exa
+    				example: /*example*/ ctx[3],
+    				schema: /*schema*/ ctx[4],
+    				asToggle: true
+    			}
+    		});
+
+    	let if_block1 = /*showRequest*/ ctx[5] && create_if_block$9(ctx);
+
+    	return {
+    		c() {
+    			if (if_block0) if_block0.c();
+    			t0 = space();
+    			create_component(headertable.$$.fragment);
+    			t1 = space();
+    			create_component(codepanel.$$.fragment);
+    			t2 = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t0, anchor);
+    			mount_component(headertable, target, anchor);
+    			insert(target, t1, anchor);
+    			mount_component(codepanel, target, anchor);
+    			insert(target, t2, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
+    			current = true;
+    		},
+    		p(ctx, [dirty]) {
+    			if (/*description*/ ctx[0]) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_1$6(ctx);
+    					if_block0.c();
+    					if_block0.m(t0.parentNode, t0);
+    				}
+    	
