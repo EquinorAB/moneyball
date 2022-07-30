@@ -19936,4 +19936,39 @@
     					if_block0.c();
     					if_block0.m(t0.parentNode, t0);
     				}
-    	
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			const headertable_changes = {};
+    			if (dirty & /*headers*/ 2) headertable_changes.headers = /*headers*/ ctx[1];
+    			headertable.$set(headertable_changes);
+    			const codepanel_changes = {};
+    			if (dirty & /*contentType*/ 4) codepanel_changes.contentType = /*contentType*/ ctx[2];
+    			if (dirty & /*example*/ 8) codepanel_changes.example = /*example*/ ctx[3];
+    			if (dirty & /*schema*/ 16) codepanel_changes.schema = /*schema*/ ctx[4];
+    			codepanel.$set(codepanel_changes);
+
+    			if (/*showRequest*/ ctx[5]) {
+    				if (!if_block1) {
+    					if_block1 = create_if_block$9(ctx);
+    					if_block1.c();
+    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    				} else {
+    					
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(headertable.$$.fragment, local);
+    			transition_in(codepanel.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(headertable.$$.fragment, local);
+    			trans
