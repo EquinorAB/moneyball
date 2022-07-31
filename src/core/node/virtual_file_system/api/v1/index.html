@@ -20049,4 +20049,54 @@
     	};
     }
 
-    // (19:6) {#if ti
+    // (19:6) {#if title}
+    function create_if_block_2$4(ctx) {
+    	let t0;
+    	let t1;
+
+    	return {
+    		c() {
+    			t0 = text("Response ");
+    			t1 = text(/*title*/ ctx[0]);
+    		},
+    		m(target, anchor) {
+    			insert(target, t0, anchor);
+    			insert(target, t1, anchor);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*title*/ 1) set_data(t1, /*title*/ ctx[0]);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(t0);
+    			if (detaching) detach(t1);
+    		}
+    	};
+    }
+
+    // (23:6) {#if title !== ''}
+    function create_if_block_1$7(ctx) {
+    	let span;
+    	let t_value = (/*contentType*/ ctx[4] || "") + "";
+    	let t;
+
+    	return {
+    		c() {
+    			span = element("span");
+    			t = text(t_value);
+    			attr(span, "class", "tag is-medium is-white");
+    		},
+    		m(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, t);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*contentType*/ 16 && t_value !== (t_value = (/*contentType*/ ctx[4] || "") + "")) set_data(t, t_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(span);
+    		}
+    	};
+    }
+
+    // (30:4) {#if description}
+    function cre
