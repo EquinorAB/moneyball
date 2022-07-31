@@ -19971,4 +19971,38 @@
     		},
     		o(local) {
     			transition_out(headertable.$$.fragment, local);
-    			trans
+    			transition_out(codepanel.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (if_block0) if_block0.d(detaching);
+    			if (detaching) detach(t0);
+    			destroy_component(headertable, detaching);
+    			if (detaching) detach(t1);
+    			destroy_component(codepanel, detaching);
+    			if (detaching) detach(t2);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach(if_block1_anchor);
+    		}
+    	};
+    }
+
+    function instance$f($$self, $$props, $$invalidate) {
+    	let { description } = $$props;
+    	let { headers } = $$props;
+    	let { contentType } = $$props;
+    	let { example } = $$props;
+    	let { schema } = $$props;
+
+    	$$self.$set = $$props => {
+    		if ("description" in $$props) $$invalidate(0, description = $$props.description);
+    		if ("headers" in $$props) $$invalidate(1, headers = $$props.headers);
+    		if ("contentType" in $$props) $$invalidate(2, contentType = $$props.contentType);
+    		if ("example" in $$props) $$invalidate(3, example = $$props.example);
+    		if ("schema" in $$props) $$invalidate(4, schema = $$props.schema);
+    	};
+
+    	let showRequest;
+
+    	$$self.$$.update = () => {
+    		if ($$sel
