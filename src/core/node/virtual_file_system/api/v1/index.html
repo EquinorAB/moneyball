@@ -20146,4 +20146,40 @@
     	let if_block0 = current_block_type(ctx);
     	let if_block1 = /*title*/ ctx[0] !== "" && create_if_block_1$7(ctx);
     	let if_block2 = /*description*/ ctx[1] && create_if_block$a(ctx);
-    	const headertable = new Header
+    	const headertable = new HeaderTable({ props: { headers: /*headers*/ ctx[2] } });
+
+    	const codepanel = new CodePanel({
+    			props: {
+    				contentType: /*contentType*/ ctx[4],
+    				example: /*example*/ ctx[5],
+    				schema: /*schema*/ ctx[6]
+    			}
+    		});
+
+    	return {
+    		c() {
+    			div1 = element("div");
+    			header = element("header");
+    			p = element("p");
+    			if_block0.c();
+    			t0 = space();
+    			a = element("a");
+    			if (if_block1) if_block1.c();
+    			t1 = space();
+    			code = element("code");
+    			t2 = text(/*statusCode*/ ctx[3]);
+    			t3 = space();
+    			div0 = element("div");
+    			if (if_block2) if_block2.c();
+    			t4 = space();
+    			create_component(headertable.$$.fragment);
+    			t5 = space();
+    			create_component(codepanel.$$.fragment);
+    			attr(p, "class", "card-header-title");
+    			attr(code, "class", code_class_value = "tag is-medium " + colorize(/*statusCode*/ ctx[3]));
+    			attr(a, "href", "javascript:void(0)");
+    			attr(a, "class", "card-header-icon is-family-code");
+    			attr(header, "class", "card-header");
+    			attr(div0, "class", "card-content");
+    			attr(div1, "class", "card");
+    		},
