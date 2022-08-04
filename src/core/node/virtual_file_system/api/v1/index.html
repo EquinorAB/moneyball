@@ -20183,3 +20183,46 @@
     			attr(div0, "class", "card-content");
     			attr(div1, "class", "card");
     		},
+    		m(target, anchor) {
+    			insert(target, div1, anchor);
+    			append(div1, header);
+    			append(header, p);
+    			if_block0.m(p, null);
+    			append(header, t0);
+    			append(header, a);
+    			if (if_block1) if_block1.m(a, null);
+    			append(a, t1);
+    			append(a, code);
+    			append(code, t2);
+    			append(div1, t3);
+    			append(div1, div0);
+    			if (if_block2) if_block2.m(div0, null);
+    			append(div0, t4);
+    			mount_component(headertable, div0, null);
+    			append(div0, t5);
+    			mount_component(codepanel, div0, null);
+    			current = true;
+    		},
+    		p(ctx, [dirty]) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx, dirty)) && if_block0) {
+    				if_block0.p(ctx, dirty);
+    			} else {
+    				if_block0.d(1);
+    				if_block0 = current_block_type(ctx);
+
+    				if (if_block0) {
+    					if_block0.c();
+    					if_block0.m(p, null);
+    				}
+    			}
+
+    			if (/*title*/ ctx[0] !== "") {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block_1$7(ctx);
+    					if_block1.c();
+    					if_block1.m(a, t1);
+    				}
+    			} else if (if_block1) {
+    		
