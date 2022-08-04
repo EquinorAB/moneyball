@@ -20225,4 +20225,38 @@
     					if_block1.m(a, t1);
     				}
     			} else if (if_block1) {
-    		
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (!current || dirty & /*statusCode*/ 8) set_data(t2, /*statusCode*/ ctx[3]);
+
+    			if (!current || dirty & /*statusCode*/ 8 && code_class_value !== (code_class_value = "tag is-medium " + colorize(/*statusCode*/ ctx[3]))) {
+    				attr(code, "class", code_class_value);
+    			}
+
+    			if (/*description*/ ctx[1]) {
+    				if (if_block2) {
+    					if_block2.p(ctx, dirty);
+    				} else {
+    					if_block2 = create_if_block$a(ctx);
+    					if_block2.c();
+    					if_block2.m(div0, t4);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+
+    			const headertable_changes = {};
+    			if (dirty & /*headers*/ 4) headertable_changes.headers = /*headers*/ ctx[2];
+    			headertable.$set(headertable_changes);
+    			const codepanel_changes = {};
+    			if (dirty & /*contentType*/ 16) codepanel_changes.contentType = /*contentType*/ ctx[4];
+    			if (dirty & /*example*/ 32) codepanel_changes.example = /*example*/ ctx[5];
+    			if (dirty & /*schema*/ 64) codepanel_changes.schema = /*schema*/ ctx[6];
+    			codepanel.$set(codepanel_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition
