@@ -20259,4 +20259,38 @@
     		},
     		i(local) {
     			if (current) return;
-    			transition
+    			transition_in(headertable.$$.fragment, local);
+    			transition_in(codepanel.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(headertable.$$.fragment, local);
+    			transition_out(codepanel.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div1);
+    			if_block0.d();
+    			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+    			destroy_component(headertable);
+    			destroy_component(codepanel);
+    		}
+    	};
+    }
+
+    function instance$g($$self, $$props, $$invalidate) {
+    	let { title } = $$props;
+    	let { description } = $$props;
+    	let { headers } = $$props;
+    	let { statusCode } = $$props;
+    	let { contentType } = $$props;
+    	let { example } = $$props;
+    	let { schema } = $$props;
+
+    	$$self.$set = $$props => {
+    		if ("title" in $$props) $$invalidate(0, title = $$props.title);
+    		if ("description" in $$props) $$invalidate(1, description = $$props.description);
+    		if ("headers" in $$props) $$invalidate(2, headers = $$props.headers);
+    		if ("statusCode" in $$props) $$invalidate(3, statusCode = $$props.statusCode);
+    		if ("contentType" in $$prop
