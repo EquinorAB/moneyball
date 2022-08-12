@@ -20335,3 +20335,40 @@
 
     // (50:0) {:else}
     function create_else_block$5(ctx) {
+    	let current;
+
+    	const collapsiblepanel = new CollapsiblePanel({
+    			props: {
+    				isDarkmode: /*isDarkmode*/ ctx[3],
+    				show: /*show*/ ctx[0],
+    				$$slots: {
+    					default: [create_default_slot$1],
+    					body: [create_body_slot$1],
+    					heading: [create_heading_slot$1]
+    				},
+    				$$scope: { ctx }
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(collapsiblepanel.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(collapsiblepanel, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const collapsiblepanel_changes = {};
+    			if (dirty & /*isDarkmode*/ 8) collapsiblepanel_changes.isDarkmode = /*isDarkmode*/ ctx[3];
+    			if (dirty & /*show*/ 1) collapsiblepanel_changes.show = /*show*/ ctx[0];
+
+    			if (dirty & /*$$scope, responses, request, index*/ 1046) {
+    				collapsiblepanel_changes.$$scope = { dirty, ctx };
+    			}
+
+    			collapsiblepanel.$set(collapsiblepanel_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(collapsib
