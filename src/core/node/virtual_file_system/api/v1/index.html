@@ -20371,4 +20371,50 @@
     		},
     		i(local) {
     			if (current) return;
-    			transition_in(collapsib
+    			transition_in(collapsiblepanel.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(collapsiblepanel.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(collapsiblepanel, detaching);
+    		}
+    	};
+    }
+
+    // (30:0) {#if request.title === ''}
+    function create_if_block$b(ctx) {
+    	let t0;
+    	let t1;
+    	let div;
+    	let current;
+    	let if_block = /*show*/ ctx[0] && create_if_block_1$8(ctx);
+    	let each_value = /*responses*/ ctx[2];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$3(get_each_context$3(ctx, each_value, i));
+    	}
+
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
+
+    	return {
+    		c() {
+    			if (if_block) if_block.c();
+    			t0 = space();
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t1 = space();
+    			div = element("div");
+    			attr(div, "class", "panel");
+    		},
+    		m(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			
