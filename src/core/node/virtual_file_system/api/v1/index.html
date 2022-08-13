@@ -20462,4 +20462,56 @@
     						each_blocks[i] = create_each_block$3(child_ctx);
     						each_blocks[i].c();
     						transition_in(each_blocks[i], 1);
-    		
+    						each_blocks[i].m(t1.parentNode, t1);
+    					}
+    				}
+
+    				group_outros();
+
+    				for (i = each_value.length; i < each_blocks.length; i += 1) {
+    					out(i);
+    				}
+
+    				check_outros();
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(if_block);
+
+    			for (let i = 0; i < each_value.length; i += 1) {
+    				transition_in(each_blocks[i]);
+    			}
+
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(if_block);
+    			each_blocks = each_blocks.filter(Boolean);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				transition_out(each_blocks[i]);
+    			}
+
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(t0);
+    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach(t1);
+    			if (detaching) detach(div);
+    		}
+    	};
+    }
+
+    // (52:4) <span slot="heading">
+    function create_heading_slot$1(ctx) {
+    	let span;
+    	let t_value = /*title*/ ctx[5](/*index*/ ctx[4]) + "";
+    	let t;
+
+    	return {
+    		c() {
+    			span = element("span");
+    			t = tex
