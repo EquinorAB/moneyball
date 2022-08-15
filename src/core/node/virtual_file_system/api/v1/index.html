@@ -20514,4 +20514,45 @@
     	return {
     		c() {
     			span = element("span");
-    			t = tex
+    			t = text(t_value);
+    			attr(span, "slot", "heading");
+    		},
+    		m(target, anchor) {
+    			insert(target, span, anchor);
+    			append(span, t);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*index*/ 16 && t_value !== (t_value = /*title*/ ctx[5](/*index*/ ctx[4]) + "")) set_data(t, t_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(span);
+    		}
+    	};
+    }
+
+    // (61:6) {#each responses as response, index}
+    function create_each_block_1$1(ctx) {
+    	let current;
+
+    	const responsepanel = new ResponsePanel({
+    			props: {
+    				title: /*response*/ ctx[7].title,
+    				description: /*response*/ ctx[7].description,
+    				statusCode: /*response*/ ctx[7].statusCode,
+    				headers: /*response*/ ctx[7].headers,
+    				contentType: /*response*/ ctx[7].contentType,
+    				example: /*response*/ ctx[7].example,
+    				schema: /*response*/ ctx[7].schema
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(responsepanel.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(responsepanel, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const
