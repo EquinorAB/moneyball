@@ -20622,4 +20622,34 @@
     		m(target, anchor) {
     			insert(target, div, anchor);
     			mount_component(requestpanel, div, null);
-    			
+    			append(div, t);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const requestpanel_changes = {};
+    			if (dirty & /*request*/ 2) requestpanel_changes.description = /*request*/ ctx[1].description;
+    			if (dirty & /*request*/ 2) requestpanel_changes.headers = /*request*/ ctx[1].headers;
+    			if (dirty & /*request*/ 2) requestpanel_changes.contentType = /*request*/ ctx[1].contentType;
+    			if (dirty & /*request*/ 2) requestpanel_changes.example = /*request*/ ctx[1].example;
+    			if (dirty & /*request*/ 2) requestpanel_changes.schema = /*request*/ ctx[1].schema;
+    			requestpanel.$set(requestpanel_changes);
+
+    			if (dirty & /*responses*/ 4) {
+    				each_value_1 = /*responses*/ ctx[2];
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1$1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    						transition_in(each_blocks[i], 1);
+    					} else {
+    						each_blocks[i] = create_each_block_1$1(child_ctx);
+    						each_blocks[i].c();
+    				
