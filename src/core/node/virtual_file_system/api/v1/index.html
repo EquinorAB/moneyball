@@ -20581,4 +20581,45 @@
     }
 
     // (53:4) <div slot="body">
-    functi
+    function create_body_slot$1(ctx) {
+    	let div;
+    	let t;
+    	let current;
+
+    	const requestpanel = new RequestPanel({
+    			props: {
+    				description: /*request*/ ctx[1].description,
+    				headers: /*request*/ ctx[1].headers,
+    				contentType: /*request*/ ctx[1].contentType,
+    				example: /*request*/ ctx[1].example,
+    				schema: /*request*/ ctx[1].schema
+    			}
+    		});
+
+    	let each_value_1 = /*responses*/ ctx[2];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1$1(get_each_context_1$1(ctx, each_value_1, i));
+    	}
+
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
+
+    	return {
+    		c() {
+    			div = element("div");
+    			create_component(requestpanel.$$.fragment);
+    			t = space();
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr(div, "slot", "body");
+    		},
+    		m(target, anchor) {
+    			insert(target, div, anchor);
+    			mount_component(requestpanel, div, null);
+    			
