@@ -20555,4 +20555,30 @@
     			current = true;
     		},
     		p(ctx, dirty) {
-    			const
+    			const responsepanel_changes = {};
+    			if (dirty & /*responses*/ 4) responsepanel_changes.title = /*response*/ ctx[7].title;
+    			if (dirty & /*responses*/ 4) responsepanel_changes.description = /*response*/ ctx[7].description;
+    			if (dirty & /*responses*/ 4) responsepanel_changes.statusCode = /*response*/ ctx[7].statusCode;
+    			if (dirty & /*responses*/ 4) responsepanel_changes.headers = /*response*/ ctx[7].headers;
+    			if (dirty & /*responses*/ 4) responsepanel_changes.contentType = /*response*/ ctx[7].contentType;
+    			if (dirty & /*responses*/ 4) responsepanel_changes.example = /*response*/ ctx[7].example;
+    			if (dirty & /*responses*/ 4) responsepanel_changes.schema = /*response*/ ctx[7].schema;
+    			responsepanel.$set(responsepanel_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(responsepanel.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(responsepanel.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(responsepanel, detaching);
+    		}
+    	};
+    }
+
+    // (53:4) <div slot="body">
+    functi
