@@ -20741,4 +20741,43 @@
     			const requestpanel_changes = {};
     			if (dirty & /*request*/ 2) requestpanel_changes.description = /*request*/ ctx[1].description;
     			if (dirty & /*request*/ 2) requestpanel_changes.headers = /*request*/ ctx[1].headers;
-    			if (dirty & /*request*/ 2) requestpanel_changes.contentType = /*request*/ ct
+    			if (dirty & /*request*/ 2) requestpanel_changes.contentType = /*request*/ ctx[1].contentType;
+    			if (dirty & /*request*/ 2) requestpanel_changes.example = /*request*/ ctx[1].example;
+    			if (dirty & /*request*/ 2) requestpanel_changes.schema = /*request*/ ctx[1].schema;
+    			requestpanel.$set(requestpanel_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(requestpanel.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(requestpanel.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(requestpanel, detaching);
+    		}
+    	};
+    }
+
+    // (39:2) {#each responses as response, index}
+    function create_each_block$3(ctx) {
+    	let current;
+
+    	const responsepanel = new ResponsePanel({
+    			props: {
+    				title: /*response*/ ctx[7].title,
+    				description: /*response*/ ctx[7].description,
+    				statusCode: /*response*/ ctx[7].statusCode,
+    				headers: /*response*/ ctx[7].headers,
+    				contentType: /*response*/ ctx[7].contentType,
+    				example: /*response*/ ctx[7].example,
+    				schema: /*response*/ ctx[7].schema
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(responsepanel.$$.fragment);
+  
