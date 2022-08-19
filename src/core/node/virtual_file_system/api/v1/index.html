@@ -20703,4 +20703,42 @@
     		c() {
     			t = space();
     		},
- 
+    		m(target, anchor) {
+    			insert(target, t, anchor);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(t);
+    		}
+    	};
+    }
+
+    // (31:2) {#if show}
+    function create_if_block_1$8(ctx) {
+    	let current;
+
+    	const requestpanel = new RequestPanel({
+    			props: {
+    				description: /*request*/ ctx[1].description,
+    				headers: /*request*/ ctx[1].headers,
+    				contentType: /*request*/ ctx[1].contentType,
+    				example: /*request*/ ctx[1].example,
+    				schema: /*request*/ ctx[1].schema
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(requestpanel.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(requestpanel, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const requestpanel_changes = {};
+    			if (dirty & /*request*/ 2) requestpanel_changes.description = /*request*/ ctx[1].description;
+    			if (dirty & /*request*/ 2) requestpanel_changes.headers = /*request*/ ctx[1].headers;
+    			if (dirty & /*request*/ 2) requestpanel_changes.contentType = /*request*/ ct
