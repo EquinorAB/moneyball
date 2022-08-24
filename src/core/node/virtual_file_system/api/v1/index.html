@@ -20982,4 +20982,43 @@
     	let nav;
     	let ul;
     	let t2;
-    	le
+    	let hr;
+    	let t3;
+    	let div3;
+    	let code0;
+    	let t4_value = /*action*/ ctx[0].method + "";
+    	let t4;
+    	let code0_class_value;
+    	let t5;
+    	let code1;
+    	let t6_value = /*action*/ ctx[0].pathTemplate + "";
+    	let t6;
+    	let t7;
+    	let div4;
+    	let raw_value = markdown(/*action*/ ctx[0].description) + "";
+    	let t8;
+    	let t9;
+    	let t10;
+    	let each1_anchor;
+    	let current;
+    	let each_value_1 = /*action*/ ctx[0].tags;
+    	let each_blocks_1 = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks_1[i] = create_each_block_1$2(get_each_context_1$2(ctx, each_value_1, i));
+    	}
+
+    	let if_block = /*config*/ ctx[1].playground.enabled && create_if_block_1$9(ctx);
+
+    	const parameterpanel = new ParameterPanel({
+    			props: { parameters: /*action*/ ctx[0].parameters }
+    		});
+
+    	let each_value = /*transactions*/ ctx[5];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$4(get_each_context$4(ctx, each_value, i));
+    	}
+
+    	const out = i => trans
