@@ -20929,4 +20929,57 @@
 
     function add_css$8() {
     	var style = element("style");
-    	style.id = "svelte-1kw1ag
+    	style.id = "svelte-1kw1ago-style";
+    	style.textContent = ".breadcrumb-right.svelte-1kw1ago{margin-top:0.3em}.box-wrapper.svelte-1kw1ago{border-radius:0}";
+    	append(document.head, style);
+    }
+
+    function get_each_context$4(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[11] = list[i].request;
+    	child_ctx[12] = list[i].responses;
+    	child_ctx[14] = i;
+    	return child_ctx;
+    }
+
+    function get_each_context_1$2(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[15] = list[i];
+    	child_ctx[14] = i;
+    	return child_ctx;
+    }
+
+    // (192:0) {:else}
+    function create_else_block_1$1(ctx) {
+    	let h3;
+
+    	return {
+    		c() {
+    			h3 = element("h3");
+    			h3.textContent = "404 - Not Found";
+    		},
+    		m(target, anchor) {
+    			insert(target, h3, anchor);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(h3);
+    		}
+    	};
+    }
+
+    // (126:0) {#if action}
+    function create_if_block$c(ctx) {
+    	let div2;
+    	let div0;
+    	let h1;
+    	let t0_value = /*action*/ ctx[0].title + "";
+    	let t0;
+    	let t1;
+    	let div1;
+    	let nav;
+    	let ul;
+    	let t2;
+    	le
