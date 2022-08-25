@@ -21064,4 +21064,39 @@
     			each1_anchor = empty();
     			attr(h1, "class", "title is-4");
     			attr(div0, "class", "column");
-    			attr(nav, "class", "breadcrumb breadcrumb-right is-pulle
+    			attr(nav, "class", "breadcrumb breadcrumb-right is-pulled-right svelte-1kw1ago");
+    			attr(nav, "aria-label", "breadcrumbs");
+    			attr(div1, "class", "column");
+    			attr(div2, "class", "columns");
+    			attr(code0, "class", code0_class_value = "tag is-uppercase " + colorize(/*action*/ ctx[0].method) + " svelte-1kw1ago");
+    			attr(code1, "class", "tag ");
+    			attr(div3, "class", "tags has-addons are-large");
+    			attr(div4, "class", "content");
+    		},
+    		m(target, anchor) {
+    			insert(target, div2, anchor);
+    			append(div2, div0);
+    			append(div0, h1);
+    			append(h1, t0);
+    			append(div2, t1);
+    			append(div2, div1);
+    			append(div1, nav);
+    			append(nav, ul);
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].m(ul, null);
+    			}
+
+    			insert(target, t2, anchor);
+    			insert(target, hr, anchor);
+    			insert(target, t3, anchor);
+    			insert(target, div3, anchor);
+    			append(div3, code0);
+    			append(code0, t4);
+    			append(div3, t5);
+    			append(div3, code1);
+    			append(code1, t6);
+    			insert(target, t7, anchor);
+    			insert(target, div4, anchor);
+    			div4.innerHTML = raw_value;
+   
