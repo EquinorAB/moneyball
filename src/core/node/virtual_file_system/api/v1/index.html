@@ -21021,4 +21021,47 @@
     		each_blocks[i] = create_each_block$4(get_each_context$4(ctx, each_value, i));
     	}
 
-    	const out = i => trans
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
+
+    	return {
+    		c() {
+    			div2 = element("div");
+    			div0 = element("div");
+    			h1 = element("h1");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			div1 = element("div");
+    			nav = element("nav");
+    			ul = element("ul");
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].c();
+    			}
+
+    			t2 = space();
+    			hr = element("hr");
+    			t3 = space();
+    			div3 = element("div");
+    			code0 = element("code");
+    			t4 = text(t4_value);
+    			t5 = space();
+    			code1 = element("code");
+    			t6 = text(t6_value);
+    			t7 = space();
+    			div4 = element("div");
+    			t8 = space();
+    			if (if_block) if_block.c();
+    			t9 = space();
+    			create_component(parameterpanel.$$.fragment);
+    			t10 = space();
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each1_anchor = empty();
+    			attr(h1, "class", "title is-4");
+    			attr(div0, "class", "column");
+    			attr(nav, "class", "breadcrumb breadcrumb-right is-pulle
