@@ -21099,4 +21099,42 @@
     			insert(target, t7, anchor);
     			insert(target, div4, anchor);
     			div4.innerHTML = raw_value;
-   
+    			insert(target, t8, anchor);
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, t9, anchor);
+    			mount_component(parameterpanel, target, anchor);
+    			insert(target, t10, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert(target, each1_anchor, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			if ((!current || dirty & /*action*/ 1) && t0_value !== (t0_value = /*action*/ ctx[0].title + "")) set_data(t0, t0_value);
+
+    			if (dirty & /*action, slugify, handleLink*/ 1) {
+    				each_value_1 = /*action*/ ctx[0].tags;
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1$2(ctx, each_value_1, i);
+
+    					if (each_blocks_1[i]) {
+    						each_blocks_1[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks_1[i] = create_each_block_1$2(child_ctx);
+    						each_blocks_1[i].c();
+    						each_blocks_1[i].m(ul, null);
+    					}
+    				}
+
+    				for (; i < each_blocks_1.length; i += 1) {
+    					each_blocks_1[i].d(1);
+    				}
+
+    				each_blocks_1.length = each_value_1.length;
+    			}
+
