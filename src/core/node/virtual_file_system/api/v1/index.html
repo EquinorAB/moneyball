@@ -21138,3 +21138,32 @@
     				each_blocks_1.length = each_value_1.length;
     			}
 
+    			if ((!current || dirty & /*action*/ 1) && t4_value !== (t4_value = /*action*/ ctx[0].method + "")) set_data(t4, t4_value);
+
+    			if (!current || dirty & /*action*/ 1 && code0_class_value !== (code0_class_value = "tag is-uppercase " + colorize(/*action*/ ctx[0].method) + " svelte-1kw1ago")) {
+    				attr(code0, "class", code0_class_value);
+    			}
+
+    			if ((!current || dirty & /*action*/ 1) && t6_value !== (t6_value = /*action*/ ctx[0].pathTemplate + "")) set_data(t6, t6_value);
+    			if ((!current || dirty & /*action*/ 1) && raw_value !== (raw_value = markdown(/*action*/ ctx[0].description) + "")) div4.innerHTML = raw_value;;
+
+    			if (/*config*/ ctx[1].playground.enabled) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    					transition_in(if_block, 1);
+    				} else {
+    					if_block = create_if_block_1$9(ctx);
+    					if_block.c();
+    					transition_in(if_block, 1);
+    					if_block.m(t9.parentNode, t9);
+    				}
+    			} else if (if_block) {
+    				group_outros();
+
+    				transition_out(if_block, 1, 1, () => {
+    					if_block = null;
+    				});
+
+    				check_outros();
+    			}
+
