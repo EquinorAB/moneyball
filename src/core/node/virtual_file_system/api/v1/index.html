@@ -21291,4 +21291,53 @@
     			append(a, t);
     		},
     		p(ctx, dirty) {
-    			if (d
+    			if (dirty & /*action*/ 1 && t_value !== (t_value = /*tag*/ ctx[15] + "")) set_data(t, t_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(a);
+    		}
+    	};
+    }
+
+    // (136:10) {#each action.tags as tag, index}
+    function create_each_block_1$2(ctx) {
+    	let li;
+    	let t;
+
+    	function select_block_type_1(ctx, dirty) {
+    		if (/*index*/ ctx[14] === 0) return create_if_block_3$1;
+    		return create_else_block$6;
+    	}
+
+    	let current_block_type = select_block_type_1(ctx, -1);
+    	let if_block = current_block_type(ctx);
+
+    	return {
+    		c() {
+    			li = element("li");
+    			if_block.c();
+    			t = space();
+    		},
+    		m(target, anchor) {
+    			insert(target, li, anchor);
+    			if_block.m(li, null);
+    			append(li, t);
+    		},
+    		p(ctx, dirty) {
+    			if_block.p(ctx, dirty);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(li);
+    			if_block.d();
+    		}
+    	};
+    }
+
+    // (167:2) {#if config.playground.enabled}
+    function create_if_block_1$9(ctx) {
+    	let if_block_anchor;
+    	let current;
+    	let if_block = /*environment*/ ctx[2].playground !== false && create_if_block_2$5(ctx);
+
+    	return {
+  
