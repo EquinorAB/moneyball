@@ -21246,4 +21246,49 @@
     	let t_value = /*tag*/ ctx[15] + "";
     	let t;
     	let a_href_value;
-    	let disp
+    	let dispose;
+
+    	return {
+    		c() {
+    			a = element("a");
+    			t = text(t_value);
+    			attr(a, "href", a_href_value = "/#/g~" + slugify(/*action*/ ctx[0].tags[0]) + "~" + slugify(/*tag*/ ctx[15]));
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, a, anchor);
+    			append(a, t);
+    			if (remount) dispose();
+    			dispose = listen(a, "click", handleLink);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*action*/ 1 && t_value !== (t_value = /*tag*/ ctx[15] + "")) set_data(t, t_value);
+
+    			if (dirty & /*action*/ 1 && a_href_value !== (a_href_value = "/#/g~" + slugify(/*action*/ ctx[0].tags[0]) + "~" + slugify(/*tag*/ ctx[15]))) {
+    				attr(a, "href", a_href_value);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(a);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (138:14) {#if index === 0}
+    function create_if_block_3$1(ctx) {
+    	let a;
+    	let t_value = /*tag*/ ctx[15] + "";
+    	let t;
+
+    	return {
+    		c() {
+    			a = element("a");
+    			t = text(t_value);
+    			attr(a, "href", "javascript:void(0)");
+    		},
+    		m(target, anchor) {
+    			insert(target, a, anchor);
+    			append(a, t);
+    		},
+    		p(ctx, dirty) {
+    			if (d
