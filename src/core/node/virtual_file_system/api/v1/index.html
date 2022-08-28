@@ -21386,4 +21386,33 @@
     	};
     }
 
-    // (168:4) {#if
+    // (168:4) {#if environment.playground !== false}
+    function create_if_block_2$5(ctx) {
+    	let current;
+
+    	const playgroundpanel = new PlaygroundPanel({
+    			props: {
+    				currentAction: /*action*/ ctx[0],
+    				pkceChallenge: /*challengePair*/ ctx[3],
+    				environments: /*config*/ ctx[1].playground.environments,
+    				requestHeaders: headersMap(/*action*/ ctx[0]),
+    				requestAuthHeader: /*authHeader*/ ctx[6](/*action*/ ctx[0], /*environment*/ ctx[2]),
+    				requestParameters: parametersMap(/*action*/ ctx[0]),
+    				requestBody: bodyMap(/*action*/ ctx[0]),
+    				isDarkmode: /*darkMode*/ ctx[4].active
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(playgroundpanel.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(playgroundpanel, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const playgroundpanel_changes = {};
+    			if (dirty & /*action*/ 1) playgroundpanel_changes.currentAction = /*action*/ ctx[0];
+    			if (dirty & /*challengePair*/ 8) playgroundpanel_changes.pkceChallenge = /*challengePair*/ ctx[3];
+    			if (dirty & /*config*/ 2) playgroundpanel_changes.environment
