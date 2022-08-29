@@ -21415,4 +21415,28 @@
     			const playgroundpanel_changes = {};
     			if (dirty & /*action*/ 1) playgroundpanel_changes.currentAction = /*action*/ ctx[0];
     			if (dirty & /*challengePair*/ 8) playgroundpanel_changes.pkceChallenge = /*challengePair*/ ctx[3];
-    			if (dirty & /*config*/ 2) playgroundpanel_changes.environment
+    			if (dirty & /*config*/ 2) playgroundpanel_changes.environments = /*config*/ ctx[1].playground.environments;
+    			if (dirty & /*action*/ 1) playgroundpanel_changes.requestHeaders = headersMap(/*action*/ ctx[0]);
+    			if (dirty & /*action, environment*/ 5) playgroundpanel_changes.requestAuthHeader = /*authHeader*/ ctx[6](/*action*/ ctx[0], /*environment*/ ctx[2]);
+    			if (dirty & /*action*/ 1) playgroundpanel_changes.requestParameters = parametersMap(/*action*/ ctx[0]);
+    			if (dirty & /*action*/ 1) playgroundpanel_changes.requestBody = bodyMap(/*action*/ ctx[0]);
+    			if (dirty & /*darkMode*/ 16) playgroundpanel_changes.isDarkmode = /*darkMode*/ ctx[4].active;
+    			playgroundpanel.$set(playgroundpanel_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(playgroundpanel.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(playgroundpanel.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(playgroundpanel, detaching);
+    		}
+    	};
+    }
+
+    // (183:2) {#each transactions as { request, responses }
+    functi
