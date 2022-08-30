@@ -21439,4 +21439,36 @@
     }
 
     // (183:2) {#each transactions as { request, responses }
-    functi
+    function create_each_block$4(ctx) {
+    	let current;
+
+    	const scenariopanel = new ScenarioPanel({
+    			props: {
+    				show: /*index*/ ctx[14] === 0,
+    				isDarkmode: /*darkMode*/ ctx[4].active,
+    				request: /*request*/ ctx[11],
+    				responses: /*responses*/ ctx[12],
+    				index: /*index*/ ctx[14],
+    				count: /*transactions*/ ctx[5].length
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(scenariopanel.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(scenariopanel, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const scenariopanel_changes = {};
+    			if (dirty & /*darkMode*/ 16) scenariopanel_changes.isDarkmode = /*darkMode*/ ctx[4].active;
+    			if (dirty & /*transactions*/ 32) scenariopanel_changes.request = /*request*/ ctx[11];
+    			if (dirty & /*transactions*/ 32) scenariopanel_changes.responses = /*responses*/ ctx[12];
+    			if (dirty & /*transactions*/ 32) scenariopanel_changes.count = /*transactions*/ ctx[5].length;
+    			scenariopanel.$set(scenariopanel_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in
