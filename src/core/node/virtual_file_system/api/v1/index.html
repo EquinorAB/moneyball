@@ -21471,4 +21471,47 @@
     		},
     		i(local) {
     			if (current) return;
-    			transition_in
+    			transition_in(scenariopanel.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(scenariopanel.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(scenariopanel, detaching);
+    		}
+    	};
+    }
+
+    function create_fragment$i(ctx) {
+    	let current_block_type_index;
+    	let if_block;
+    	let if_block_anchor;
+    	let current;
+    	const if_block_creators = [create_if_block$c, create_else_block_1$1];
+    	const if_blocks = [];
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*action*/ ctx[0]) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type(ctx, -1);
+    	if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+    	return {
+    		c() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    			current = true;
+    		},
+    		p(ctx, [dirty]) {
+    			let previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type(ctx, dirty);
+
+    			if (current_block_
