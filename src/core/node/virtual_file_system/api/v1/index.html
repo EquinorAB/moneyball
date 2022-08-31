@@ -21556,4 +21556,44 @@
     }
 
     function headersMap(action) {
-    	return sample(action).headers.filter(header => h
+    	return sample(action).headers.filter(header => header.name != "Authorization").map(header => {
+    		return {
+    			used: true,
+    			required: false,
+    			name: header.name,
+    			value: header.example || ""
+    		};
+    	});
+    }
+
+    function parametersMap(action) {
+    	return action.parameters.map(param => {
+    		return {
+    			used: param.required,
+    			required: param.required,
+    			name: param.name,
+    			value: param.example || ""
+    		};
+    	});
+    }
+
+    function bodyMap(action) {
+    	const example = sample(action).example;
+    	return stringify$2(example);
+    }
+
+    function instance$i($$self, $$props, $$invalidate) {
+    	let $auth;
+    	let $env;
+    	let $token;
+    	component_subscribe($$self, auth, $$value => $$invalidate(7, $auth = $$value));
+    	component_subscribe($$self, env, $$value => $$invalidate(8, $env = $$value));
+    	component_subscribe($$self, token$1, $$value => $$invalidate(9, $token = $$value));
+    	let { action } = $$props;
+    	let { config } = $$props;
+    	let { environment } = $$props;
+    	let { challengePair } = $$props;
+    	let { darkMode } = $$props;
+
+    	function authHeader(action, environment) {
+    		const header = s
