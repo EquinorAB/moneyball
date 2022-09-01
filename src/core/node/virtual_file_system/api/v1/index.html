@@ -21596,4 +21596,40 @@
     	let { darkMode } = $$props;
 
     	function authHeader(action, environment) {
-    		const header = s
+    		const header = sample(action).headers.find(header => header.name === "Authorization");
+    		if (!header) return;
+    		header.value = header.example;
+    		header.used = true;
+
+    		if (isAuth(environment, "basic")) {
+    			header.value = `Basic ${basicAuth(environment.auth.options.username, environment.auth.options.password)}`;
+    		}
+
+    		if (isAuth(environment, "apikey")) {
+    			header.name = environment.auth.options.header;
+    			header.value = environment.auth.options.key;
+    		}
+
+    		if (isAuth(environment, "oauth2")) {
+    			if ($auth.split(";").includes($env)) {
+    				header.value = `Bearer ${$token}`;
+    			}
+    		}
+
+    		return header;
+    	}
+
+    	function toTransactions(transactions) {
+    		if (!transactions) return [];
+    		const items = {};
+
+    		transactions.forEach(transaction => {
+    			const { request, response } = transaction;
+    			const requestHash = lib$2.h32(fastJsonStableStringify(request), 703710).toString(16);
+
+    			if (!Object.keys(items).includes(requestHash)) {
+    				items[requestHash] = { request, responses: [response] };
+    			} else {
+    				items[requestHash].responses.push(response);
+    			}
+    
