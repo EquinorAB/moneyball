@@ -21744,3 +21744,51 @@
 
     			if (dirty & /*hidden*/ 1) {
     				toggle_class(i, "fa-chevron-down", !/*hidden*/ ctx[0]);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(li);
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (50:0) {#if actions.length > 0}
+    function create_if_block$d(ctx) {
+    	let li;
+    	let ul;
+    	let each_value = /*actions*/ ctx[2];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$5(get_each_context$5(ctx, each_value, i));
+    	}
+
+    	return {
+    		c() {
+    			li = element("li");
+    			ul = element("ul");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			toggle_class(li, "is-hidden", /*hidden*/ ctx[0]);
+    		},
+    		m(target, anchor) {
+    			insert(target, li, anchor);
+    			append(li, ul);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(ul, null);
+    			}
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*buildHref, actions, $router, handleLink, colorize*/ 20) {
+    				each_value = /*actions*/ ctx[2];
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$5(ctx, each_value, i);
+
+    					if (each_blo
