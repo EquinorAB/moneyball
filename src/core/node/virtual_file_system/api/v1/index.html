@@ -21709,4 +21709,38 @@
     			i = element("i");
     			attr(a0, "href", a0_href_value = buildHref(`#/g~${/*parentSlug*/ ctx[3]}~${slugify(/*title*/ ctx[1])}`));
     			attr(a0, "class", "is-inline-block");
-    			attr(i, "class", "fas")
+    			attr(i, "class", "fas");
+    			toggle_class(i, "fa-chevron-right", /*hidden*/ ctx[0]);
+    			toggle_class(i, "fa-chevron-down", !/*hidden*/ ctx[0]);
+    			attr(span, "class", "icon is-small has-text-grey-light");
+    			attr(a1, "href", "javascript:void(0)");
+    			attr(a1, "class", "is-inline-block is-pulled-right");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, li, anchor);
+    			append(li, a0);
+    			append(a0, t0);
+    			append(li, t1);
+    			append(li, a1);
+    			append(a1, span);
+    			append(span, i);
+    			if (remount) run_all(dispose);
+
+    			dispose = [
+    				listen(a0, "click", handleLink),
+    				listen(a1, "click", /*click_handler*/ ctx[5])
+    			];
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*title*/ 2) set_data(t0, /*title*/ ctx[1]);
+
+    			if (dirty & /*parentSlug, title*/ 10 && a0_href_value !== (a0_href_value = buildHref(`#/g~${/*parentSlug*/ ctx[3]}~${slugify(/*title*/ ctx[1])}`))) {
+    				attr(a0, "href", a0_href_value);
+    			}
+
+    			if (dirty & /*hidden*/ 1) {
+    				toggle_class(i, "fa-chevron-right", /*hidden*/ ctx[0]);
+    			}
+
+    			if (dirty & /*hidden*/ 1) {
+    				toggle_class(i, "fa-chevron-down", !/*hidden*/ ctx[0]);
