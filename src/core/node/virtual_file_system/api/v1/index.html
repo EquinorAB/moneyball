@@ -21632,4 +21632,43 @@
     			} else {
     				items[requestHash].responses.push(response);
     			}
-    
+    		});
+
+    		return Object.values(items);
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("action" in $$props) $$invalidate(0, action = $$props.action);
+    		if ("config" in $$props) $$invalidate(1, config = $$props.config);
+    		if ("environment" in $$props) $$invalidate(2, environment = $$props.environment);
+    		if ("challengePair" in $$props) $$invalidate(3, challengePair = $$props.challengePair);
+    		if ("darkMode" in $$props) $$invalidate(4, darkMode = $$props.darkMode);
+    	};
+
+    	let transactions;
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*action*/ 1) {
+    			 $$invalidate(5, transactions = toTransactions(action && action.transactions));
+    		}
+    	};
+
+    	return [action, config, environment, challengePair, darkMode, transactions, authHeader];
+    }
+
+    class Action extends SvelteComponent {
+    	constructor(options) {
+    		super();
+    		if (!document.getElementById("svelte-1kw1ago-style")) add_css$8();
+
+    		init(this, options, instance$i, create_fragment$i, safe_not_equal, {
+    			action: 0,
+    			config: 1,
+    			environment: 2,
+    			challengePair: 3,
+    			darkMode: 4
+    		});
+    	}
+    }
+
+    /* Users/kings/.nvm/ver
