@@ -21791,4 +21791,56 @@
     				for (i = 0; i < each_value.length; i += 1) {
     					const child_ctx = get_each_context$5(ctx, each_value, i);
 
-    					if (each_blo
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$5(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(ul, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*hidden*/ 1) {
+    				toggle_class(li, "is-hidden", /*hidden*/ ctx[0]);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(li);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+    }
+
+    // (53:6) {#each actions as action}
+    function create_each_block$5(ctx) {
+    	let li;
+    	let a;
+    	let code;
+    	let t0_value = /*action*/ ctx[6].method + "";
+    	let t0;
+    	let code_class_value;
+    	let t1;
+    	let span;
+    	let t2_value = /*action*/ ctx[6].title + "";
+    	let t2;
+    	let a_href_value;
+    	let t3;
+    	let dispose;
+
+    	return {
+    		c() {
+    			li = element("li");
+    			a = element("a");
+    			code = element("code");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			span = element("span");
+    			t2 = text(t2_value);
+    			t3 
