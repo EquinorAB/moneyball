@@ -21843,4 +21843,30 @@
     			t1 = space();
     			span = element("span");
     			t2 = text(t2_value);
-    			t3 
+    			t3 = space();
+    			attr(code, "class", code_class_value = "tag " + colorize(/*action*/ ctx[6].method) + " is-uppercase" + " svelte-39af3j");
+    			attr(span, "class", "menu-action svelte-39af3j");
+    			attr(a, "href", a_href_value = buildHref(`#/${/*action*/ ctx[6].slug}`));
+    			attr(a, "class", "menu-ellipsis svelte-39af3j");
+    			toggle_class(a, "is-active", /*action*/ ctx[6].slug === /*$router*/ ctx[4].params.slug);
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, li, anchor);
+    			append(li, a);
+    			append(a, code);
+    			append(code, t0);
+    			append(a, t1);
+    			append(a, span);
+    			append(span, t2);
+    			append(li, t3);
+    			if (remount) dispose();
+    			dispose = listen(a, "click", handleLink);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*actions*/ 4 && t0_value !== (t0_value = /*action*/ ctx[6].method + "")) set_data(t0, t0_value);
+
+    			if (dirty & /*actions*/ 4 && code_class_value !== (code_class_value = "tag " + colorize(/*action*/ ctx[6].method) + " is-uppercase" + " svelte-39af3j")) {
+    				attr(code, "class", code_class_value);
+    			}
+
+    			if (dirty & /*actions*/ 4 && t2_value !== (t2_
