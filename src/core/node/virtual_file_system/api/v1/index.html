@@ -21908,4 +21908,46 @@
     		p(ctx, [dirty]) {
     			if (/*title*/ ctx[1]) {
     				if (if_block0) {
-    					if
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_1$a(ctx);
+    					if_block0.c();
+    					if_block0.m(t.parentNode, t);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (/*actions*/ ctx[2].length > 0) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block$d(ctx);
+    					if_block1.c();
+    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (if_block0) if_block0.d(detaching);
+    			if (detaching) detach(t);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach(if_block1_anchor);
+    		}
+    	};
+    }
+
+    function instance$j($$self, $$props, $$invalidate) {
+    	let $router;
+    	component_subscribe($$self, router, $$value => $$invalidate(4, $router = $$value));
+    	let { title } = $$props;
+    	let { actions } = $$props;
+    	let { parentSlug } = $$props;
+    	let { hidden = false } = $$props;
+    	const click_handler = () 
