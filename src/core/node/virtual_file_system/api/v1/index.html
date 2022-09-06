@@ -21869,4 +21869,43 @@
     				attr(code, "class", code_class_value);
     			}
 
-    			if (dirty & /*actions*/ 4 && t2_value !== (t2_
+    			if (dirty & /*actions*/ 4 && t2_value !== (t2_value = /*action*/ ctx[6].title + "")) set_data(t2, t2_value);
+
+    			if (dirty & /*actions*/ 4 && a_href_value !== (a_href_value = buildHref(`#/${/*action*/ ctx[6].slug}`))) {
+    				attr(a, "href", a_href_value);
+    			}
+
+    			if (dirty & /*actions, $router*/ 20) {
+    				toggle_class(a, "is-active", /*action*/ ctx[6].slug === /*$router*/ ctx[4].params.slug);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(li);
+    			dispose();
+    		}
+    	};
+    }
+
+    function create_fragment$j(ctx) {
+    	let t;
+    	let if_block1_anchor;
+    	let if_block0 = /*title*/ ctx[1] && create_if_block_1$a(ctx);
+    	let if_block1 = /*actions*/ ctx[2].length > 0 && create_if_block$d(ctx);
+
+    	return {
+    		c() {
+    			if (if_block0) if_block0.c();
+    			t = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
+    		},
+    		p(ctx, [dirty]) {
+    			if (/*title*/ ctx[1]) {
+    				if (if_block0) {
+    					if
