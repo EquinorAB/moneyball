@@ -22031,4 +22031,52 @@
     				if_block = null;
     			}
     		},
-    		d(detach
+    		d(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
+    		}
+    	};
+    }
+
+    // (170:6) {#if tagHeaders}
+    function create_if_block_2$6(ctx) {
+    	let ul1;
+    	let li;
+    	let ul0;
+    	let each_value_2 = /*tagHeaders*/ ctx[3];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_2.length; i += 1) {
+    		each_blocks[i] = create_each_block_2$1(get_each_context_2$1(ctx, each_value_2, i));
+    	}
+
+    	return {
+    		c() {
+    			ul1 = element("ul");
+    			li = element("li");
+    			ul0 = element("ul");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr(ul1, "class", "menu-list");
+    		},
+    		m(target, anchor) {
+    			insert(target, ul1, anchor);
+    			append(ul1, li);
+    			append(li, ul0);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(ul0, null);
+    			}
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*headerLink, tagHeaders, tocClick*/ 136) {
+    				each_value_2 = /*tagHeaders*/ ctx[3];
+    				let i;
+
+    				for (i = 0; i < each_value_2.length; i += 1) {
+    					const child_ctx = get_each_context_2$1(ctx, each_value_2, i);
+
+    					if (e
