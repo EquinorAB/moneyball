@@ -22207,4 +22207,42 @@
     			dispose = listen(a, "click", handleLink);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*tagActions*/ 4 && t_value !== (t_value = /*tag*/ ctx[10].title + "")) set_data(t, t_valu
+    			if (dirty & /*tagActions*/ 4 && t_value !== (t_value = /*tag*/ ctx[10].title + "")) set_data(t, t_value);
+
+    			if (dirty & /*tagActions*/ 4 && a_href_value !== (a_href_value = buildHref(`#/rg~${slugify(/*tag*/ ctx[10].title)}`))) {
+    				attr(a, "href", a_href_value);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(p);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (204:8) {#each tag.children as child}
+    function create_each_block_1$3(ctx) {
+    	let current;
+
+    	const menuitem = new MenuItem({
+    			props: {
+    				title: /*child*/ ctx[13].title,
+    				actions: /*child*/ ctx[13].actions,
+    				hidden: /*actionsCount*/ ctx[4] > 50,
+    				parentSlug: slugify(/*tag*/ ctx[10].title)
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(menuitem.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(menuitem, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const menuitem_changes = {};
+    			if (dirty & /*tagActions*/ 4) menuitem_changes.title = /*child*/ ctx[13].title;
+    			if (dirty & /*tagActions*/ 4) menuitem_changes.actions = /*child*/ ctx[13].actions;
+    			if (dirty & /*actionsCount*/ 16) menuitem_changes.hidd
