@@ -22079,4 +22079,52 @@
     				for (i = 0; i < each_value_2.length; i += 1) {
     					const child_ctx = get_each_context_2$1(ctx, each_value_2, i);
 
-    					if (e
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_2$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(ul0, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_2.length;
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(ul1);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+    }
+
+    // (175:16) {#if header.level === 0}
+    function create_if_block_3$2(ctx) {
+    	let li;
+    	let a;
+    	let t0_value = /*header*/ ctx[16].text + "";
+    	let t0;
+    	let a_href_value;
+    	let t1;
+    	let dispose;
+
+    	return {
+    		c() {
+    			li = element("li");
+    			a = element("a");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			attr(a, "href", a_href_value = "#" + headerLink(/*header*/ ctx[16].text));
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, li, anchor);
+    			append(li, a);
+    			append(a, t0);
+    			append(li, t1);
+    			if (remount) dispose();
+
+    			dispose = listen(a, "click", prevent_d
