@@ -22127,4 +22127,43 @@
     			append(li, t1);
     			if (remount) dispose();
 
-    			dispose = listen(a, "click", prevent_d
+    			dispose = listen(a, "click", prevent_default(function () {
+    				if (is_function(/*tocClick*/ ctx[7])) /*tocClick*/ ctx[7].apply(this, arguments);
+    			}));
+    		},
+    		p(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*tagHeaders*/ 8 && t0_value !== (t0_value = /*header*/ ctx[16].text + "")) set_data(t0, t0_value);
+
+    			if (dirty & /*tagHeaders*/ 8 && a_href_value !== (a_href_value = "#" + headerLink(/*header*/ ctx[16].text))) {
+    				attr(a, "href", a_href_value);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(li);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (174:14) {#each tagHeaders as header}
+    function create_each_block_2$1(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*header*/ ctx[16].level === 0 && create_if_block_3$2(ctx);
+
+    	return {
+    		c() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+    		p(ctx, dirty) {
+    			if (/*header*/ ctx[16].level === 0) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block_3$2(ctx);
+    
