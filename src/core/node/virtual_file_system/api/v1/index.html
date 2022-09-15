@@ -22166,4 +22166,45 @@
     					if_block.p(ctx, dirty);
     				} else {
     					if_block = create_if_block_3$2(ctx);
-    
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		d(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
+    		}
+    	};
+    }
+
+    // (192:6) {#if tag.title}
+    function create_if_block$e(ctx) {
+    	let p;
+    	let a;
+    	let t_value = /*tag*/ ctx[10].title + "";
+    	let t;
+    	let a_href_value;
+    	let dispose;
+
+    	return {
+    		c() {
+    			p = element("p");
+    			a = element("a");
+    			t = text(t_value);
+    			attr(a, "href", a_href_value = buildHref(`#/rg~${slugify(/*tag*/ ctx[10].title)}`));
+    			attr(a, "class", "is-inline-block");
+    			attr(p, "class", "menu-label");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, p, anchor);
+    			append(p, a);
+    			append(a, t);
+    			if (remount) dispose();
+    			dispose = listen(a, "click", handleLink);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*tagActions*/ 4 && t_value !== (t_value = /*tag*/ ctx[10].title + "")) set_data(t, t_valu
