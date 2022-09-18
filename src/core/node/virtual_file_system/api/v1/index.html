@@ -22389,4 +22389,46 @@
     	let p1;
     	let a;
     	let t2;
-    	let a_href_
+    	let a_href_value;
+    	let t3;
+    	let t4;
+    	let current;
+    	let dispose;
+    	let if_block = /*query*/ ctx[0] === "" && create_if_block_1$b(ctx);
+    	let each_value = /*tagActions*/ ctx[2];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$6(get_each_context$6(ctx, each_value, i));
+    	}
+
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
+
+    	return {
+    		c() {
+    			aside = element("aside");
+    			section = element("section");
+    			div1 = element("div");
+    			div0 = element("div");
+    			p0 = element("p");
+    			input = element("input");
+    			t0 = space();
+    			span = element("span");
+    			span.innerHTML = `<i class="fas fa-search"></i>`;
+    			t1 = space();
+    			div2 = element("div");
+    			p1 = element("p");
+    			a = element("a");
+    			t2 = text(/*title*/ ctx[1]);
+    			t3 = space();
+    			if (if_block) if_block.c();
+    			t4 = space();
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr(input, "id", "search-input-text");
+    			attr(input, "c
