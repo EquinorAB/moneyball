@@ -22431,4 +22431,31 @@
     			}
 
     			attr(input, "id", "search-input-text");
-    			attr(input, "c
+    			attr(input, "class", "input is-rounded svelte-fvssqr");
+    			attr(input, "placeholder", "Filter by path, method, and title...");
+    			attr(span, "class", "icon is-right icon-input-search svelte-fvssqr");
+    			attr(p0, "class", "control has-icons-right");
+    			attr(div0, "class", "field");
+    			attr(div1, "class", "hero-body svelte-fvssqr");
+    			toggle_class(div1, "is-darkmode", /*isDarkmode*/ ctx[6]);
+    			attr(section, "class", "hero is-sticky svelte-fvssqr");
+    			toggle_class(section, "is-darkmode", /*isDarkmode*/ ctx[6]);
+    			attr(a, "href", a_href_value = buildHref(""));
+    			attr(p1, "class", "menu-label");
+    			attr(div2, "class", "menu-wrapper svelte-fvssqr");
+    			attr(aside, "class", "menu svelte-fvssqr");
+    			toggle_class(aside, "is-collapsed", /*isCollapsed*/ ctx[5]);
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, aside, anchor);
+    			append(aside, section);
+    			append(section, div1);
+    			append(div1, div0);
+    			append(div0, p0);
+    			append(p0, input);
+    			set_input_value(input, /*query*/ ctx[0]);
+    			append(p0, t0);
+    			append(p0, span);
+    			append(aside, t1);
+    			append(aside, div2);
+   
