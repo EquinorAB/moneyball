@@ -22458,4 +22458,41 @@
     			append(p0, span);
     			append(aside, t1);
     			append(aside, div2);
-   
+    			append(div2, p1);
+    			append(p1, a);
+    			append(a, t2);
+    			append(div2, t3);
+    			if (if_block) if_block.m(div2, null);
+    			append(div2, t4);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div2, null);
+    			}
+
+    			current = true;
+    			if (remount) run_all(dispose);
+
+    			dispose = [
+    				listen(input, "input", /*input_input_handler*/ ctx[9]),
+    				listen(span, "click", function () {
+    					if (is_function(/*searchClick*/ ctx[8])) /*searchClick*/ ctx[8].apply(this, arguments);
+    				}),
+    				listen(a, "click", prevent_default(function () {
+    					if (is_function(/*tocClick*/ ctx[7])) /*tocClick*/ ctx[7].apply(this, arguments);
+    				}))
+    			];
+    		},
+    		p(new_ctx, [dirty]) {
+    			ctx = new_ctx;
+
+    			if (dirty & /*query*/ 1 && input.value !== /*query*/ ctx[0]) {
+    				set_input_value(input, /*query*/ ctx[0]);
+    			}
+
+    			if (dirty & /*isDarkmode*/ 64) {
+    				toggle_class(div1, "is-darkmode", /*isDarkmode*/ ctx[6]);
+    			}
+
+    			if (dirty & /*isDarkmode*/ 64) {
+    				toggle_class(section, "is-darkmode", /*isDarkmode*/ ctx[6]);
+    	
