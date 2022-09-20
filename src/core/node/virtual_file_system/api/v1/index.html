@@ -22698,4 +22698,41 @@
     function get_each_context$7(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[10] = list[i];
-    	return child_ctx
+    	return child_ctx;
+    }
+
+    // (52:0) {#if isAuth(environment, 'oauth2')}
+    function create_if_block_1$c(ctx) {
+    	let current_block_type_index;
+    	let if_block;
+    	let if_block_anchor;
+    	let current;
+    	const if_block_creators = [create_if_block_2$7, create_if_block_3$3, create_else_block_1$2];
+    	const if_blocks = [];
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*authenticating*/ ctx[1]) return 0;
+    		if (/*authenticated*/ ctx[3]) return 1;
+    		return 2;
+    	}
+
+    	current_block_type_index = select_block_type(ctx, -1);
+    	if_block = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+
+    	return {
+    		c() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			let previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type(ctx, dirty);
+
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(ctx, dirty);
+    			} else {
