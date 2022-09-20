@@ -22539,4 +22539,48 @@
     				check_outros();
     			}
 
-    
+    			if (dirty & /*isCollapsed*/ 32) {
+    				toggle_class(aside, "is-collapsed", /*isCollapsed*/ ctx[5]);
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+
+    			for (let i = 0; i < each_value.length; i += 1) {
+    				transition_in(each_blocks[i]);
+    			}
+
+    			current = true;
+    		},
+    		o(local) {
+    			each_blocks = each_blocks.filter(Boolean);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				transition_out(each_blocks[i]);
+    			}
+
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(aside);
+    			if (if_block) if_block.d();
+    			destroy_each(each_blocks, detaching);
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function headerLink(text) {
+    	return text.toLowerCase().replace(/\s/g, "-");
+    }
+
+    function instance$k($$self, $$props, $$invalidate) {
+    	let { title } = $$props;
+    	let { tagActions = [] } = $$props;
+    	let { tagHeaders = [] } = $$props;
+    	let { actionsCount } = $$props;
+    	let { isCollapsed } = $$props;
+    	let { isDarkmode } = $$props;
+    	let { tocClick } = $$props;
+    	let { searchClick } = $$props;
+    	let { query } = $$props;
