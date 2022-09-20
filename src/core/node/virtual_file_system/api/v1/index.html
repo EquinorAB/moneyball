@@ -22584,3 +22584,36 @@
     	let { tocClick } = $$props;
     	let { searchClick } = $$props;
     	let { query } = $$props;
+
+    	function input_input_handler() {
+    		query = this.value;
+    		$$invalidate(0, query);
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("title" in $$props) $$invalidate(1, title = $$props.title);
+    		if ("tagActions" in $$props) $$invalidate(2, tagActions = $$props.tagActions);
+    		if ("tagHeaders" in $$props) $$invalidate(3, tagHeaders = $$props.tagHeaders);
+    		if ("actionsCount" in $$props) $$invalidate(4, actionsCount = $$props.actionsCount);
+    		if ("isCollapsed" in $$props) $$invalidate(5, isCollapsed = $$props.isCollapsed);
+    		if ("isDarkmode" in $$props) $$invalidate(6, isDarkmode = $$props.isDarkmode);
+    		if ("tocClick" in $$props) $$invalidate(7, tocClick = $$props.tocClick);
+    		if ("searchClick" in $$props) $$invalidate(8, searchClick = $$props.searchClick);
+    		if ("query" in $$props) $$invalidate(0, query = $$props.query);
+    	};
+
+    	return [
+    		query,
+    		title,
+    		tagActions,
+    		tagHeaders,
+    		actionsCount,
+    		isCollapsed,
+    		isDarkmode,
+    		tocClick,
+    		searchClick,
+    		input_input_handler
+    	];
+    }
+
+    class MenuPanel extends Svel
