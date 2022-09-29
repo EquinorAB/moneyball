@@ -22781,4 +22781,38 @@
     			props: {
     				authOptions: /*environment*/ ctx[5].auth.options,
     				isPKCE: isPKCE(/*environment*/ ctx[5]),
-    				pkceChal
+    				pkceChallenge: /*pkceChallenge*/ ctx[2]
+    			}
+    		});
+
+    	return {
+    		c() {
+    			div1 = element("div");
+    			div0 = element("div");
+    			p = element("p");
+    			create_component(loginbutton.$$.fragment);
+    			attr(p, "class", "control");
+    			attr(div0, "class", "field is-grouped");
+    			attr(div1, "class", "navbar-item");
+    		},
+    		m(target, anchor) {
+    			insert(target, div1, anchor);
+    			append(div1, div0);
+    			append(div0, p);
+    			mount_component(loginbutton, p, null);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const loginbutton_changes = {};
+    			if (dirty & /*environment*/ 32) loginbutton_changes.authOptions = /*environment*/ ctx[5].auth.options;
+    			if (dirty & /*environment*/ 32) loginbutton_changes.isPKCE = isPKCE(/*environment*/ ctx[5]);
+    			if (dirty & /*pkceChallenge*/ 4) loginbutton_changes.pkceChallenge = /*pkceChallenge*/ ctx[2];
+    			loginbutton.$set(loginbutton_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(loginbutton.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			tran
