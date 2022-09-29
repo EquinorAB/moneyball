@@ -22815,4 +22815,50 @@
     			current = true;
     		},
     		o(local) {
-    			tran
+    			transition_out(loginbutton.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div1);
+    			destroy_component(loginbutton);
+    		}
+    	};
+    }
+
+    // (59:26) 
+    function create_if_block_3$3(ctx) {
+    	let div1;
+    	let div0;
+    	let p;
+    	let current;
+    	const logoutbutton = new LogoutButton({});
+
+    	return {
+    		c() {
+    			div1 = element("div");
+    			div0 = element("div");
+    			p = element("p");
+    			create_component(logoutbutton.$$.fragment);
+    			attr(p, "class", "control");
+    			attr(div0, "class", "field is-grouped");
+    			attr(div1, "class", "navbar-item");
+    		},
+    		m(target, anchor) {
+    			insert(target, div1, anchor);
+    			append(div1, div0);
+    			append(div0, p);
+    			mount_component(logoutbutton, p, null);
+    			current = true;
+    		},
+    		p: noop,
+    		i(local) {
+    			if (current) return;
+    			transition_in(logoutbutton.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(logoutbutton.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching)
