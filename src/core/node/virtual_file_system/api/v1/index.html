@@ -22861,4 +22861,51 @@
     			current = false;
     		},
     		d(detaching) {
-    			if (detaching)
+    			if (detaching) detach(div1);
+    			destroy_component(logoutbutton);
+    		}
+    	};
+    }
+
+    // (53:2) {#if authenticating}
+    function create_if_block_2$7(ctx) {
+    	let div;
+
+    	return {
+    		c() {
+    			div = element("div");
+    			div.innerHTML = `<span class="icon is-medium has-text-danger"><i class="fas fa-2x fa-spinner fa-pulse"></i></span>`;
+    			attr(div, "class", "navbar-item");
+    		},
+    		m(target, anchor) {
+    			insert(target, div, anchor);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d(detaching) {
+    			if (detaching) detach(div);
+    		}
+    	};
+    }
+
+    // (87:4) {#each Object.keys(environments) as envName}
+    function create_each_block$7(ctx) {
+    	let a;
+    	let t0_value = /*envName*/ ctx[10] + "";
+    	let t0;
+    	let t1;
+    	let a_data_name_value;
+    	let dispose;
+
+    	return {
+    		c() {
+    			a = element("a");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			attr(a, "data-name", a_data_name_value = /*envName*/ ctx[10]);
+    			attr(a, "href", "javascript:void(0)");
+    			attr(a, "class", "navbar-item");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, a, a
