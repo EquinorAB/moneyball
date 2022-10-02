@@ -22908,4 +22908,54 @@
     			attr(a, "class", "navbar-item");
     		},
     		m(target, anchor, remount) {
-    			insert(target, a, a
+    			insert(target, a, anchor);
+    			append(a, t0);
+    			append(a, t1);
+    			if (remount) dispose();
+    			dispose = listen(a, "click", /*handleClick*/ ctx[7]);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*environments*/ 1 && t0_value !== (t0_value = /*envName*/ ctx[10] + "")) set_data(t0, t0_value);
+
+    			if (dirty & /*environments*/ 1 && a_data_name_value !== (a_data_name_value = /*envName*/ ctx[10])) {
+    				attr(a, "data-name", a_data_name_value);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(a);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (113:8) {:else}
+    function create_else_block$7(ctx) {
+    	let span;
+
+    	return {
+    		c() {
+    			span = element("span");
+    			span.textContent = "None";
+    			attr(span, "class", "is-capitalized");
+    		},
+    		m(target, anchor) {
+    			insert(target, span, anchor);
+    		},
+    		p: noop,
+    		d(detaching) {
+    			if (detaching) detach(span);
+    		}
+    	};
+    }
+
+    // (111:8) {#if environment.auth}
+    function create_if_block$f(ctx) {
+    	let span;
+    	let t_value = /*environment*/ ctx[5].auth.name + "";
+    	let t;
+
+    	return {
+    		c() {
+    			span = element("span");
+    			t = text(t_value);
+    			attr(
