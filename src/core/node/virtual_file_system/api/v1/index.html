@@ -23005,4 +23005,42 @@
     	}
 
     	function select_block_type_1(ctx, dirty) {
-    		i
+    		if (/*environment*/ ctx[5].auth) return create_if_block$f;
+    		return create_else_block$7;
+    	}
+
+    	let current_block_type = select_block_type_1(ctx, -1);
+    	let if_block1 = current_block_type(ctx);
+
+    	return {
+    		c() {
+    			if (if_block0) if_block0.c();
+    			t0 = space();
+    			div1 = element("div");
+    			a0 = element("a");
+    			t1 = text(/*$env*/ ctx[6]);
+    			t2 = space();
+    			div0 = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t3 = space();
+    			div4 = element("div");
+    			a1 = element("a");
+    			a1.innerHTML = `<span class="icon icon-info is-medium has-text-grey-light svelte-cjzzpf"><i class="fas fa-lg fa-info-circle"></i></span>`;
+    			t4 = space();
+    			div3 = element("div");
+    			div2 = element("div");
+    			p0 = element("p");
+    			t5 = text("BaseURL: ");
+    			t6 = text(t6_value);
+    			t7 = space();
+    			p1 = element("p");
+    			t8 = text("Auth:\n        ");
+    			if_block1.c();
+    			attr(a0, "href", "javascript:void(0)");
+    			attr(a0, "class", "navbar-link");
+    			attr(div0, "class", "navbar-dropdown is-right");
+    	
