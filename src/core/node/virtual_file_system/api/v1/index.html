@@ -23043,4 +23043,39 @@
     			attr(a0, "href", "javascript:void(0)");
     			attr(a0, "class", "navbar-link");
     			attr(div0, "class", "navbar-dropdown is-right");
-    	
+    			attr(div1, "class", "navbar-item has-dropdown is-capitalized");
+    			toggle_class(div1, "is-active", /*show*/ ctx[4]);
+    			attr(a1, "href", "javascript:void(0)");
+    			attr(a1, "class", "navbar-link is-arrowless");
+    			attr(div2, "class", "content svelte-cjzzpf");
+    			attr(div3, "class", "navbar-dropdown is-right");
+    			attr(div4, "class", "navbar-item has-dropdown is-hoverable");
+    		},
+    		m(target, anchor, remount) {
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert(target, t0, anchor);
+    			insert(target, div1, anchor);
+    			append(div1, a0);
+    			append(a0, t1);
+    			append(div1, t2);
+    			append(div1, div0);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div0, null);
+    			}
+
+    			insert(target, t3, anchor);
+    			insert(target, div4, anchor);
+    			append(div4, a1);
+    			append(div4, t4);
+    			append(div4, div3);
+    			append(div3, div2);
+    			append(div2, p0);
+    			append(p0, t5);
+    			append(p0, t6);
+    			append(div2, t7);
+    			append(div2, p1);
+    			append(p1, t8);
+    			if_block1.m(p1, null);
+    			current = true;
+    			if 
