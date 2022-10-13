@@ -23078,4 +23078,42 @@
     			append(p1, t8);
     			if_block1.m(p1, null);
     			current = true;
-    			if 
+    			if (remount) dispose();
+    			dispose = listen(a0, "click", /*toggleClick*/ ctx[8]);
+    		},
+    		p(ctx, [dirty]) {
+    			if (dirty & /*environment*/ 32) show_if = isAuth(/*environment*/ ctx[5], "oauth2");
+
+    			if (show_if) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    					transition_in(if_block0, 1);
+    				} else {
+    					if_block0 = create_if_block_1$c(ctx);
+    					if_block0.c();
+    					transition_in(if_block0, 1);
+    					if_block0.m(t0.parentNode, t0);
+    				}
+    			} else if (if_block0) {
+    				group_outros();
+
+    				transition_out(if_block0, 1, 1, () => {
+    					if_block0 = null;
+    				});
+
+    				check_outros();
+    			}
+
+    			if (!current || dirty & /*$env*/ 64) set_data(t1, /*$env*/ ctx[6]);
+
+    			if (dirty & /*Object, environments, handleClick*/ 129) {
+    				each_value = Object.keys(/*environments*/ ctx[0]);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$7(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = crea
