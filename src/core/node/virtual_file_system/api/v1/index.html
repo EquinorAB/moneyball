@@ -23161,4 +23161,45 @@
     			if (detaching) detach(t0);
     			if (detaching) detach(div1);
     			destroy_each(each_blocks, detaching);
-    			if (detaching)
+    			if (detaching) detach(t3);
+    			if (detaching) detach(div4);
+    			if_block1.d();
+    			dispose();
+    		}
+    	};
+    }
+
+    function instance$m($$self, $$props, $$invalidate) {
+    	let $env;
+    	let $auth;
+    	component_subscribe($$self, env, $$value => $$invalidate(6, $env = $$value));
+    	component_subscribe($$self, auth, $$value => $$invalidate(9, $auth = $$value));
+    	let { environments } = $$props;
+    	let { authenticating } = $$props;
+    	let { pkceChallenge } = $$props;
+    	let authenticated = false;
+    	let show = false;
+
+    	function handleClick(event) {
+    		$$invalidate(4, show = false);
+    		const envName = event.target.dataset["name"];
+    		env.set(envName);
+    		const authToken = getToken($env);
+
+    		if (authToken) {
+    			auth.add(envName);
+    			token$1.set(authToken);
+    		} else {
+    			auth.remove(envName);
+    			token$1.set(null);
+    		}
+    	}
+
+    	function toggleClick() {
+    		$$invalidate(4, show = !show);
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("environments" in $$props) $$invalidate(0, environments = $$props.environments);
+    		if ("authenticating" in $$props) $$invalidate(1, authenticating = $$props.authenticating);
+    		i
