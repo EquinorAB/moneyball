@@ -23311,4 +23311,41 @@
     			current = true;
     		},
     		p(ctx, dirty) {
-    			const select
+    			const selectorpanel_changes = {};
+    			if (dirty & /*config*/ 8) selectorpanel_changes.environments = /*config*/ ctx[3].playground.environments;
+    			if (dirty & /*authenticating*/ 64) selectorpanel_changes.authenticating = /*authenticating*/ ctx[6];
+    			selectorpanel.$set(selectorpanel_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(selectorpanel.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(selectorpanel.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(selectorpanel, detaching);
+    		}
+    	};
+    }
+
+    // (441:8) {#if darkMode.enable}
+    function create_if_block_2$8(ctx) {
+    	let div;
+    	let a;
+    	let span;
+    	let i;
+    	let dispose;
+
+    	return {
+    		c() {
+    			div = element("div");
+    			a = element("a");
+    			span = element("span");
+    			i = element("i");
+    			attr(i, "class", "fas fa-lg");
+    			toggle_class(i, "fa-moon", /*darkMode*/ ctx[7].active);
+    			toggle_class(i, "fa-sun", !/*darkMode*/ ctx[7].active);
+    			attr(sp
