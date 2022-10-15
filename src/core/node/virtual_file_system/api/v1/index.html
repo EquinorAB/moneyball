@@ -23270,3 +23270,45 @@
     			t0 = space();
     			span1 = element("span");
     			t1 = text(/*title*/ ctx[0]);
+    			attr(span0, "class", "icon icon-brand is-medium has-text-grey-light svelte-1s8fs56");
+    			attr(span1, "class", "title is-4");
+    		},
+    		m(target, anchor) {
+    			insert(target, span0, anchor);
+    			insert(target, t0, anchor);
+    			insert(target, span1, anchor);
+    			append(span1, t1);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*title*/ 1) set_data(t1, /*title*/ ctx[0]);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(span0);
+    			if (detaching) detach(t0);
+    			if (detaching) detach(span1);
+    		}
+    	};
+    }
+
+    // (435:8) {#if config.playground.enabled}
+    function create_if_block_3$4(ctx) {
+    	let current;
+
+    	const selectorpanel = new SelectorPanel({
+    			props: {
+    				environments: /*config*/ ctx[3].playground.environments,
+    				pkceChallenge: /*challengePair*/ ctx[12],
+    				authenticating: /*authenticating*/ ctx[6]
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(selectorpanel.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(selectorpanel, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const select
