@@ -23443,4 +23443,47 @@
     			create_component(home.$$.fragment);
     		},
     		m(target, anchor) {
-    			mount_component(home, 
+    			mount_component(home, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const home_changes = {};
+    			if (dirty & /*title*/ 1) home_changes.title = /*title*/ ctx[0];
+    			if (dirty & /*description*/ 2) home_changes.description = /*description*/ ctx[1];
+    			home.$set(home_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(home.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(home.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(home, detaching);
+    		}
+    	};
+    }
+
+    // (498:8) <Route exact path="/:slug">
+    function create_default_slot_1(ctx) {
+    	let current;
+
+    	const action_1 = new Action({
+    			props: {
+    				action: /*action*/ ctx[8],
+    				config: /*config*/ ctx[3],
+    				environment: /*environment*/ ctx[11],
+    				challengePair: /*challengePair*/ ctx[12],
+    				darkMode: /*darkMode*/ ctx[7]
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(action_1.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(action_1, target, a
