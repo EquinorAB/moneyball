@@ -23348,4 +23348,45 @@
     			attr(i, "class", "fas fa-lg");
     			toggle_class(i, "fa-moon", /*darkMode*/ ctx[7].active);
     			toggle_class(i, "fa-sun", !/*darkMode*/ ctx[7].active);
-    			attr(sp
+    			attr(span, "class", "icon is-medium has-text-grey-light");
+    			attr(a, "href", "javascript:void(0)");
+    			attr(a, "title", "Dark Mode");
+    			attr(a, "class", "navbar-link is-arrowless");
+    			attr(div, "class", "navbar-item has-dropdown is-hoverable");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, div, anchor);
+    			append(div, a);
+    			append(a, span);
+    			append(span, i);
+    			if (remount) dispose();
+    			dispose = listen(a, "click", /*darkToggle*/ ctx[16]);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*darkMode*/ 128) {
+    				toggle_class(i, "fa-moon", /*darkMode*/ ctx[7].active);
+    			}
+
+    			if (dirty & /*darkMode*/ 128) {
+    				toggle_class(i, "fa-sun", !/*darkMode*/ ctx[7].active);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div);
+    			dispose();
+    		}
+    	};
+    }
+
+    // (481:8) {#if collapsed}
+    function create_if_block_1$d(ctx) {
+    	let span;
+
+    	return {
+    		c() {
+    			span = element("span");
+    			span.textContent = "»";
+    			attr(span, "class", "icon");
+    			attr(span, "title", "Expand [");
+    		},
+    		m(target, an
