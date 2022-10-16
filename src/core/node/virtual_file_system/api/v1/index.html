@@ -23389,4 +23389,58 @@
     			attr(span, "class", "icon");
     			attr(span, "title", "Expand [");
     		},
-    		m(target, an
+    		m(target, anchor) {
+    			insert(target, span, anchor);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(span);
+    		}
+    	};
+    }
+
+    // (484:8) {#if !collapsed}
+    function create_if_block$g(ctx) {
+    	let span0;
+    	let t1;
+    	let span1;
+
+    	return {
+    		c() {
+    			span0 = element("span");
+    			span0.textContent = "«";
+    			t1 = space();
+    			span1 = element("span");
+    			span1.textContent = "Collapse sidebar";
+    			attr(span0, "class", "icon");
+    			attr(span1, "class", "fa-xs");
+    		},
+    		m(target, anchor) {
+    			insert(target, span0, anchor);
+    			insert(target, t1, anchor);
+    			insert(target, span1, anchor);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(span0);
+    			if (detaching) detach(t1);
+    			if (detaching) detach(span1);
+    		}
+    	};
+    }
+
+    // (495:8) <Route exact>
+    function create_default_slot_2(ctx) {
+    	let current;
+
+    	const home = new Home({
+    			props: {
+    				title: /*title*/ ctx[0],
+    				description: /*description*/ ctx[1]
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(home.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(home, 
