@@ -23486,4 +23486,47 @@
     			create_component(action_1.$$.fragment);
     		},
     		m(target, anchor) {
-    			mount_component(action_1, target, a
+    			mount_component(action_1, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const action_1_changes = {};
+    			if (dirty & /*action*/ 256) action_1_changes.action = /*action*/ ctx[8];
+    			if (dirty & /*config*/ 8) action_1_changes.config = /*config*/ ctx[3];
+    			if (dirty & /*environment*/ 2048) action_1_changes.environment = /*environment*/ ctx[11];
+    			if (dirty & /*darkMode*/ 128) action_1_changes.darkMode = /*darkMode*/ ctx[7];
+    			action_1.$set(action_1_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(action_1.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(action_1.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(action_1, detaching);
+    		}
+    	};
+    }
+
+    // (494:6) <Router>
+    function create_default_slot$2(ctx) {
+    	let t;
+    	let current;
+
+    	const route0 = new Route({
+    			props: {
+    				exact: true,
+    				$$slots: { default: [create_default_slot_2] },
+    				$$scope: { ctx }
+    			}
+    		});
+
+    	const route1 = new Route({
+    			props: {
+    				exact: true,
+    				path: "/:slug",
+    		
