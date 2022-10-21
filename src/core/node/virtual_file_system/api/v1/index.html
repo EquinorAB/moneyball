@@ -23529,4 +23529,49 @@
     			props: {
     				exact: true,
     				path: "/:slug",
-    		
+    				$$slots: { default: [create_default_slot_1] },
+    				$$scope: { ctx }
+    			}
+    		});
+
+    	return {
+    		c() {
+    			create_component(route0.$$.fragment);
+    			t = space();
+    			create_component(route1.$$.fragment);
+    		},
+    		m(target, anchor) {
+    			mount_component(route0, target, anchor);
+    			insert(target, t, anchor);
+    			mount_component(route1, target, anchor);
+    			current = true;
+    		},
+    		p(ctx, dirty) {
+    			const route0_changes = {};
+
+    			if (dirty & /*$$scope, title, description*/ 16777219) {
+    				route0_changes.$$scope = { dirty, ctx };
+    			}
+
+    			route0.$set(route0_changes);
+    			const route1_changes = {};
+
+    			if (dirty & /*$$scope, action, config, environment, darkMode*/ 16779656) {
+    				route1_changes.$$scope = { dirty, ctx };
+    			}
+
+    			route1.$set(route1_changes);
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(route0.$$.fragment, local);
+    			transition_in(route1.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(route0.$$.fragment, local);
+    			transition_out(route1.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			destroy_component(rou
