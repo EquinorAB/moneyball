@@ -23574,4 +23574,58 @@
     			current = false;
     		},
     		d(detaching) {
-    			destroy_component(rou
+    			destroy_component(route0, detaching);
+    			if (detaching) detach(t);
+    			destroy_component(route1, detaching);
+    		}
+    	};
+    }
+
+    function create_fragment$n(ctx) {
+    	let div8;
+    	let nav;
+    	let div0;
+    	let t0;
+    	let a0;
+    	let t3;
+    	let div2;
+    	let div1;
+    	let t4;
+    	let t5;
+    	let div6;
+    	let div4;
+    	let t6;
+    	let div3;
+    	let t7;
+    	let t8;
+    	let div5;
+    	let t9;
+    	let footer;
+    	let div7;
+    	let p;
+    	let strong0;
+    	let t10;
+    	let t11;
+    	let a1;
+    	let current;
+    	let dispose;
+
+    	const link = new Link({
+    			props: {
+    				href: "/",
+    				class: "navbar-item",
+    				$$slots: { default: [create_default_slot_3] },
+    				$$scope: { ctx }
+    			}
+    		});
+
+    	let if_block0 = /*config*/ ctx[3].playground.enabled && create_if_block_3$4(ctx);
+    	let if_block1 = /*darkMode*/ ctx[7].enable && create_if_block_2$8(ctx);
+
+    	const menupanel = new MenuPanel({
+    			props: {
+    				title: /*title*/ ctx[0],
+    				tagActions: /*filteredActions*/ ctx[10],
+    				tagHeaders: toc(/*description*/ ctx[1]),
+    				currentSlug: /*action*/ ctx[8] && /*action*/ ctx[8].slug,
+    				actionsCount: /*actio
