@@ -23700,4 +23700,25 @@
     			attr(nav, "role", "navigation");
     			attr(nav, "aria-label", "main navigation");
     			attr(div3, "class", "menu-collapsible svelte-1s8fs56");
-    			toggle_class(div3, "is-darkmode", /*dar
+    			toggle_class(div3, "is-darkmode", /*darkMode*/ ctx[7].active);
+    			attr(div4, "class", "column is-one-quarter sidenav svelte-1s8fs56");
+    			attr(div4, "id", "mainnav");
+    			toggle_class(div4, "is-hidden-mobile", /*showMenu*/ ctx[4]);
+    			attr(div5, "class", "column is-three-quarters main svelte-1s8fs56");
+    			toggle_class(div5, "is-darkmode", /*darkMode*/ ctx[7].active);
+    			attr(div6, "class", "columns svelte-1s8fs56");
+    			toggle_class(div6, "is-collapsed", /*collapsed*/ ctx[5]);
+    			attr(a1, "href", "https://github.com/bukalapak/snowboard");
+    			attr(a1, "target", "_blank");
+    			attr(div7, "class", "content column is-paddingless has-text-centered svelte-1s8fs56");
+    			toggle_class(div7, "is-offset-one-quarter", !/*collapsed*/ ctx[5]);
+    			attr(footer, "class", "footer svelte-1s8fs56");
+    			toggle_class(footer, "is-darkmode", /*darkMode*/ ctx[7].active);
+    			attr(div8, "class", "body-inner svelte-1s8fs56");
+    			toggle_class(div8, "is-darkmode", /*darkMode*/ ctx[7].active);
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, div8, anchor);
+    			append(div8, nav);
+    			append(nav, div0);
+    			mount_comp
