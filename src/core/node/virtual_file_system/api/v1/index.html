@@ -23628,4 +23628,46 @@
     				tagActions: /*filteredActions*/ ctx[10],
     				tagHeaders: toc(/*description*/ ctx[1]),
     				currentSlug: /*action*/ ctx[8] && /*action*/ ctx[8].slug,
-    				actionsCount: /*actio
+    				actionsCount: /*actions*/ ctx[2].length,
+    				isCollapsed: /*collapsed*/ ctx[5],
+    				isDarkmode: /*darkMode*/ ctx[7].active,
+    				query: /*query*/ ctx[9],
+    				tocClick,
+    				searchClick: /*searchClick*/ ctx[15]
+    			}
+    		});
+
+    	let if_block2 = /*collapsed*/ ctx[5] && create_if_block_1$d(ctx);
+    	let if_block3 = !/*collapsed*/ ctx[5] && create_if_block$g(ctx);
+
+    	const router_1 = new Router({
+    			props: {
+    				$$slots: { default: [create_default_slot$2] },
+    				$$scope: { ctx }
+    			}
+    		});
+
+    	return {
+    		c() {
+    			div8 = element("div");
+    			nav = element("nav");
+    			div0 = element("div");
+    			create_component(link.$$.fragment);
+    			t0 = space();
+    			a0 = element("a");
+
+    			a0.innerHTML = `<span aria-hidden="true"></span> 
+        <span aria-hidden="true"></span> 
+        <span aria-hidden="true"></span>`;
+
+    			t3 = space();
+    			div2 = element("div");
+    			div1 = element("div");
+    			if (if_block0) if_block0.c();
+    			t4 = space();
+    			if (if_block1) if_block1.c();
+    			t5 = space();
+    			div6 = element("div");
+    			div4 = element("div");
+    			create_component(menupanel.$$.fragment);
+    			t6 = sp
