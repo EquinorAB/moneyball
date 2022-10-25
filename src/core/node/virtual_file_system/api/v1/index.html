@@ -23759,4 +23759,47 @@
     			];
     		},
     		p(ctx, [dirty]) {
-    			con
+    			const link_changes = {};
+
+    			if (dirty & /*$$scope, title*/ 16777217) {
+    				link_changes.$$scope = { dirty, ctx };
+    			}
+
+    			link.$set(link_changes);
+
+    			if (/*config*/ ctx[3].playground.enabled) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    					transition_in(if_block0, 1);
+    				} else {
+    					if_block0 = create_if_block_3$4(ctx);
+    					if_block0.c();
+    					transition_in(if_block0, 1);
+    					if_block0.m(div1, t4);
+    				}
+    			} else if (if_block0) {
+    				group_outros();
+
+    				transition_out(if_block0, 1, 1, () => {
+    					if_block0 = null;
+    				});
+
+    				check_outros();
+    			}
+
+    			if (/*darkMode*/ ctx[7].enable) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block_2$8(ctx);
+    					if_block1.c();
+    					if_block1.m(div1, null);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			const menupanel_changes = {};
+    			if (dirty & /*title*/ 1) menupanel_changes.title = /*title*/ ctx[0];
+    			if (dirty & /*filteredActions*/ 1024) 
