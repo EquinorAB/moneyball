@@ -23802,4 +23802,34 @@
 
     			const menupanel_changes = {};
     			if (dirty & /*title*/ 1) menupanel_changes.title = /*title*/ ctx[0];
-    			if (dirty & /*filteredActions*/ 1024) 
+    			if (dirty & /*filteredActions*/ 1024) menupanel_changes.tagActions = /*filteredActions*/ ctx[10];
+    			if (dirty & /*description*/ 2) menupanel_changes.tagHeaders = toc(/*description*/ ctx[1]);
+    			if (dirty & /*action*/ 256) menupanel_changes.currentSlug = /*action*/ ctx[8] && /*action*/ ctx[8].slug;
+    			if (dirty & /*actions*/ 4) menupanel_changes.actionsCount = /*actions*/ ctx[2].length;
+    			if (dirty & /*collapsed*/ 32) menupanel_changes.isCollapsed = /*collapsed*/ ctx[5];
+    			if (dirty & /*darkMode*/ 128) menupanel_changes.isDarkmode = /*darkMode*/ ctx[7].active;
+    			if (dirty & /*query*/ 512) menupanel_changes.query = /*query*/ ctx[9];
+    			menupanel.$set(menupanel_changes);
+
+    			if (/*collapsed*/ ctx[5]) {
+    				if (!if_block2) {
+    					if_block2 = create_if_block_1$d(ctx);
+    					if_block2.c();
+    					if_block2.m(div3, t7);
+    				} else {
+    					
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+
+    			if (!/*collapsed*/ ctx[5]) {
+    				if (!if_block3) {
+    					if_block3 = create_if_block$g(ctx);
+    					if_block3.c();
+    					if_block3.m(div3, null);
+    				} else {
+    					
+    				}
+    			} else 
