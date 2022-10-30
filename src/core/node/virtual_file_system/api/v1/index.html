@@ -23832,4 +23832,43 @@
     				} else {
     					
     				}
-    			} else 
+    			} else if (if_block3) {
+    				if_block3.d(1);
+    				if_block3 = null;
+    			}
+
+    			if (dirty & /*darkMode*/ 128) {
+    				toggle_class(div3, "is-darkmode", /*darkMode*/ ctx[7].active);
+    			}
+
+    			if (dirty & /*showMenu*/ 16) {
+    				toggle_class(div4, "is-hidden-mobile", /*showMenu*/ ctx[4]);
+    			}
+
+    			const router_1_changes = {};
+
+    			if (dirty & /*$$scope, action, config, environment, darkMode, title, description*/ 16779659) {
+    				router_1_changes.$$scope = { dirty, ctx };
+    			}
+
+    			router_1.$set(router_1_changes);
+
+    			if (dirty & /*darkMode*/ 128) {
+    				toggle_class(div5, "is-darkmode", /*darkMode*/ ctx[7].active);
+    			}
+
+    			if (dirty & /*collapsed*/ 32) {
+    				toggle_class(div6, "is-collapsed", /*collapsed*/ ctx[5]);
+    			}
+
+    			if (!current || dirty & /*title*/ 1) set_data(t10, /*title*/ ctx[0]);
+
+    			if (dirty & /*collapsed*/ 32) {
+    				toggle_class(div7, "is-offset-one-quarter", !/*collapsed*/ ctx[5]);
+    			}
+
+    			if (dirty & /*darkMode*/ 128) {
+    				toggle_class(footer, "is-darkmode", /*darkMode*/ ctx[7].active);
+    			}
+
+    			if (dirty & /*darkMode*/
