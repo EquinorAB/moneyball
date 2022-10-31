@@ -23871,4 +23871,44 @@
     				toggle_class(footer, "is-darkmode", /*darkMode*/ ctx[7].active);
     			}
 
-    			if (dirty & /*darkMode*/
+    			if (dirty & /*darkMode*/ 128) {
+    				toggle_class(div8, "is-darkmode", /*darkMode*/ ctx[7].active);
+    			}
+    		},
+    		i(local) {
+    			if (current) return;
+    			transition_in(link.$$.fragment, local);
+    			transition_in(if_block0);
+    			transition_in(menupanel.$$.fragment, local);
+    			transition_in(router_1.$$.fragment, local);
+    			current = true;
+    		},
+    		o(local) {
+    			transition_out(link.$$.fragment, local);
+    			transition_out(if_block0);
+    			transition_out(menupanel.$$.fragment, local);
+    			transition_out(router_1.$$.fragment, local);
+    			current = false;
+    		},
+    		d(detaching) {
+    			if (detaching) detach(div8);
+    			destroy_component(link);
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			destroy_component(menupanel);
+    			if (if_block2) if_block2.d();
+    			if (if_block3) if_block3.d();
+    			destroy_component(router_1);
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function getQuery(slug) {
+    	if (!slug) return "";
+
+    	if (slug.startsWith("rg~")) {
+    		const tagPrefix = slug.substr(0, 2);
+    		const tagSlug = slug.substr(3);
+    		return `${tagPrefix}:${tagSlug}`;
+   
