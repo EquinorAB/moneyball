@@ -23911,4 +23911,46 @@
     		const tagPrefix = slug.substr(0, 2);
     		const tagSlug = slug.substr(3);
     		return `${tagPrefix}:${tagSlug}`;
-   
+    	}
+
+    	if (slug.startsWith("g~")) {
+    		const groupPrefix = slug.substr(0, 1);
+    		const groupSlug = slug.substr(2);
+    		return `${groupPrefix}:${groupSlug}`;
+    	}
+
+    	return "";
+    }
+
+    function tocClick(event) {
+    	navigateTo("/");
+    	let href = event.target.getAttribute("href");
+    	const target = document.getElementById(href.substr(1));
+    	window.scrollTo(0, target ? target.offsetTop - 80 : 20);
+    }
+
+    function instance$n($$self, $$props, $$invalidate) {
+    	let $router;
+    	let $env;
+    	component_subscribe($$self, router, $$value => $$invalidate(18, $router = $$value));
+    	component_subscribe($$self, env, $$value => $$invalidate(19, $env = $$value));
+    	Router.hashchange = true;
+    	let { title } = $$props;
+    	let { description } = $$props;
+    	let { actions } = $$props;
+    	let { tagActions } = $$props;
+    	let { config } = $$props;
+
+    	function findAction(slug) {
+    		return actions.find(el => el.slug === slug);
+    	}
+
+    	function getAction(slug) {
+    		if (!slug) return;
+
+    		if (slug.startsWith("rg~")) {
+    			const tagSlug = slug.substr(3);
+    			const firstGroup = firstTagGroup(tagSlug);
+
+    			if (firstGroup) {
+    				const groupSlug =
