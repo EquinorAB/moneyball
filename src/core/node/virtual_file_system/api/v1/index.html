@@ -24047,4 +24047,46 @@
     	function darkToggle() {
     		$$invalidate(7, darkMode.active = !darkMode.active, darkMode);
     		document.getElementById(`bulma-theme-${darkMode.mode[Number(!darkMode.active)]}`).media = "none";
-    		document.getElementById(`
+    		document.getElementById(`bulma-theme-${darkMode.mode[Number(darkMode.active)]}`).media = "";
+    		darkMode.store.setItem(darkMode.toggle, darkMode.mode[Number(darkMode.active)]);
+    	}
+
+    	if (darkMode.store.getItem(darkMode.toggle) === darkMode.mode[1]) {
+    		darkToggle();
+    	}
+
+    	onMount(async () => {
+    		if (isAuth(environment, "oauth2")) {
+    			const authParam = querystringify_1.parse(location.search);
+
+    			if (authParam.code) {
+    				$$invalidate(6, authenticating = true);
+    				navigateTo(config.basePath);
+    				const { accessToken, refreshToken } = await exchangeToken(authParam.code, environment.auth.options, isPKCE(environment), challengePair);
+
+    				if (accessToken) {
+    					setToken($env, accessToken);
+    					auth.add($env);
+    					token$1.set(accessToken);
+
+    					if (refreshToken) {
+    						setRefreshToken($env, refreshToken);
+    					}
+    				}
+
+    				$$invalidate(6, authenticating = false);
+    				clearPKCE();
+    				clearState();
+    			}
+    		}
+    	});
+
+    	document.onkeyup = function (e) {
+    		if ((e.which || e.keyCode) == 219) {
+    			collapseToggle();
+    		}
+    	};
+
+    	$$self.$set = $$props => {
+    		if ("title" in $$props) $$invalidate(0, title = $$props.title);
+    		if ("
