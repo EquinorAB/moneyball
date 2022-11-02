@@ -23953,4 +23953,51 @@
     			const firstGroup = firstTagGroup(tagSlug);
 
     			if (firstGroup) {
-    				const groupSlug =
+    				const groupSlug = `${tagSlug}~${slugify(firstGroup.title)}`;
+    				const selected = firstGroupAction(groupSlug);
+    				return findAction(selected.slug);
+    			}
+
+    			return;
+    		}
+
+    		if (slug.startsWith("g~")) {
+    			const groupSlug = slug.substr(2);
+    			const selected = firstGroupAction(groupSlug);
+    			return findAction(selected.slug);
+    		}
+
+    		return findAction(slug);
+    	}
+
+    	function firstTagGroup(tagSlug) {
+    		let matches = [];
+
+    		tagActions.forEach(tag => {
+    			if (slugify(tag.title) === tagSlug) {
+    				matches.push(tag);
+    			}
+    		});
+
+    		if (matches.length > 0) {
+    			return matches[0].children[0];
+    		}
+    	}
+
+    	function firstGroupAction(groupSlug) {
+    		let matches = [];
+    		const slugs = groupSlug.split("~");
+
+    		tagActions.forEach(tag => {
+    			matches = matches.concat(tag.children.filter(child => slugify(child.title) === slugs[1] && slugify(tag.title) === slugs[0]));
+    		});
+
+    		if (matches.length > 0) {
+    			return matches[0].actions[0];
+    		}
+    	}
+
+    	if (config.playground.enabled) {
+    		const savedEnv = getEnv();
+
+    		if (savedEnv && Object.keys(config.playground.e
