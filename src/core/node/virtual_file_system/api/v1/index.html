@@ -24089,4 +24089,35 @@
 
     	$$self.$set = $$props => {
     		if ("title" in $$props) $$invalidate(0, title = $$props.title);
-    		if ("
+    		if ("description" in $$props) $$invalidate(1, description = $$props.description);
+    		if ("actions" in $$props) $$invalidate(2, actions = $$props.actions);
+    		if ("tagActions" in $$props) $$invalidate(17, tagActions = $$props.tagActions);
+    		if ("config" in $$props) $$invalidate(3, config = $$props.config);
+    	};
+
+    	let action;
+    	let query;
+    	let filteredActions;
+    	let environment;
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*$router*/ 262144) {
+    			 $$invalidate(8, action = getAction($router.params.slug));
+    		}
+
+    		if ($$self.$$.dirty & /*$router*/ 262144) {
+    			 $$invalidate(9, query = getQuery($router.params.slug));
+    		}
+
+    		if ($$self.$$.dirty & /*tagActions, query*/ 131584) {
+    			 $$invalidate(10, filteredActions = filterActions(tagActions, query));
+    		}
+
+    		if ($$self.$$.dirty & /*action, title*/ 257) {
+    			 {
+    				document.title = action && `${action.title} - ${title}` || title;
+    			}
+    		}
+
+    		if ($$self.$$.dirty & /*config, $env*/ 524296) {
+    			 $$invalidate(11, environment = config.playground.enabled && config.
