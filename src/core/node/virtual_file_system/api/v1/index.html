@@ -24000,4 +24000,51 @@
     	if (config.playground.enabled) {
     		const savedEnv = getEnv();
 
-    		if (savedEnv && Object.keys(config.playground.e
+    		if (savedEnv && Object.keys(config.playground.environments).includes(savedEnv)) {
+    			env.set(savedEnv);
+    		} else {
+    			env.set(config.playground.env);
+    		}
+
+    		const authToken = getToken($env);
+
+    		if (authToken) {
+    			auth.add($env);
+    			token$1.set(authToken);
+    		}
+    	}
+
+    	let showMenu = true;
+    	let collapsed = false;
+    	let authenticating = false;
+    	let challengePair = getPKCE();
+
+    	function burgerClick() {
+    		$$invalidate(4, showMenu = !showMenu);
+    	}
+
+    	function collapseToggle() {
+    		$$invalidate(5, collapsed = !collapsed);
+    	}
+
+    	function searchClick() {
+    		collapseToggle();
+    		const searchInput = document.getElementById("search-input-text");
+
+    		if (searchInput) {
+    			searchInput.focus();
+    		}
+    	}
+
+    	const darkMode = {
+    		enable: true,
+    		store: window.localStorage,
+    		toggle: "darkmode-toggle",
+    		mode: ["light", "dark"],
+    		active: false
+    	};
+
+    	function darkToggle() {
+    		$$invalidate(7, darkMode.active = !darkMode.active, darkMode);
+    		document.getElementById(`bulma-theme-${darkMode.mode[Number(!darkMode.active)]}`).media = "none";
+    		document.getElementById(`
