@@ -24120,4 +24120,47 @@
     		}
 
     		if ($$self.$$.dirty & /*config, $env*/ 524296) {
-    			 $$invalidate(11, environment = config.playground.enabled && config.
+    			 $$invalidate(11, environment = config.playground.enabled && config.playground.environments[$env]);
+    		}
+    	};
+
+    	return [
+    		title,
+    		description,
+    		actions,
+    		config,
+    		showMenu,
+    		collapsed,
+    		authenticating,
+    		darkMode,
+    		action,
+    		query,
+    		filteredActions,
+    		environment,
+    		challengePair,
+    		burgerClick,
+    		collapseToggle,
+    		searchClick,
+    		darkToggle,
+    		tagActions
+    	];
+    }
+
+    class Winter extends SvelteComponent {
+    	constructor(options) {
+    		super();
+    		if (!document_1.getElementById("svelte-1s8fs56-style")) add_css$c();
+
+    		init(this, options, instance$n, create_fragment$n, safe_not_equal, {
+    			title: 0,
+    			description: 1,
+    			actions: 2,
+    			tagActions: 17,
+    			config: 3
+    		});
+    	}
+    }
+
+    const app = new Winter({
+      target: document.body,
+      props: {"title":"Axentro API","description":"The following information gives an overview of the Axentro API\n\n## Overview\n\nThe Axentro blockchain platform is an original proof of work blockchain that blends slow blocks and fast blocks into a single chain to provide a range of functiona
