@@ -89,4 +89,30 @@ module ::Axentro::Core
 
       @network_type = @is_testnet ? "testnet" : "mainnet"
       @blockchain = Blockchain.new(@network_type, @wallet, @wallet_address, @database_path, @database, @developer_fund, @official_nodes, @security_level_percentage, @sync_chunk_size, @record_nonces, @max_miners, is_standalone?)
-      @chord = Chord.new(@
+      @chord = Chord.new(@database, @connect_host, @connect_port, @public_host, @public_port, @ssl, @network_type, @is_private, @use_ssl, @max_private_nodes, @wallet_address, @blockchain.official_node, @exit_on_unofficial, @whitelist, @whitelist_message)
+      @miners_manager = MinersManager.new(@blockchain, @is_private)
+      @clients_manager = ClientsManager.new(@blockchain)
+
+      @limiter = RateLimiter(String).new
+      @limiter.bucket(:incoming_nonces, 1_u32, 30.seconds)
+
+      # Configure HTTP throttle
+      Defense.store = Defense::MemoryStore.new
+      Defense.throttle("throttle requests per second for creating transactions via API", limit: 500, period: 1) do |request|
+        if @phase == SetupPhase::DONE
+          if request.resource == "/api/v1/transaction" && request.method == "POST"
+            "request"
+          end
+        end
+      end
+
+      Defense.throttle("throttle requests per second for general API", limit: 10, period: 1) do |request|
+        if @phase == SetupPhase::DONE
+          remote_connection = NetworkUtil.get_remote_connection(request)
+          if request.resource.starts_with?("/api")
+            remote_connection.ip
+          end
+        end
+      end
+
+      Def
