@@ -170,4 +170,58 @@ module ::Axentro::Core
 
       if chain_network = @blockchain.database.chain_network_kind
         if chain_network != (@network_type == "mainnet" ? MAINNET : TESTNET)
-          error "The database is of network type: #{chain_network
+          error "The database is of network type: #{chain_network[:name]} but you tried to start it as network type: #{@network_type}"
+          exit -1
+        end
+      end
+
+      @chord.set_node(self)
+      spawn proceed_setup
+    end
+
+    private def is_standalone?
+      @connect_host.nil?
+    end
+
+    def i_am_a_fast_node?
+      @blockchain.official_node.i_am_a_fastnode?(@wallet_address)
+    end
+
+    def fastnode_is_online?
+      return true if ENV.has_key?("AX_SET_DIFFICULTY")
+      @blockchain.official_node.a_fastnode_is_online?(@chord.official_nodes_list[:online].map(&.[:address]))
+    end
+
+    def get_wallet
+      @wallet
+    end
+
+    def get_node_id
+      @chord.context.id
+    end
+
+    def has_no_connections?
+      chord.connected_nodes[:successor_list].empty?
+    end
+
+    def is_private_node?
+      @is_private
+    end
+
+    def wallet_info_controller
+      @wallet_info_controller
+    end
+
+    def run!
+      info "Axentro node started on #{light_green(@bind_host)}:#{light_green(@bind_port)}"
+
+      node = HTTP::Server.new(handlers)
+      node.bind_tcp(@bind_host, @bind_port)
+      node.listen
+    end
+
+    private def sync_chain_from_point(index : Int64, socket : HTTP::WebSocket? = nil)
+      _sync_chain(index, socket)
+    end
+
+  
