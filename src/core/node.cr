@@ -367,4 +367,37 @@ module ::Axentro::Core
         when M_TYPE_NODE_BROADCAST_TRANSACTION
           _broadcast_transaction(socket, message_content)
         when M_TYPE_NODE_BROADCAST_BLOCK
-        
+          _broadcast_block(socket, message_content)
+        when M_TYPE_NODE_REQUEST_TRANSACTIONS
+          _request_transactions(socket, message_content)
+        when M_TYPE_NODE_RECEIVE_TRANSACTIONS
+          _receive_transactions(socket, message_content)
+        when M_TYPE_NODE_SEND_CLIENT_CONTENT
+          _receive_client_content(socket, message_content)
+        end
+      rescue e : Exception
+        handle_exception(socket, e)
+      end
+
+      socket.on_close do |_|
+        clean_connection(socket)
+      end
+    rescue e : Exception
+      handle_exception(socket, e)
+    end
+
+    private def prevent_self_connecting_case(message_type, content, from, successor)
+      if (successor.context.id != @chord.context.id) && (from.nil? || from.is_private)
+        send(successor.socket, message_type, content)
+      end
+    end
+
+    # def broadcast_on_chord(message_type, content, from : Chord::NodeContext? = nil)
+    #   _nodes = @chord.find_nodes
+    #   _all_public_nodes = @chord.find_all_nodes[:public_nodes]
+
+    #   if @is_private
+    #     if successor = _nodes[:successor]
+    #       prevent_self_connecting_case(message_type, content, from, successor)
+    #     end
+    #  
