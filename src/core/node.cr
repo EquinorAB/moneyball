@@ -321,4 +321,26 @@ module ::Axentro::Core
                 METRICS_MINERS_COUNTER[kind: "rate_limit"].inc
                 remaining_duration = @limiter.rate_limited?(:incoming_nonces, miner.mid)
                 duration = remaining_duration.is_a?(Time::Span) ? remaining_duration.seconds : 0
-                warning "rate limiting miner (#{miner.ip}:#{miner.port
+                warning "rate limiting miner (#{miner.ip}:#{miner.port}) : #{light_green(miner.name)} (#{miner.mid}) retry in #{duration} seconds"
+                @miners_manager.send_warning(socket, "nonce was rejected due to exceeded rate limit - retry in #{duration} seconds", duration)
+                next
+              end
+            end
+          end
+          @miners_manager.found_nonce(socket, message_content)
+        when M_TYPE_CLIENT_HANDSHAKE
+          @clients_manager.handshake(socket, message_content)
+        when M_TYPE_CLIENT_UPGRADE
+          @clients_manager.upgrade(socket, message_content)
+        when M_TYPE_CLIENT_CONTENT
+          @clients_manager.receive_content(message_content)
+        when M_TYPE_CHORD_JOIN
+          @chord.join(self, socket, message_content, false)
+        when M_TYPE_CHORD_RECONNECT
+          @chord.join(self, socket, message_content, true)
+        when M_TYPE_CHORD_JOIN_PRIVATE
+          @chord.join_private(self, socket, message_content, false)
+        when M_TYPE_CHORD_RECONNECT_PRIVATE
+          @chord.join_private(self, socket, message_content, true)
+        when M_TYPE_CHORD_JOIN_PRIVATE_ACCEPTED
+          @chord.join_private_accepted(self, socket, mess
