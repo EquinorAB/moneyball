@@ -255,4 +255,43 @@ module ::Axentro::Core
     end
 
     # def get_latest_slow_index : Int64
-    #   @blockchain.has_no_blocks? ? 0_i64 : @blockchain.
+    #   @blockchain.has_no_blocks? ? 0_i64 : @blockchain.latest_slow_block.index
+    # end
+
+    # def get_latest_fast_index : Int64
+    #   @blockchain.has_no_blocks? ? 0_i64 : (@blockchain.latest_fast_block || @blockchain.get_genesis_block).index
+    # end
+
+    private def sync_transactions(socket : HTTP::WebSocket? = nil)
+      info "start synching transactions"
+
+      s = if _socket = socket
+            _socket
+          elsif predecessor = @chord.find_predecessor?
+            predecessor.socket
+          elsif successor = @chord.find_successor?
+            successor.socket
+          end
+
+      if _s = s
+        transactions = @blockchain.pending_slow_transactions + @blockchain.pending_fast_transactions
+
+        send(
+          _s,
+          M_TYPE_NODE_REQUEST_TRANSACTIONS,
+          {
+            transactions: transactions,
+          }
+        )
+      else
+        warning "successor not found. skip synching transactions"
+
+        if @phase == SetupPhase::TRANSACTION_SYNCING
+          @phase = SetupPhase::PRE_DONE
+          proceed_setup
+        end
+      end
+    end
+
+    private def peer_handler : WebSocketHandler
+      WebSocketHandler.new("/peer") { |socket, context
