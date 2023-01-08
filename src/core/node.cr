@@ -115,4 +115,34 @@ module ::Axentro::Core
         end
       end
 
-      Def
+      Defense.blocklist("ban noisy miners") do |request|
+        if @phase == SetupPhase::DONE
+          remote_connection = NetworkUtil.get_remote_connection(request)
+          banned = MinersManager.ban_list(@miners_manager.get_mortalities)
+          result = banned.includes?(remote_connection.ip)
+          METRICS_MINERS_BANNED_GAUGE[kind: "banned"].set banned.size
+          if result
+            METRICS_MINERS_COUNTER[kind: "banned"].inc
+          end
+          result
+        else
+          false
+        end
+      end
+
+      Defense.blocklist("block requests to metrics") do |request|
+        remote_connection = NetworkUtil.get_remote_connection(request)
+        if request.path.starts_with?("/metrics")
+          !@metrics_whitelist.includes?(remote_connection.ip)
+        else
+          false
+        end
+      end
+
+      info "max private nodes allowed to connect is #{light_green(@max_private_nodes)}"
+      info "max miners allowed to connect is #{light_green(@max_miners)}"
+      info "your log level is #{light_green(log_level_text)}"
+      info "record nonces is set to #{light_green(@record_nonces)}"
+
+      if @whitelist.size > 0
+        info "whitelist
