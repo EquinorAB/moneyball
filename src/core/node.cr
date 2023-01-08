@@ -343,4 +343,28 @@ module ::Axentro::Core
         when M_TYPE_CHORD_RECONNECT_PRIVATE
           @chord.join_private(self, socket, message_content, true)
         when M_TYPE_CHORD_JOIN_PRIVATE_ACCEPTED
-          @chord.join_private_accepted(self, socket, mess
+          @chord.join_private_accepted(self, socket, message_content)
+        when M_TYPE_CHORD_JOIN_REJECTED
+          @chord.join_rejected(self, socket, message_content)
+        when M_TYPE_CHORD_SEARCH_SUCCESSOR
+          @chord.search_successor(self, message_content)
+        when M_TYPE_CHORD_FOUND_SUCCESSOR
+          @chord.found_successor(self, message_content)
+        when M_TYPE_CHORD_STABILIZE_AS_SUCCESSOR
+          @chord.stabilize_as_successor(self, socket, message_content)
+        when M_TYPE_CHORD_STABILIZE_AS_PREDECESSOR
+          @chord.stabilize_as_predecessor(self, socket, message_content)
+        when M_TYPE_CHORD_BROADCAST_NODE_JOINED
+          _broadcast_node_joined(socket, message_content)
+        when M_TYPE_NODE_REQUEST_STREAM_SLOW_BLOCK
+          _request_stream_slow_block(socket, message_content)
+        when M_TYPE_NODE_RECEIVE_STREAM_SLOW_BLOCK
+          _receive_stream_slow_block(socket, message_content)
+        when M_TYPE_NODE_REQUEST_STREAM_FAST_BLOCK
+          _request_stream_fast_block(socket, message_content)
+        when M_TYPE_NODE_RECEIVE_STREAM_FAST_BLOCK
+          _receive_stream_fast_block(socket, message_content)
+        when M_TYPE_NODE_BROADCAST_TRANSACTION
+          _broadcast_transaction(socket, message_content)
+        when M_TYPE_NODE_BROADCAST_BLOCK
+        
