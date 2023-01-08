@@ -145,4 +145,29 @@ module ::Axentro::Core
       info "record nonces is set to #{light_green(@record_nonces)}"
 
       if @whitelist.size > 0
-        info "whitelist
+        info "whitelist enabled: #{@whitelist.inspect}"
+        info "whitelist message: #{@whitelist_message}"
+      end
+
+      debug "is_private: #{light_green(@is_private)}"
+      debug "public url: #{light_green(@public_host)}:#{light_green(@public_port)}" unless @is_private
+      debug "connecting node is using ssl?: #{light_green(@use_ssl)}"
+      debug "network type: #{light_green(@network_type)}"
+
+      @rpc_controller = Controllers::RPCController.new(@blockchain)
+      @rest_controller = Controllers::RESTController.new(@blockchain)
+      @pubsub_controller = Controllers::PubsubController.new(@blockchain)
+      @wallet_info_controller = Controllers::WalletInfoController.new(@blockchain)
+
+      wallet_network = Wallet.address_network_type(@wallet_address)
+
+      unless wallet_network[:name] == @network_type
+        error "wallet type mismatch"
+        error "node's   network: #{@network_type}"
+        error "wallet's network: #{wallet_network[:name]}"
+        exit -1
+      end
+
+      if chain_network = @blockchain.database.chain_network_kind
+        if chain_network != (@network_type == "mainnet" ? MAINNET : TESTNET)
+          error "The database is of network type: #{chain_network
