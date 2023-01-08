@@ -294,4 +294,31 @@ module ::Axentro::Core
     end
 
     private def peer_handler : WebSocketHandler
-      WebSocketHandler.new("/peer") { |socket, context
+      WebSocketHandler.new("/peer") { |socket, context|
+        peer(socket, context)
+      }
+    end
+
+    private def v1_api_documentation_handler : ApiDocumentationHandler
+      ApiDocumentationHandler.new("/", "/index.html")
+    end
+
+    # ameba:disable Metrics/CyclomaticComplexity
+    def peer(socket : HTTP::WebSocket, context : HTTP::Server::Context? = nil)
+      socket.on_binary do |message|
+        transport = Transport.from_msgpack(message)
+        message_type = transport.type
+        message_content = transport.content
+
+        case message_type
+        when M_TYPE_MINER_HANDSHAKE
+          METRICS_MINERS_COUNTER[kind: "attempted_join"].inc
+          @miners_manager.handshake(socket, context, message_content)
+        when M_TYPE_MINER_FOUND_NONCE
+          if _context = context
+            if miner = @miners_manager.find?(socket)
+              if @limiter.rate_limited?(:incoming_nonces, miner.mid)
+                METRICS_MINERS_COUNTER[kind: "rate_limit"].inc
+                remaining_duration = @limiter.rate_limited?(:incoming_nonces, miner.mid)
+                duration = remaining_duration.is_a?(Time::Span) ? remaining_duration.seconds : 0
+                warning "rate limiting miner (#{miner.ip}:#{miner.port
