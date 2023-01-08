@@ -224,4 +224,35 @@ module ::Axentro::Core
       _sync_chain(index, socket)
     end
 
-  
+    private def sync_chain(socket : HTTP::WebSocket? = nil)
+      start_slow = database.highest_index_of_kind(BlockKind::SLOW)
+      _sync_chain(start_slow, socket)
+    end
+
+    # mostly on the child unless child chain is longer than parent then it happens on parent too
+    private def _sync_chain(slow_start : Int64, socket : HTTP::WebSocket? = nil)
+      info "start synching chain from slow index: #{slow_start}"
+
+      s = if _socket = socket
+            _socket
+          elsif predecessor = @chord.find_predecessor?
+            predecessor.socket
+          elsif successor = @chord.find_successor?
+            successor.socket
+          end
+
+      if _s = s
+        info "requesting to stream slow blocks from index: #{slow_start}"
+        send(s, M_TYPE_NODE_REQUEST_STREAM_SLOW_BLOCK, {start_slow: slow_start})
+      else
+        warning "successor not found. skip synching blockchain"
+
+        if @phase == SetupPhase::BLOCKCHAIN_SYNCING
+          @phase = SetupPhase::TRANSACTION_SYNCING
+          proceed_setup
+        end
+      end
+    end
+
+    # def get_latest_slow_index : Int64
+    #   @blockchain.has_no_blocks? ? 0_i64 : @blockchain.
