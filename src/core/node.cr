@@ -430,4 +430,37 @@ module ::Axentro::Core
       else
         _nodes[:private_nodes].each do |private_node|
           next if !from.nil? && from.is_private && private_node.context.id == from.id
-          send(private_node.s
+          send(private_node.socket, message_type, content)
+        end
+
+        if successor = _nodes[:successor]
+          if successor.context.id != content[:from].id
+            debug "sending to successor: #{message_type}"
+            send(successor.socket, message_type, content)
+          end
+        end
+      end
+    end
+
+    def send_transaction(transaction : Transaction, from : Chord::NodeContext? = nil)
+      content = if from.nil? || (!from.nil? && from.is_private)
+                  {transaction: transaction, from: @chord.context}
+                else
+                  {transaction: transaction, from: from}
+                end
+
+      send_on_chord(M_TYPE_NODE_BROADCAST_TRANSACTION, content, from)
+    end
+
+    def broadcast_transaction(transaction : Transaction, from : Chord::NodeContext? = nil)
+      debug "new #{transaction.kind} transaction coming: #{transaction.short_id}"
+
+      send_transaction(transaction, from)
+
+      @blockchain.add_transaction(transaction)
+    end
+
+    # ----- chord finger table -----
+    private def _broadcast_node_joined(socket, _content)
+      _m_content = MContentChordBroadcastNodeJoined.from_json(_content)
+      joined
