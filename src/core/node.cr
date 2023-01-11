@@ -463,4 +463,38 @@ module ::Axentro::Core
     # ----- chord finger table -----
     private def _broadcast_node_joined(socket, _content)
       _m_content = MContentChordBroadcastNodeJoined.from_json(_content)
-      joined
+      joined_nodes = _m_content.nodes
+      from = _m_content.from
+
+      send_nodes_joined(joined_nodes, from)
+      @chord.add_to_finger_table(joined_nodes)
+    end
+
+    def send_nodes_joined(joined_nodes : Array(Chord::NodeContext), from : Chord::NodeContext? = nil)
+      content = if from.nil? || (!from.nil? && from.is_private)
+                  {nodes: joined_nodes, from: @chord.context}
+                else
+                  {nodes: joined_nodes, from: from}
+                end
+
+      send_on_chord(M_TYPE_CHORD_BROADCAST_NODE_JOINED, content, from)
+    end
+
+    # ----- blocks -----
+
+    def send_block(block : Block, from : Chord::NodeContext? = nil)
+      debug "entering send_block"
+      content = if from.nil? || (!from.nil? && from.is_private)
+                  {block: block, from: @chord.context}
+                else
+                  {block: block, from: from}
+                end
+
+      debug "before send_on_chord"
+      send_on_chord(M_TYPE_NODE_BROADCAST_BLOCK, content, from)
+      debug "after send_on_chord.. exiting send_block"
+    end
+
+    def send_client_content(content : String, from : Chord::NodeContext? = nil)
+      _content = if from.nil? || (!from.nil? && from.is_private)
+                   {content: content, 
