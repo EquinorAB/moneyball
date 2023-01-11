@@ -497,4 +497,31 @@ module ::Axentro::Core
 
     def send_client_content(content : String, from : Chord::NodeContext? = nil)
       _content = if from.nil? || (!from.nil? && from.is_private)
-                   {content: content, 
+                   {content: content, from: @chord.context}
+                 else
+                   {content: content, from: from}
+                 end
+
+      send_on_chord(M_TYPE_NODE_SEND_CLIENT_CONTENT, _content, from)
+    end
+
+    def broadcast_block(socket : HTTP::WebSocket, block : Block, from : Chord::NodeContext? = nil)
+      info "New #{block.kind} block coming from peer with index: #{block.index}"
+      case BlockKind.parse(block.kind)
+      when BlockKind::SLOW
+        broadcast_slow_block(socket, block, from)
+      when BlockKind::FAST
+        broadcast_fast_block(socket, block, from)
+      end
+    end
+
+    private def broadcast_slow_block(socket : HTTP::WebSocket, block : Block, from : Chord::NodeContext? = nil)
+      # random_secs = Random.rand(30)
+      # warning "++++++++++++ sleeping #{random_secs} seconds before sending to try to cause chaos....."
+      # warning "++++++++++++ sleeping 2 minutes before sending to try to cause chaos....."
+      # sleep(Time::Span.new(seconds: random_secs))
+      # sleep(120)
+      # warning "++++++++++++ finished sleeping"
+
+      latest_block = database.get_highest_block_for_kind!(BlockKind::SLOW)
+      has_block = database.get_block(block.ind
