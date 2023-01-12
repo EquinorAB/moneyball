@@ -524,4 +524,29 @@ module ::Axentro::Core
       # warning "++++++++++++ finished sleeping"
 
       latest_block = database.get_highest_block_for_kind!(BlockKind::SLOW)
-      has_block = database.get_block(block.ind
+      has_block = database.get_block(block.index)
+      slow_sync = SlowSync.new(block, @blockchain.mining_block, has_block, latest_block)
+      state = slow_sync.process
+
+      case state
+      when SlowSyncState::CREATE
+        execute_create(socket, block, latest_block, from)
+      when SlowSyncState::REPLACE
+        execute_replace(socket, block, latest_block, from)
+      when SlowSyncState::REJECT_OLD
+        execute_reject(socket, block, latest_block, RejectBlockReason::OLD, from)
+      when SlowSyncState::REJECT_VERY_OLD
+        execute_reject(socket, block, latest_block, RejectBlockReason::VERY_OLD, from)
+      when SlowSyncState::SYNC
+        execute_sync(socket, block, latest_block, from)
+      else
+        raise "Error - unknown SlowSyncState: #{state}"
+      end
+    rescue e : Exception
+      error (e.message || "broadcast_slow_block unknown error: #{e.inspect}")
+    ensure
+      send_block(block, from)
+    end
+
+    private def sync_chain_on_error(conflicted_index : Int64, latest_local_index : Int64, count : Int32, socket : HTTP::WebSocket)
+      index = database.lowest_slow_index_after_block(latest_local_index - count) || latest_local_index
