@@ -574,4 +574,20 @@ module ::Axentro::Core
         info "#{magenta("NEW SLOW BLOCK broadcasted")}: #{light_green(_block.index)} at difficulty: #{light_cyan(_block.difficulty)}"
       end
     rescue e : Exception
-      warning "
+      warning "received block: #{block.index} from peer that I don't have in my db was invalid"
+      warning "error was: #{e.message || "unknown error"}"
+
+      sync_chain_on_error(block.index, latest_block.index, 2, socket)
+    end
+
+    private def execute_replace(socket : HTTP::WebSocket, block : Block, latest_block : Block, from : Chord::NodeContext?)
+      warning "slow: blockchain conflicted at incoming #{block.index} and local (#{light_cyan(latest_block.index)})"
+      warning "slow: local timestamp: #{latest_block.timestamp}, arriving block timestamp: #{block.timestamp}"
+      warning "slow: arriving block's timestamp indicates it was minted earlier than latest local block (or at the same time but has different hash)"
+
+      # don't check transactions here as will fail since they already exist in the existing block
+      # also don't check as lastest block here as we are doing a replace
+      if _block = @blockchain.valid_block?(block, true, true)
+        warning "arriving block #{_block.index} passes validity checks, making the arriving block our local latest"
+        # replace here does check the transactions lower down
+        @blockchain.replace_with_block_from_peer
