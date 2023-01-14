@@ -550,3 +550,28 @@ module ::Axentro::Core
 
     private def sync_chain_on_error(conflicted_index : Int64, latest_local_index : Int64, count : Int32, socket : HTTP::WebSocket)
       index = database.lowest_slow_index_after_block(latest_local_index - count) || latest_local_index
+
+      warning "sync_chain_on_error: attempting to re-sync from failed block #{conflicted_index} with index: #{index}"
+      sync_chain_from_point(index, socket)
+    end
+
+    private def execute_create(socket : HTTP::WebSocket, block : Block, latest_block : Block, from : Chord::NodeContext?)
+      info "received block: #{block.index} from peer that I don't have in my db"
+
+      # random_secs = Random.rand(30)
+      # warning "++++++++++++ sleeping #{random_secs} seconds before sending to try to cause chaos....."
+      # sleep(Time::Span.new(seconds: random_secs))
+      # warning "++++++++++++ finished sleeping"
+
+      # we check the transactions that are incoming in valid_block here.
+      if _block = @blockchain.valid_block?(block, false, true)
+        info "received block: #{_block.index} was valid so storing in my db"
+        debug "slow: finished sending new block on to peer"
+        @miners_manager.forget_most_difficult
+        debug "slow: about to create the new block locally"
+        new_block(_block)
+
+        info "#{magenta("NEW SLOW BLOCK broadcasted")}: #{light_green(_block.index)} at difficulty: #{light_cyan(_block.difficulty)}"
+      end
+    rescue e : Exception
+      warning "
