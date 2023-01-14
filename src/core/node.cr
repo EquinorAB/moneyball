@@ -590,4 +590,23 @@ module ::Axentro::Core
       if _block = @blockchain.valid_block?(block, true, true)
         warning "arriving block #{_block.index} passes validity checks, making the arriving block our local latest"
         # replace here does check the transactions lower down
-        @blockchain.replace_with_block_from_peer
+        @blockchain.replace_with_block_from_peer(_block)
+        @miners_manager.forget_most_difficult
+      end
+    rescue e : Exception
+      warning "arriving block #{block.index} failed validity check, we can't make it our local latest"
+      warning "error was: #{e.message || "unknown error"}"
+
+      sync_chain_on_error(block.index, latest_block.index, 2, socket)
+    end
+
+    private def execute_reject(socket : HTTP::WebSocket, block : Block, latest_block : Block, reason : RejectBlockReason, from : Chord::NodeContext?)
+      case reason
+      when RejectBlockReason::OLD
+        warning "slow: blockchain conflicted at incoming #{block.index} and local (#{light_cyan(latest_block.index)})"
+        warning "slow: local timestamp: #{latest_block.timestamp}, arriving block timestamp: #{block.timestamp}"
+        warning "keeping our local block: #{latest_block.index} and ignoring the block: #{block.index} because local one was minted first or (at the same time but with identical hash)"
+      when RejectBlockReason::VERY_OLD
+        warning "ignore very old block: #{block.index} because local latest is: #{latest_block.index}"
+      else
+        warning "unknown rejection reason 
