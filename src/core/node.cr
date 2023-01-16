@@ -609,4 +609,27 @@ module ::Axentro::Core
       when RejectBlockReason::VERY_OLD
         warning "ignore very old block: #{block.index} because local latest is: #{latest_block.index}"
       else
-        warning "unknown rejection reason 
+        warning "unknown rejection reason #{reason} - so ignoring it"
+      end
+    end
+
+    private def execute_sync(socket : HTTP::WebSocket, block : Block, latest_block : Block, from : Chord::NodeContext?)
+      warning "slow: require new chain after - local: #{latest_block.index} for incoming from peer: #{block.index}"
+      sync_chain(socket)
+    end
+
+    def fast_block_was_signed_by_official_fast_node?(block : Block) : Bool
+      debug "verifying fast block was signed by official fast node"
+      hash_salt = block.hash
+      signature = block.signature
+      address = block.address
+      public_key = block.public_key
+      @blockchain.official_node.i_am_a_fastnode?(address) && KeyUtils.verify_signature(hash_salt, signature, public_key)
+    end
+
+    # There is only 1 fast node on the network in phase 1 - so use this simple logic until that changes
+    private def broadcast_fast_block(socket : HTTP::WebSocket, block : Block, from : Chord::NodeContext? = nil)
+      if fast_block_was_signed_by_official_fast_node?(block)
+        if @blockchain.database.do_i_have_block(block.index)
+          if i_am_a_fast_node?
+            warning "not sending on incoming fast block: #{block.index} because I am the
