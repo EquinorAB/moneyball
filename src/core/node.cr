@@ -632,4 +632,31 @@ module ::Axentro::Core
       if fast_block_was_signed_by_official_fast_node?(block)
         if @blockchain.database.do_i_have_block(block.index)
           if i_am_a_fast_node?
-            warning "not sending on incoming fast block: #{block.index} because I am the
+            warning "not sending on incoming fast block: #{block.index} because I am the fast node and I already have the block"
+          else
+            info "sending on incoming fast block: #{block.index} (I already have it and am not the fast node)"
+            send_block(block, from)
+          end
+        else
+          info "receiving new incoming fast block: #{block.index} - I don't already have it"
+          if _block = @blockchain.valid_block?(block)
+            debug "fast: about to create the new block locally"
+            new_block(_block)
+            send_block(block, from)
+            info "#{magenta("NEW FAST BLOCK broadcasted")}: #{light_green(_block.index)}"
+          else
+            warning "the incoming new fast block: #{block.index} was invalid so discarding it"
+          end
+        end
+      else
+        warning "fast block arriving from peer was not signed by a valid fast node - ignoring this block"
+      end
+    rescue e : Exception
+      error e.message || "no message content for exception"
+    end
+
+    def new_block(block : Block)
+      @blockchain.push_slow_block(block)
+
+      @pubsub_controller.broadcast_latest_block
+      @wallet_info_controller.update_wal
