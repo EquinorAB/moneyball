@@ -659,4 +659,50 @@ module ::Axentro::Core
       @blockchain.push_slow_block(block)
 
       @pubsub_controller.broadcast_latest_block
-      @wallet_info_controller.update_wal
+      @wallet_info_controller.update_wallet_information(block.transactions)
+    end
+
+    def clean_connection(socket)
+      @chord.clean_connection(socket)
+      @miners_manager.clean_connection(socket)
+      @clients_manager.clean_connection(socket)
+    end
+
+    def miners
+      @miners_manager.miners
+    end
+
+    def miners_manager
+      @miners_manager
+    end
+
+    def miners_broadcast
+      @miners_manager.broadcast
+    end
+
+    private def _broadcast_transaction(socket, _content)
+      return unless @phase == SetupPhase::DONE
+
+      _m_content = MContentNodeBroadcastTransaction.from_json(_content)
+
+      transaction = _m_content.transaction
+      from = _m_content.from
+
+      broadcast_transaction(transaction, from)
+    end
+
+    private def _broadcast_block(socket, _content)
+      return unless @phase == SetupPhase::DONE
+
+      _m_content = MContentNodeBroadcastBlock.from_json(_content)
+
+      block = _m_content.block
+      from = _m_content.from
+
+      broadcast_block(socket, block, from)
+    end
+
+    private def _receive_client_content(socket, _content)
+      return unless @phase == SetupPhase::DONE
+
+      _m_content = MContentNodeSendClientContent.from_json(_con
