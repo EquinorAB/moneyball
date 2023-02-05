@@ -705,4 +705,35 @@ module ::Axentro::Core
     private def _receive_client_content(socket, _content)
       return unless @phase == SetupPhase::DONE
 
-      _m_content = MContentNodeSendClientContent.from_json(_con
+      _m_content = MContentNodeSendClientContent.from_json(_content)
+
+      content = _m_content.content
+      from = _m_content.from
+
+      @clients_manager.receive_content(content, from)
+    end
+
+    # on parent
+    private def _request_stream_slow_block(socket, _content)
+      _m_content = MContentNodeRequestStreamSlowBlock.from_json(_content)
+      start_slow = _m_content.start_slow
+      info "requested stream slow chain from slow index: #{start_slow}"
+
+      target_slow = database.highest_index_of_kind(BlockKind::SLOW)
+      stream_size = 0
+      database.stream_blocks_from(start_slow, BlockKind::SLOW) do |block, total_size|
+        stream_size = total_size
+        send(socket, M_TYPE_NODE_RECEIVE_STREAM_SLOW_BLOCK, {block: block, start_slow: start_slow, target_slow: target_slow, total_size: total_size})
+      end
+      info "finished streaming #{stream_size} slow blocks to peer"
+
+      if start_slow > target_slow
+        send(socket, M_TYPE_NODE_REQUEST_STREAM_SLOW_BLOCK, {start_slow: target_slow})
+      end
+    end
+
+    # on child
+    private def _receive_stream_slow_block(socket, _content)
+      _m_content = MContentNodeReceiveStreamSlowBlock.from_json(_content)
+      target_slow = _m_content.target_slow
+      block = Blo
