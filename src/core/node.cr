@@ -736,4 +736,39 @@ module ::Axentro::Core
     private def _receive_stream_slow_block(socket, _content)
       _m_content = MContentNodeReceiveStreamSlowBlock.from_json(_content)
       target_slow = _m_content.target_slow
-      block = Blo
+      block = Block.from_json(_m_content.block.to_json)
+
+      progress("slow block ##{block.index} was received", block.index, target_slow)
+      database.inplace_block(block)
+
+      if block.index == target_slow
+        start_fast = database.highest_index_of_kind(BlockKind::FAST)
+        send(socket, M_TYPE_NODE_REQUEST_STREAM_FAST_BLOCK, {start_fast: start_fast})
+      end
+
+      @sync_retry_count = 2
+    rescue
+      warning "error receiving slow block stream"
+
+      if @sync_retry_count <= MAX_SYNC_RETRY
+        next_connection = retry_sync
+        warning "retry sync from node: #{next_connection.host}:#{next_connection.port}"
+
+        node_socket = HTTP::WebSocket.new(next_connection.host, "/peer?node", next_connection.port, next_connection.ssl)
+
+        peer(node_socket)
+
+        spawn do
+          node_socket.run
+        rescue e : Exception
+          handle_exception(node_socket, e)
+        end
+
+        target_slow = database.highest_index_of_kind(BlockKind::SLOW)
+        sync_chain_on_error(target_slow, target_slow, @sync_retry_count, node_socket)
+      end
+    end
+
+    # on parent
+    private def _request_stream_fast_block(socket, _content)
+      _m_content = MContentNodeReque
