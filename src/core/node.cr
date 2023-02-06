@@ -771,4 +771,31 @@ module ::Axentro::Core
 
     # on parent
     private def _request_stream_fast_block(socket, _content)
-      _m_content = MContentNodeReque
+      _m_content = MContentNodeRequestStreamFastBlock.from_json(_content)
+      start_fast = _m_content.start_fast
+      info "requested stream fast chain from fast index: #{start_fast}"
+
+      target_fast = database.highest_index_of_kind(BlockKind::FAST)
+      if target_fast == 0_i64
+        # if no fast blocks just send the genesis block (the child will ignore it but continue setup)
+        _block = database.get_block(0_i64)
+        send(socket, M_TYPE_NODE_RECEIVE_STREAM_FAST_BLOCK, {block: _block, start_fast: start_fast, target_fast: target_fast, total_size: 0})
+      else
+        database.stream_blocks_from(start_fast, BlockKind::FAST) do |block, total_size|
+          send(socket, M_TYPE_NODE_RECEIVE_STREAM_FAST_BLOCK, {block: block, start_fast: start_fast, target_fast: target_fast, total_size: total_size})
+        end
+      end
+
+      if start_fast > target_fast
+        send(socket, M_TYPE_NODE_REQUEST_STREAM_FAST_BLOCK, {start_fast: target_fast})
+      end
+    end
+
+    # on child
+    private def _receive_stream_fast_block(socket, _content)
+      _m_content = MContentNodeReceiveStreamFastBlock.from_json(_content)
+      start_fast = _m_content.start_fast
+      target_fast = _m_content.target_fast
+      block = Block.from_json(_m_content.block.to_json)
+
+      pro
