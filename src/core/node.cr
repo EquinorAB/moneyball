@@ -798,4 +798,36 @@ module ::Axentro::Core
       target_fast = _m_content.target_fast
       block = Block.from_json(_m_content.block.to_json)
 
-      pro
+      progress("fast block ##{block.index} was received", block.index, target_fast)
+      if block.index > start_fast
+        database.inplace_block(block)
+      end
+
+      if block.index == target_fast
+        info "finished writing to db for completed sync and starting db validation"
+
+        result = database.validate_local_db_blocks
+
+        if result.success
+          @sync_retry_count = 2
+          info "all blocks successfully validated at block: #{result.index}"
+          if @phase == SetupPhase::BLOCKCHAIN_SYNCING
+            @phase = SetupPhase::TRANSACTION_SYNCING
+            proceed_setup
+          end
+        else
+          # retry sync
+          warning "failed to validated blocks at block: #{result.index} - starting sync retry"
+          if @sync_retry_count <= MAX_SYNC_RETRY
+            next_connection = retry_sync
+            warning "retry sync from node: #{next_connection}"
+
+            node_socket = HTTP::WebSocket.new(next_connection.host, "/peer?node", next_connection.port, next_connection.ssl)
+
+            peer(node_socket)
+
+            spawn do
+              node_socket.run
+            rescue e : Exception
+              handle_exception(node_socket, e)
+      
