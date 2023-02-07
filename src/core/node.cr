@@ -830,4 +830,43 @@ module ::Axentro::Core
               node_socket.run
             rescue e : Exception
               handle_exception(node_socket, e)
-      
+            end
+
+            sync_chain_on_error(result.index, database.highest_index_of_kind(BlockKind::SLOW), @sync_retry_count, node_socket)
+          end
+        end
+      end
+    end
+
+    private def retry_sync
+      node_connections = @chord.find_all_nodes[:public_nodes].map { |nc| NodeConnection.new(nc.host, nc.port, nc.ssl) }
+      next_connections = node_connections.reject { |nc| @sync_retry_list.map(&.to_s).includes?(nc.to_s) }
+
+      if next_connections.size == 1
+        @sync_retry_list.clear
+        @sync_retry_count += 2
+      end
+
+      next_connection = next_connections.first
+      @sync_retry_list << next_connection
+      next_connection
+    end
+
+    private def _request_transactions(socket, _content)
+      MContentNodeRequestTransactions.from_json(_content)
+
+      info "requested transactions"
+
+      transactions = @blockchain.pending_slow_transactions + @blockchain.pending_fast_transactions
+
+      send(
+        socket,
+        M_TYPE_NODE_RECEIVE_TRANSACTIONS,
+        {
+          transactions: transactions,
+        }
+      )
+    end
+
+    private def _receive_transactions(socket, _content)
+      _m_content = MContentNodeRec
