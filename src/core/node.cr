@@ -906,4 +906,38 @@ module ::Axentro::Core
 
       if @is_private
         debug "doing join to private"
-     
+        @chord.join_to_private(self, @connect_host.not_nil!, @connect_port.not_nil!)
+      else
+        debug "doing join to public"
+        @chord.join_to(self, @connect_host.not_nil!, @connect_port.not_nil!)
+      end
+    end
+
+    def setup_connectivity
+      if @connect_host && @connect_port
+        phase_connecting_nodes
+      else
+        warning "no connecting node has been specified"
+        warning "so this node is standalone from other network"
+        @phase = SetupPhase::PRE_DONE
+        proceed_setup
+      end
+    end
+
+    def load_blockchain_from_database
+      @blockchain.setup(self)
+
+      if database.total_blocks == 0
+        info "There were no blocks in the database"
+        @phase = SetupPhase::CONNECTING_NODES
+        proceed_setup
+      else
+        info "loaded blockchain's total size: #{light_cyan(database.total_blocks)}"
+        info "highest slow block index: #{light_cyan(database.highest_index_of_kind(BlockKind::SLOW))}"
+        info "highest fast block index: #{light_cyan(database.highest_index_of_kind(BlockKind::FAST))}"
+
+        if !@database
+          warning "no database has been specified"
+        end
+
+        unless @developer_fund.nil?
