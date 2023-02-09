@@ -869,4 +869,41 @@ module ::Axentro::Core
     end
 
     private def _receive_transactions(socket, _content)
-      _m_content = MContentNodeRec
+      _m_content = MContentNodeReceiveTransactions.from_json(_content)
+
+      transactions = _m_content.transactions
+
+      info "received #{transactions.size} transactions"
+
+      @blockchain.replace_slow_transactions(transactions.select(&.is_slow_transaction?))
+      @blockchain.replace_fast_transactions(transactions.select(&.is_fast_transaction?))
+
+      if @phase == SetupPhase::TRANSACTION_SYNCING
+        @phase = SetupPhase::PRE_DONE
+        proceed_setup
+      end
+    end
+
+    private def handlers
+      metrics_handler = Crometheus.default_registry.get_handler
+      Crometheus.default_registry.path = "/metrics"
+      [
+        Defense::Handler.new,
+        peer_handler,
+        @rpc_controller.get_handler,
+        @rest_controller.get_handler,
+        @pubsub_controller.get_handler,
+        @wallet_info_controller.get_handler,
+        Crometheus::Middleware::HttpCollector.new,
+        metrics_handler,
+        HTTP::StaticFileHandler.new("api/v1/dist", true, false),
+        v1_api_documentation_handler,
+      ]
+    end
+
+    private def phase_connecting_nodes
+      @phase = SetupPhase::CONNECTING_NODES
+
+      if @is_private
+        debug "doing join to private"
+     
