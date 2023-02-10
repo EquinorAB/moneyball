@@ -941,3 +941,40 @@ module ::Axentro::Core
         end
 
         unless @developer_fund.nil?
+          info "Developer fund has been invoked based on this configuration: #{@developer_fund.not_nil!.get_path}"
+        end
+        @phase = SetupPhase::CONNECTING_NODES
+        proceed_setup
+      end
+    end
+
+    def proceed_setup
+      return if @phase == SetupPhase::DONE
+
+      case @phase
+      when SetupPhase::NONE
+        @phase = SetupPhase::BLOCKCHAIN_VALIDATING
+        proceed_setup
+      when SetupPhase::BLOCKCHAIN_VALIDATING
+        load_blockchain_from_database
+      when SetupPhase::CONNECTING_NODES
+        setup_connectivity
+      when SetupPhase::BLOCKCHAIN_SYNCING
+        sync_chain
+      when SetupPhase::TRANSACTION_SYNCING
+        sync_transactions
+      when SetupPhase::PRE_DONE
+        info "successfully setup the node"
+
+        # if not private then start fast txn loop
+        if !@is_private
+          spawn @blockchain.process_fast_transactions
+        end
+
+        @phase = SetupPhase::DONE
+      end
+    end
+
+    def send_content_to_client(from_address : String, to : String, message : String, from = nil) : Bool
+      @clients_manager.send_content(from_address, to, message, from)
+    end
