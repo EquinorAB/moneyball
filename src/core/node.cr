@@ -978,3 +978,10 @@ module ::Axentro::Core
     def send_content_to_client(from_address : String, to : String, message : String, from = nil) : Bool
       @clients_manager.send_content(from_address, to, message, from)
     end
+
+    include Protocol
+    include Common::Color
+    include NodeComponents
+    include Metrics
+  end
+end
