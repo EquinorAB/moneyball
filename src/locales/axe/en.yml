@@ -1,0 +1,91 @@
+
+axe:
+  cli:
+    title:          "Axentro command line client"
+    wallet:
+      title:        "wallet"
+      desc:         "create, encrypt or decrypt your wallet (wt for short)"
+      create:
+        title:      "create"
+        desc:       "create a wallet file"
+        messages:
+          creation: "your new wallet has been created at %{wallet_path}"
+          backup:   "please make a backup of the json file and keep it secret."
+          seed:     "Your wallet was generated with this seed: %{seed} (please keep it very safe)"
+      verify:
+        title:      "verify"
+        desc:       "verify a wallet file"
+        messages:
+          verify:   "%{wallet_path} is perfect!"
+          address: "address: %{wallet_address}"
+          network: "network (%{network_prefix}): %{network_name}"
+      encrypt:
+        title:      "encrypt"
+        desc:       "encrypt an Axentro wallet"
+        messages:
+          encrypt: "your wallet has been encrypted at %{encrypted_wallet_path}"
+          password: "please don't forget your password - there is no way to recover an encrypted wallet."
+      decrypt:
+        title:      "decrypt"
+        desc:       "decrypt an Axentro wallet (that was encrypted using Axentro)"
+        messages:
+          decrypt: "your wallet has been decrypted at %{decrypted_wallet_path}"
+      amount:
+        title:      "amount"
+        desc:       "show remaining amount of Axe tokens for specified address"
+        messages:
+          amount: "\n  showing amount of each token for %{address}."
+          confirmation: "confirmations: %{confirmation}"
+    blockchain:
+      title:        "blockchain"
+      desc:         "get a whole blockchain or each block (bc for short)"
+      size:
+        title: "size"
+        desc: "show current blockchain size"
+        messages:
+          total_size: "total blocks: %{size}"
+          total_slow: "total slow blocks: %{size}"
+          total_fast: "total fast blocks: %{size}"
+          transactions_fast: "total fast transactions: %{size}"
+          transactions_slow: "total slow transactions: %{size}"
+          difficulty: "latest difficulty: %{size}"
+          height_slow: "slow block height: %{size}"
+          height_fast: "fast block height: %{size}"
+      all:
+        title: "all"
+        desc: "get whole blockchain. headers (without transactions) only with --header option"
+        messages:
+          all: "show current blockchain"
+      block:
+        title: "block"
+        desc: "get a block for a specified index or transaction id"
+        messages:
+          index: "show a block for index: %{block_index}"
+          transaction: "show a block for transaction: %{transaction_id}"
+    transaction:
+      title:        "transaction"
+      desc:         "get or create transactions (tx for short)"
+      create:
+        title: "create"
+        desc: "create a transaction, generally used for sending tokens but you can specify other actions. (the default action is 'send')"
+      transactions:
+        title: "transactions"
+        desc: "get transactions in a specified block or for an address (txs for short)"
+        messages:
+          index: "show transactions in a block %{block_index}"
+          address: "show transactions for an address %{address}"
+      transaction:
+        title: "transaction"
+        desc: "get a transaction for a transaction id (tx for short)"
+        messages:
+          accepted: "show the transaction"
+          pending: "the transaction is still pending in transaction pool"
+          rejected: "the transaction was rejected because: %{reason}"
+          not_found: "the transaction was not found"
+          unknown: "unknown status for the transaction"
+      fees:
+        title: "fees"
+        desc: "show fees for each action"
+        messages:
+          fees: "\n  showing fees for each action.\n"
+    node:
