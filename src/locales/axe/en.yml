@@ -89,3 +89,111 @@ axe:
         messages:
           fees: "\n  showing fees for each action.\n"
     node:
+      title:        "node"
+      desc:         "show information of nodes (nd for short)"
+      nodes:
+        title: "nodes"
+        desc: "show all connected nodes to the connecting node"
+      node:
+        title: "node"
+        desc: "show the specified node (connecting node by default)"
+      official:
+        title: "official_nodes"
+        desc: "show a list of the official nodes"  
+    hra:
+      title:        "hra"
+      desc:         "Axentro Human Readable Addresses (HRA), buy/sell a readable domain for your address (sc for short)"
+      buy:
+        title: "buy"
+        desc: "buy specified domain"
+      sell:
+        title: "sell"
+        desc: "sell your domain"
+      cancel:
+        title: "cancel"
+        desc: "cancel selling"
+      resolve:
+        title: "resolve"
+        desc: "show an address of the domain if it's registered"
+      sales:
+        title: "sales"
+        desc: "show a list of domains for sale"
+      lookup:
+        title: "lookup"
+        desc: "show the domain(s) for an address if any"
+    token:
+      title:        "token"
+      desc:         "create tokens."
+      create:
+        title: "create"
+        desc: "create your token"
+      update: 
+        title: "update"
+        desc: "update your token quantity (positive number greater than 0)"  
+      lock:
+        title: "lock"
+        desc: "lock your token forever to prevent updates" 
+      burn:
+        title: "burn"
+        desc: "burn an amount of your token"    
+      list:
+        title: "list"
+        desc: "list existing tokens"
+    config:
+      title:        "config"
+      desc:         "save default configuration used by axe, axen and axem (cg for short)"
+      save:
+        title: "save"
+        desc: "save the specified options as default for axe, axen and axem"
+      show:
+        title: "show"
+        desc: "show current default configuration"
+      remove:
+        title: "remove"
+        desc: "remove the default configuration"
+      use:
+        title: "use"
+        desc: "use the specified configuration"
+      list:
+        title: "list"
+        desc: "list the available configurations"
+      enable:
+        title: "enable"
+        desc: "enable configurations"
+      disable:
+        title: "disable"
+        desc: "disable configurations"
+    pubsub:
+      title:        "pubsub"
+      desc:         "receive blocks in real time"
+    client:
+      title:        "client"
+      desc:         "connect to node as peer clients"
+    assets:
+      title:        "assets"
+      desc:         "create, update, send an asset (as for short)"
+      create:
+        title:      "create"
+        desc:       "create an asset"
+        messages:
+          creation: "your asset has been created"
+      update:
+        title: "update"
+        desc:  "update an asset"
+        messages:
+          updated: "your asset has been updated"
+      send:
+        title: "send"
+        desc: "send an asset"
+        messages:
+          send: "your asset has been sent"
+      get:
+        title: "get"
+        desc: "get asset detail"
+      amount: 
+        title: "amount"
+        desc: "get asset balances"
+        messages: 
+          amount: "\n  showing amount of each asset for %{address}."
+          confirmation: " confirmations: %{confirmation}"  
+          no_assets: " you have no assets"          
