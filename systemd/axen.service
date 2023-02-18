@@ -16,4 +16,4 @@ StandardError=syslog
 SyslogIdentifier=axen
 
 [Install]
-WantedBy=multi-user.targ
+WantedBy=multi-user.target
